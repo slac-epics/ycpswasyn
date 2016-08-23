@@ -1,0 +1,1488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<class>MainWindow</class>
+<widget class="QMainWindow" name="MainWindow">
+    <property name="geometry">
+        <rect>
+            <x>2691</x>
+            <y>228</y>
+            <width>880</width>
+            <height>1500</height>
+        </rect>
+    </property>
+    <property name="styleSheet">
+        <string>
+
+QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
+
+caTable {
+       font: 10pt;
+       background: cornsilk;
+       alternate-background-color: wheat;
+}
+
+caLineEdit {
+     border-radius: 1px;
+     background: lightyellow;
+     color: black;
+ }
+
+caTextEntry {
+    color: rgb(127, 0, 63);
+    background-color: cornsilk;
+    selection-color: #0a214c;
+    selection-background-color: wheat;
+    border: 1px groove black;
+    border-radius: 1px;
+    padding: 1px;
+}
+
+caTextEntry:focus {
+    padding: 0px;
+    border: 2px groove darkred;
+    border-radius: 1px;
+}
+
+QPushButton {
+      border-color: #00b;
+      border-radius: 2px;
+      padding: 3px;
+      border-width: 1px;
+
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						   stop:0   rgba(224, 239, 255, 255),
+						   stop:0.5 rgba(199, 215, 230, 255),
+						   stop:1   rgba(184, 214, 236, 255));
+}
+QPushButton:hover {
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						stop:0   rgba(201, 226, 255, 255),
+						stop:0.5 rgba(177, 204, 230, 255),
+						stop:1   rgba(163, 205, 236, 255));
+}
+QPushButton:pressed {
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						stop:0   rgba(174, 219, 255, 255),
+						stop:0.5 rgba(165, 199, 230, 255),
+						stop:1   rgba(134, 188, 236, 255));
+}
+
+QPushButton:disabled {
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						stop:0   rgba(174, 219, 255, 255),
+						stop:0.5 rgba(165, 199, 230, 255),
+						stop:1   rgba(134, 188, 236, 255));
+}
+
+caChoice {
+      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                  stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
+                                  stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
+}
+
+caChoice &gt; QPushButton {
+      text-align: left;
+      padding: 1px;
+}
+
+caSlider::groove:horizontal {
+border: 1px solid #bbb;
+background: lightgrey;
+height: 20px;
+border-radius: 4px;
+}
+
+caSlider::handle:horizontal {
+background: red;
+border: 1px solid #777;
+width: 13px;
+margin-top: -2px;
+margin-bottom: -2px;
+border-radius: 2px;
+}
+
+
+
+</string>
+    </property>
+    <widget class="QWidget" name="centralWidget">
+        <widget class="caLabel" name="caLabel_0">
+            <property name="geometry">
+                <rect>
+                    <x>25</x>
+                    <y>10</y>
+                    <width>250</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Status</string>
+            </property>
+            <property name="channel">
+                <string></string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>14</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignHCenter|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="0">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+            <property name="channel">
+                <string>                                                                               </string>
+            </property>
+            <property name="visibility">
+                <string>Calc</string>
+            </property>
+            <property name="visibilityCalc">
+                <string>A&gt;                                       &amp;&amp;A&lt;=                                       </string>
+            </property>
+        </widget>
+        <widget class="caLabel" name="caLabel_1">
+            <property name="geometry">
+                <rect>
+                    <x>435</x>
+                    <y>10</y>
+                    <width>250</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Configuration</string>
+            </property>
+            <property name="channel">
+                <string></string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>14</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignHCenter|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="0">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+            <property name="channel">
+                <string>                                                                               </string>
+            </property>
+            <property name="visibility">
+                <string>Calc</string>
+            </property>
+            <property name="visibilityCalc">
+                <string>A&gt;                                       &amp;&amp;A&lt;=                                       </string>
+            </property>
+        </widget>
+        <widget class="caLabel" name="caLabel_2">
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>55</y>
+                    <width>116</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>BuildStamp</string>
+            </property>
+            <property name="channel">
+                <string></string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="0">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+            <property name="channel">
+                <string>                                                                               </string>
+            </property>
+            <property name="visibility">
+                <string>Calc</string>
+            </property>
+            <property name="visibilityCalc">
+                <string>A&gt;                                       &amp;&amp;A&lt;=                                       </string>
+            </property>
+        </widget>
+        <widget class="caLineEdit" name="caLineEdit_3">
+            <property name="geometry">
+                <rect>
+                    <x>120</x>
+                    <y>55</y>
+                    <width>200</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:BuildStamp:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+        </widget>
+        <widget class="caLabel" name="caLabel_4">
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>100</y>
+                    <width>116</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>Counter</string>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:BuildStamp:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="0">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+            <property name="channel">
+                <string>                                                                               </string>
+            </property>
+            <property name="visibility">
+                <string>Calc</string>
+            </property>
+            <property name="visibilityCalc">
+                <string>A&gt;                                       &amp;&amp;A&lt;=                                       </string>
+            </property>
+        </widget>
+        <widget class="caLineEdit" name="caLineEdit_5">
+            <property name="geometry">
+                <rect>
+                    <x>120</x>
+                    <y>100</y>
+                    <width>200</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:Counter:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+        </widget>
+        <widget class="caLabel" name="caLabel_6">
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>145</y>
+                    <width>116</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>DeviceDna</string>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:Counter:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="0">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+            <property name="channel">
+                <string>                                                                               </string>
+            </property>
+            <property name="visibility">
+                <string>Calc</string>
+            </property>
+            <property name="visibilityCalc">
+                <string>A&gt;                                       &amp;&amp;A&lt;=                                       </string>
+            </property>
+        </widget>
+        <widget class="caLineEdit" name="caLineEdit_7">
+            <property name="geometry">
+                <rect>
+                    <x>120</x>
+                    <y>145</y>
+                    <width>200</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:DeviceDna:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+        </widget>
+        <widget class="caLabel" name="caLabel_8">
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>190</y>
+                    <width>116</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>FdSerial</string>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:DeviceDna:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="0">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+            <property name="channel">
+                <string>                                                                               </string>
+            </property>
+            <property name="visibility">
+                <string>Calc</string>
+            </property>
+            <property name="visibilityCalc">
+                <string>A&gt;                                       &amp;&amp;A&lt;=                                       </string>
+            </property>
+        </widget>
+        <widget class="caLineEdit" name="caLineEdit_9">
+            <property name="geometry">
+                <rect>
+                    <x>120</x>
+                    <y>190</y>
+                    <width>200</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:FdSerial:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+        </widget>
+        <widget class="caLabel" name="caLabel_10">
+            <property name="geometry">
+                <rect>
+                    <x>340</x>
+                    <y>55</y>
+                    <width>116</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>FpgaReload</string>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:FdSerial:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="0">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+            <property name="channel">
+                <string>                                                                               </string>
+            </property>
+            <property name="visibility">
+                <string>Calc</string>
+            </property>
+            <property name="visibilityCalc">
+                <string>A&gt;                                       &amp;&amp;A&lt;=                                       </string>
+            </property>
+        </widget>
+        <widget class="caTextEntry" name="caTextEntry_11">
+            <property name="geometry">
+                <rect>
+                    <x>450</x>
+                    <y>55</y>
+                    <width>200</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:FpgaReload:St</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+        </widget>
+        <widget class="caLineEdit" name="caLineEdit_12">
+            <property name="geometry">
+                <rect>
+                    <x>670</x>
+                    <y>55</y>
+                    <width>200</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:FpgaReload:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+        </widget>
+        <widget class="caLabel" name="caLabel_13">
+            <property name="geometry">
+                <rect>
+                    <x>340</x>
+                    <y>100</y>
+                    <width>116</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>FpgaReloadAddress</string>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:FpgaReload:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="0">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+            <property name="channel">
+                <string>                                                                               </string>
+            </property>
+            <property name="visibility">
+                <string>Calc</string>
+            </property>
+            <property name="visibilityCalc">
+                <string>A&gt;                                       &amp;&amp;A&lt;=                                       </string>
+            </property>
+        </widget>
+        <widget class="caTextEntry" name="caTextEntry_14">
+            <property name="geometry">
+                <rect>
+                    <x>450</x>
+                    <y>100</y>
+                    <width>200</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:FpgaReloadAddress:St</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+        </widget>
+        <widget class="caLineEdit" name="caLineEdit_15">
+            <property name="geometry">
+                <rect>
+                    <x>670</x>
+                    <y>100</y>
+                    <width>200</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:FpgaReloadAddress:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+        </widget>
+        <widget class="caLabel" name="caLabel_16">
+            <property name="geometry">
+                <rect>
+                    <x>340</x>
+                    <y>145</y>
+                    <width>116</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>FpgaReloadHalt</string>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:FpgaReloadAddress:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="0">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+            <property name="channel">
+                <string>                                                                               </string>
+            </property>
+            <property name="visibility">
+                <string>Calc</string>
+            </property>
+            <property name="visibilityCalc">
+                <string>A&gt;                                       &amp;&amp;A&lt;=                                       </string>
+            </property>
+        </widget>
+        <widget class="caTextEntry" name="caTextEntry_17">
+            <property name="geometry">
+                <rect>
+                    <x>450</x>
+                    <y>145</y>
+                    <width>200</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:FpgaReloadHalt:St</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+        </widget>
+        <widget class="caLineEdit" name="caLineEdit_18">
+            <property name="geometry">
+                <rect>
+                    <x>670</x>
+                    <y>145</y>
+                    <width>200</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:FpgaReloadHalt:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+        </widget>
+        <widget class="caLabel" name="caLabel_19">
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>235</y>
+                    <width>116</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>FpgaVersion</string>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:FpgaReloadHalt:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="0">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+            <property name="channel">
+                <string>                                                                               </string>
+            </property>
+            <property name="visibility">
+                <string>Calc</string>
+            </property>
+            <property name="visibilityCalc">
+                <string>A&gt;                                       &amp;&amp;A&lt;=                                       </string>
+            </property>
+        </widget>
+        <widget class="caLineEdit" name="caLineEdit_20">
+            <property name="geometry">
+                <rect>
+                    <x>120</x>
+                    <y>235</y>
+                    <width>200</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:FpgaVersion:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+        </widget>
+        <widget class="caLabel" name="caLabel_21">
+            <property name="geometry">
+                <rect>
+                    <x>340</x>
+                    <y>190</y>
+                    <width>116</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>MasterReset</string>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:FpgaVersion:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="0">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+            <property name="channel">
+                <string>                                                                               </string>
+            </property>
+            <property name="visibility">
+                <string>Calc</string>
+            </property>
+            <property name="visibilityCalc">
+                <string>A&gt;                                       &amp;&amp;A&lt;=                                       </string>
+            </property>
+        </widget>
+        <widget class="caTextEntry" name="caTextEntry_22">
+            <property name="geometry">
+                <rect>
+                    <x>450</x>
+                    <y>190</y>
+                    <width>200</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:MasterReset:St</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+        </widget>
+        <widget class="caLineEdit" name="caLineEdit_23">
+            <property name="geometry">
+                <rect>
+                    <x>670</x>
+                    <y>190</y>
+                    <width>200</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:MasterReset:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+        </widget>
+        <widget class="caLabel" name="caLabel_24">
+            <property name="geometry">
+                <rect>
+                    <x>340</x>
+                    <y>235</y>
+                    <width>116</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>ScratchPad</string>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:MasterReset:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="0">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+            <property name="channel">
+                <string>                                                                               </string>
+            </property>
+            <property name="visibility">
+                <string>Calc</string>
+            </property>
+            <property name="visibilityCalc">
+                <string>A&gt;                                       &amp;&amp;A&lt;=                                       </string>
+            </property>
+        </widget>
+        <widget class="caTextEntry" name="caTextEntry_25">
+            <property name="geometry">
+                <rect>
+                    <x>450</x>
+                    <y>235</y>
+                    <width>200</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:ScratchPad:St</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+        </widget>
+        <widget class="caLineEdit" name="caLineEdit_26">
+            <property name="geometry">
+                <rect>
+                    <x>670</x>
+                    <y>235</y>
+                    <width>200</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:ScratchPad:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+        </widget>
+        <widget class="caLabel" name="caLabel_27">
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>280</y>
+                    <width>116</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>UpTimeCnt</string>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:ScratchPad:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="0">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+            <property name="channel">
+                <string>                                                                               </string>
+            </property>
+            <property name="visibility">
+                <string>Calc</string>
+            </property>
+            <property name="visibilityCalc">
+                <string>A&gt;                                       &amp;&amp;A&lt;=                                       </string>
+            </property>
+        </widget>
+        <widget class="caLineEdit" name="caLineEdit_28">
+            <property name="geometry">
+                <rect>
+                    <x>120</x>
+                    <y>280</y>
+                    <width>200</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:UpTimeCnt:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+        </widget>
+        <widget class="caLabel" name="caLabel_29">
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>325</y>
+                    <width>116</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="text">
+                <string>UserConstants</string>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:UpTimeCnt:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="0">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+            <property name="channel">
+                <string>                                                                               </string>
+            </property>
+            <property name="visibility">
+                <string>Calc</string>
+            </property>
+            <property name="visibilityCalc">
+                <string>A&gt;                                       &amp;&amp;A&lt;=                                       </string>
+            </property>
+        </widget>
+        <widget class="caLineEdit" name="caLineEdit_30">
+            <property name="geometry">
+                <rect>
+                    <x>120</x>
+                    <y>325</y>
+                    <width>200</width>
+                    <height>40</height>
+                </rect>
+            </property>
+            <property name="channel">
+                <string>$(P):C:Axi:UserConstants:Rd</string>
+            </property>
+            <property name="font">
+                <font>
+                    <pointsize>8</pointsize>
+                </font>
+            </property>
+            <property name="fontScaleMode">
+                <enum>None</enum>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>255</red>
+                    <green>255</green>
+                    <blue>255</blue>
+                </color>
+            </property>
+        </widget>
+        <zorder>caLabel_0</zorder>
+        <zorder>caLabel_1</zorder>
+        <zorder>caLabel_2</zorder>
+        <zorder>caLineEdit_3</zorder>
+        <zorder>caLabel_4</zorder>
+        <zorder>caLineEdit_5</zorder>
+        <zorder>caLabel_6</zorder>
+        <zorder>caLineEdit_7</zorder>
+        <zorder>caLabel_8</zorder>
+        <zorder>caLineEdit_9</zorder>
+        <zorder>caLabel_10</zorder>
+        <zorder>caTextEntry_11</zorder>
+        <zorder>caLineEdit_12</zorder>
+        <zorder>caLabel_13</zorder>
+        <zorder>caTextEntry_14</zorder>
+        <zorder>caLineEdit_15</zorder>
+        <zorder>caLabel_16</zorder>
+        <zorder>caTextEntry_17</zorder>
+        <zorder>caLineEdit_18</zorder>
+        <zorder>caLabel_19</zorder>
+        <zorder>caLineEdit_20</zorder>
+        <zorder>caLabel_21</zorder>
+        <zorder>caTextEntry_22</zorder>
+        <zorder>caLineEdit_23</zorder>
+        <zorder>caLabel_24</zorder>
+        <zorder>caTextEntry_25</zorder>
+        <zorder>caLineEdit_26</zorder>
+        <zorder>caLabel_27</zorder>
+        <zorder>caLineEdit_28</zorder>
+        <zorder>caLabel_29</zorder>
+        <zorder>caLineEdit_30</zorder>
+    </widget>
+</widget>
+</ui>

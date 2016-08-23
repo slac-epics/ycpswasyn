@@ -1,0 +1,855 @@
+4 0 1
+beginScreenProperties
+major 4
+minor 0
+release 1
+x 2691
+y 228
+w 880
+h 1500
+font "helvetica-medium-r-18.0"
+ctlFont "helvetica-medium-r-12.0"
+btnFont "helvetica-medium-r-18.0"
+fgColor index 14
+bgColor index 4
+textColor index 14
+ctlFgColor1 index 30
+ctlFgColor2 index 32
+ctlBgColor1 index 34
+ctlBgColor2 index 35
+topShadowColor index 37
+botShadowColor index 44
+showGrid
+gridSize 5
+endScreenProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 25
+y 10
+w 250
+h 40
+font "helvetica-medium-r-18.0"
+fontAlign "center"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Status"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 435
+y 10
+w 250
+h 40
+font "helvetica-medium-r-18.0"
+fontAlign "center"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Configuration"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 55
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "BurstSize"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 120
+y 55
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:BurstSize:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 100
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Done"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 120
+y 100
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:Done:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 145
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Empty"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 120
+y 145
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:Empty:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 55
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Enabled"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 55
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:Enabled:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 55
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:Enabled:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 100
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "EndAddr"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 100
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:EndAddr:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 100
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:EndAddr:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 190
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Error"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 120
+y 190
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:Error:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 145
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "FramesAfterTrigger"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 145
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:FramesAfterTrigger:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 145
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:FramesAfterTrigger:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 235
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "FramesSinceTrigger"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 120
+y 235
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:FramesSinceTrigger:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 280
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Full"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 120
+y 280
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:Full:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 190
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Init"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 190
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:Init:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 190
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:Init:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 235
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Mode"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 235
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:Mode:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 235
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:Mode:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 280
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "MsgDest"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 280
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:MsgDest:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 280
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:MsgDest:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 325
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "SoftTrigger"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 325
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:SoftTrigger:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 325
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:SoftTrigger:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 370
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "StartAddr"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 370
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:StartAddr:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 370
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:StartAddr:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 325
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "TriggerAddr"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 120
+y 325
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:TriggerAddr:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 370
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Triggered"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 120
+y 370
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:Triggered:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 415
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "WrAddr"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 120
+y 415
+w 200
+h 40
+controlPv "$(P):C:Amc:Bsa:Raw:WrAddr:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+

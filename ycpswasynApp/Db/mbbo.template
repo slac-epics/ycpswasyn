@@ -1,0 +1,5 @@
+record(mbbo, "$(P):$(R)") {
+  field(DTYP, "asynUInt32Digital")
+  field(SCAN, "Passive")
+  field(OUT, "@asynMask($(PORT),$(ADDR))$(PARAM)")
+}

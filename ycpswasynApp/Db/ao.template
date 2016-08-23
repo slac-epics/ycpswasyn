@@ -1,0 +1,5 @@
+record(ao, "$(P):$(R)") {
+  field(DTYP, "asynInt32")
+  field(SCAN, "Passive")
+  field(OUT, "@asyn($(PORT),$(ADDR))$(PARAM)")
+}

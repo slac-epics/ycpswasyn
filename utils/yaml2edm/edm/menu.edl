@@ -1,0 +1,1129 @@
+4 0 1
+beginScreenProperties
+major 4
+minor 0
+release 1
+x 2691
+y 228
+w 500
+h 1500
+font "helvetica-medium-r-18.0"
+ctlFont "helvetica-medium-r-12.0"
+btnFont "helvetica-medium-r-18.0"
+fgColor index 14
+bgColor index 4
+textColor index 14
+ctlFgColor1 index 30
+ctlFgColor2 index 32
+ctlBgColor1 index 34
+ctlBgColor2 index 35
+topShadowColor index 37
+botShadowColor index 44
+showGrid
+gridSize 5
+endScreenProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 30
+y 10
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "0_AmcCarrierSsrlRtmEth.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "0_AmcCarrierSsrlRtmEth.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 50
+y 40
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "1_AmcCarrierCore.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "1_AmcCarrierCore.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 70
+y 70
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "2_AmcCarrierBsa.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "2_AmcCarrierBsa.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 100
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "3_BsaBufferControl.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "3_BsaBufferControl.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 110
+y 130
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "4_BsaBuffers.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "4_BsaBuffers.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 110
+y 160
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "4_Timestamps.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "4_Timestamps.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 190
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "3_BsaRawDiagnostic.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "3_BsaRawDiagnostic.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 110
+y 220
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "4_RawDiagnosticBuffers.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "4_RawDiagnosticBuffers.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 70
+y 250
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "2_AmcCarrierBsi.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "2_AmcCarrierBsi.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 70
+y 280
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "2_AxiMicronN25Q.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "2_AxiMicronN25Q.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 70
+y 310
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "2_AxiSysMonUltraScale.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "2_AxiSysMonUltraScale.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 70
+y 340
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "2_AxiVersion.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "2_AxiVersion.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 70
+y 370
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "2_RssiServerSw0.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "2_RssiServerSw0.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 70
+y 400
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "2_RssiServerSw1.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "2_RssiServerSw1.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 70
+y 430
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "2_UdpEngineWrapper_0.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "2_UdpEngineWrapper_0.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 70
+y 460
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "3_UdpEngineWrapper_1.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "3_UdpEngineWrapper_1.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 50
+y 490
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "2_AmcCarrierLlrfApp.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "2_AmcCarrierLlrfApp.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 70
+y 520
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "3_AmcBay0Core.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "3_AmcBay0Core.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 550
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "4_Adc16Dx370_0.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "4_Adc16Dx370_0.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 580
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "5_Adc16Dx370_1.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "5_Adc16Dx370_1.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 610
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "6_Adc16Dx370_2.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "6_Adc16Dx370_2.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 640
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "6_AttHMC624_0.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "6_AttHMC624_0.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 670
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "7_AttHMC624_1.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "7_AttHMC624_1.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 700
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "8_AttHMC624_2.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "8_AttHMC624_2.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 730
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "9_AttHMC624_3.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "9_AttHMC624_3.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 760
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "10_AttHMC624_4.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "10_AttHMC624_4.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 790
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "11_AttHMC624_5.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "11_AttHMC624_5.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 820
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "11_DacAD5541_0.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "11_DacAD5541_0.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 850
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "12_DacAD5541_1.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "12_DacAD5541_1.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 880
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "13_DacAD5541_2.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "13_DacAD5541_2.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 910
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "13_DacAD5541Mux.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "13_DacAD5541Mux.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 940
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "13_JesdRx.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "13_JesdRx.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 970
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "13_Lmk04828.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "13_Lmk04828.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 70
+y 1000
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "12_AmcBay1Core.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "12_AmcBay1Core.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 1030
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "13_Adc16Dx370_0.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "13_Adc16Dx370_0.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 1060
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "14_Adc16Dx370_1.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "14_Adc16Dx370_1.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 1090
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "15_Adc16Dx370_2.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "15_Adc16Dx370_2.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 1120
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "15_AttHMC624_0.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "15_AttHMC624_0.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 1150
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "16_AttHMC624_1.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "16_AttHMC624_1.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 1180
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "17_AttHMC624_2.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "17_AttHMC624_2.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 1210
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "18_AttHMC624_3.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "18_AttHMC624_3.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 1240
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "18_DacLtc2000.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "18_DacLtc2000.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 1270
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "18_JesdRx.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "18_JesdRx.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 1300
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "18_Lmk04828.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "18_Lmk04828.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 1330
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "18_LvdsSigGen.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "18_LvdsSigGen.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 90
+y 1360
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "18_SigGenRam.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "18_SigGenRam.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 70
+y 1390
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "17_AxisDaqMux_0.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "17_AxisDaqMux_0.edl"
+}
+icon
+endObjectProperties
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 70
+y 1420
+w 200
+h 20
+fgColor index 14
+bgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-12.0"
+buttonLabel "18_AxisDaqMux_1.edl"
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "18_AxisDaqMux_1.edl"
+}
+icon
+endObjectProperties

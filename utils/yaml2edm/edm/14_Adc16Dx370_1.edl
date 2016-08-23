@@ -1,0 +1,2015 @@
+4 0 1
+beginScreenProperties
+major 4
+minor 0
+release 1
+x 2691
+y 228
+w 880
+h 1500
+font "helvetica-medium-r-18.0"
+ctlFont "helvetica-medium-r-12.0"
+btnFont "helvetica-medium-r-18.0"
+fgColor index 14
+bgColor index 4
+textColor index 14
+ctlFgColor1 index 30
+ctlFgColor2 index 32
+ctlBgColor1 index 34
+ctlBgColor2 index 35
+topShadowColor index 37
+botShadowColor index 44
+showGrid
+gridSize 5
+endScreenProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 25
+y 10
+w 250
+h 40
+font "helvetica-medium-r-18.0"
+fontAlign "center"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Status"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 435
+y 10
+w 250
+h 40
+font "helvetica-medium-r-18.0"
+fontAlign "center"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Configuration"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 55
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x0000"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 55
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0000:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 55
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0000:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 100
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x0002"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 100
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0002:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 100
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0002:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 145
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x0003"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 145
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0003:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 145
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0003:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 190
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x0004"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 190
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0004:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 190
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0004:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 235
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x0005"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 235
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0005:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 235
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0005:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 280
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x0006"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 280
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0006:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 280
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0006:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 325
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x000C"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 325
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x000C:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 325
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x000C:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 370
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x000D"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 370
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x000D:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 370
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x000D:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 415
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x000E"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 415
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x000E:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 415
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x000E:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 460
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x000F"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 460
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x000F:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 460
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x000F:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 505
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x0010"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 505
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0010:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 505
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0010:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 550
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x0011"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 550
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0011:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 550
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0011:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 595
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x0012"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 595
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0012:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 595
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0012:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 640
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x0013"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 640
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0013:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 640
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0013:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 685
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x0014"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 685
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0014:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 685
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0014:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 730
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x0015"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 730
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0015:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 730
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0015:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 775
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x0019"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 775
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0019:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 775
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0019:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 820
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x003B"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 820
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x003B:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 820
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x003B:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 865
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x003C"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 865
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x003C:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 865
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x003C:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 910
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x003D"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 910
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x003D:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 910
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x003D:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 955
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x0047"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 955
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0047:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 955
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0047:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 1000
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x0060"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 1000
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0060:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 1000
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0060:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 1045
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x0061"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 1045
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0061:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 1045
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0061:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 1090
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x0062"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 1090
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0062:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 1090
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0062:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 1135
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x0063"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 1135
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0063:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 1135
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0063:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 340
+y 1180
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "AdcReg_0x0070"
+}
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 450
+y 1180
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0070:St"
+displayMode "hex"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 670
+y 1180
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:AdcReg_0x0070:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 55
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Aligned_to_sysref"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 120
+y 55
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:Aligned_to_sysref:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 100
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Calibration_done"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 120
+y 100
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:Calibration_done:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 145
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Clock_ready"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 120
+y 145
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:Clock_ready:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 190
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "ID_DEVICE_TYPE"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 120
+y 190
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:ID_DEVICE_TYPE:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 235
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "ID_MASKREV"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 120
+y 235
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:ID_MASKREV:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 280
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "ID_PROD_LOWER"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 120
+y 280
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:ID_PROD_LOWER:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 325
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "ID_PROD_UPPER"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 120
+y 325
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:ID_PROD_UPPER:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 370
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "ID_VNDR_LOWER"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 120
+y 370
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:ID_VNDR_LOWER:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 415
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "ID_VNDR_UPPER"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 120
+y 415
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:ID_VNDR_UPPER:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 460
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Link_active"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 120
+y 460
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:Link_active:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 505
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "PLL_lock"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 120
+y 505
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:PLL_lock:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 550
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Realigned_to_sysref"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 120
+y 550
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:Realigned_to_sysref:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 595
+w 116
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Sync_form_FPGA"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 120
+y 595
+w 200
+h 40
+controlPv "$(P):B1:Adc_1:Sync_form_FPGA:Rd"
+displayMode "hex"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+

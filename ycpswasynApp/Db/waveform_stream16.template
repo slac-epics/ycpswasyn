@@ -1,0 +1,7 @@
+record(waveform, "$(P):$(R)") {
+  field(DTYP,	"asynInt16ArrayIn")
+  field(NELM,	"10000000")
+  field(FTVL,	"SHORT")
+  field(SCAN,	"I/O Intr")
+  field(INP,	"@asyn($(PORT),$(ADDR))$(PARAM)")
+}

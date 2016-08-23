@@ -1,0 +1,5 @@
+record(ai, "$(P):$(R)") {
+  field(DTYP, "asynInt32")
+  field(SCAN, "5 second")
+  field(INP, "@asyn($(PORT),$(ADDR))$(PARAM)")
+}
