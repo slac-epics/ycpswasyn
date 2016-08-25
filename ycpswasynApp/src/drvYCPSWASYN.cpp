@@ -669,6 +669,11 @@ asynStatus YCPSWASYN::readInt32(asynUser *pasynUser, epicsInt32 *value)
 					asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
 				}
 			}
+			else if (addr == DEV_CMD)
+			{
+				u32 = 0;
+				status = 0;
+			}
 			else
 				status = -1;
 		}
