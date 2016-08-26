@@ -33,7 +33,7 @@ using std::stringstream;
 
 long nDevices, nRO, nRW, nCMD, nSTM;
 
-YCPSWASYN::YCPSWASYN(const char *portName, Path p , const char *recordPrefix)
+YCPSWASYN::YCPSWASYN(const char *portName, Path p , const char *recordPrefix, int recordNameLenMax)
 	: asynPortDriver(	portName, 
 				MAX_SIGNALS, 
 				NUM_PARAMS, 
@@ -46,7 +46,8 @@ YCPSWASYN::YCPSWASYN(const char *portName, Path p , const char *recordPrefix)
 	driverName_(DRIVER_NAME),
 	p_(p),
 	portName_(portName),
-	recordPrefix_(recordPrefix)
+	recordPrefix_(recordPrefix),
+	recordNameLenMax_(recordNameLenMax)
 {
 	//const char *functionName = "YCPSWASYN";
 
@@ -239,7 +240,8 @@ void YCPSWASYN::generateDB(Path p)
 
 	Children 		c = h_aux->getChildren();
 	int 			n = c->size();
-	stringstream 	db_params, rec_name, param_name;
+	stringstream 	db_params, param_name;
+	string 			rec_name;
 
 	for (int i = 0 ; i < n ; i++)
 	{
@@ -301,14 +303,17 @@ void YCPSWASYN::generateDB(Path p)
 						 	param_name << string((*c)[i]->getName()).substr(0, 10);
 						 	param_name << "_STM16_" << nSTM;
 
-						 	rec_name.str("");
-						 	rec_name << YCPSWASYN::generatePrefix(p) << (*c)[i]->getName() << ":16" ;
+						 	rec_name.clear();
+						 	rec_name = YCPSWASYN::generatePrefix(p);
+						 	rec_name += (*c)[i]->getName();
+						 	rec_name = rec_name.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4);
+						 	rec_name += ":16" ;
 
 							db_params.str("");
 							db_params << "PORT=" << portName_;
 							db_params << ",ADDR=" << DEV_STM;
 							db_params << ",P=" << recordPrefix_;
-							db_params << ",R=" << rec_name.str() << ",PARAM=" << param_name.str();
+							db_params << ",R=" << rec_name << ",PARAM=" << param_name.str();
 							//db_params << ",N=10000";
 
 							createParam(DEV_STM, param_name.str().c_str(), asynParamInt16Array, &p16StmIndex);
@@ -316,17 +321,20 @@ void YCPSWASYN::generateDB(Path p)
 
 							// Create PVs for 32-bit stream data
 							param_name.str("");
-                                                        param_name << string((*c)[i]->getName()).substr(0, 10);
-                                                        param_name << "_STM32_" << nSTM;
+							param_name << string((*c)[i]->getName()).substr(0, 10);
+							param_name << "_STM32_" << nSTM;
 
-                                                        rec_name.str("");
-                                                        rec_name << YCPSWASYN::generatePrefix(p) << (*c)[i]->getName() << ":32" ;
+							rec_name.clear();
+							rec_name = YCPSWASYN::generatePrefix(p);
+							rec_name += (*c)[i]->getName();
+							rec_name = rec_name.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4);
+							rec_name += ":32" ;
 
-                                                        db_params.str("");
-                                                        db_params << "PORT=" << portName_;
-                                                        db_params << ",ADDR=" << DEV_STM;
-                                                        db_params << ",P=" << recordPrefix_;
-                                                        db_params << ",R=" << rec_name.str() << ",PARAM=" << param_name.str();
+							db_params.str("");
+							db_params << "PORT=" << portName_;
+							db_params << ",ADDR=" << DEV_STM;
+							db_params << ",P=" << recordPrefix_;
+							db_params << ",R=" << rec_name << ",PARAM=" << param_name.str();
 
 							createParam(DEV_STM, param_name.str().c_str(), asynParamInt32Array, &p32StmIndex);	
 							dbLoadRecords("../../db/waveform_stream32.template", db_params.str().c_str());
@@ -350,7 +358,6 @@ void YCPSWASYN::generateDB(Path p)
     						else
     							printf("epicsThreadCreate successfully\n");
 
-							//stm[pStmIndex] = stm_aux;
 							nSTM++;
 						}
 					}
@@ -387,14 +394,17 @@ void YCPSWASYN::generateDB(Path p)
 							param_name <<  string((*c)[i]->getName()).substr(0, 10);
 							param_name << "_RW_" << nRW;
 
-							rec_name.str("");
-							rec_name << YCPSWASYN::generatePrefix(p) << (*c)[i]->getName() << ":St";
+							rec_name.clear();
+							rec_name = YCPSWASYN::generatePrefix(p);
+							rec_name += (*c)[i]->getName();
+							rec_name = rec_name.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4);
+							rec_name += ":St";
 
 							db_params.str("");
 							db_params << "PORT=" << portName_;
 							db_params << ",ADDR=" << DEV_REG_RW;
 							db_params << ",P=" << recordPrefix_;
-							db_params << ",R=" << rec_name.str() << ",PARAM=" << param_name.str();
+							db_params << ",R=" << rec_name << ",PARAM=" << param_name.str();
 
 							if (nElements == 1)
 							{
@@ -440,14 +450,17 @@ void YCPSWASYN::generateDB(Path p)
 							param_name << string((*c)[i]->getName()).substr(0, 10);
 							param_name << "_RO_" << nRO;
 														
-							rec_name.str("");
-							rec_name << YCPSWASYN::generatePrefix(p) << (*c)[i]->getName() << ":Rd";
+							rec_name.clear();
+							rec_name = YCPSWASYN::generatePrefix(p);
+							rec_name += (*c)[i]->getName();
+							rec_name = rec_name.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4);
+							rec_name += ":Rd";
 
 							db_params.str("");
 							db_params << "PORT=" << portName_;
 							db_params << ",ADDR=" << DEV_REG_RO;
 							db_params << ",P=" << recordPrefix_;
-							db_params << ",R=" << rec_name.str() << ",PARAM=" << param_name.str();
+							db_params << ",R=" << rec_name << ",PARAM=" << param_name.str();
 	
 							if (nElements == 1)
 							{
@@ -484,25 +497,25 @@ void YCPSWASYN::generateDB(Path p)
 
 						if (cmd_aux)
 						{
-							//cmd[pCmdIndex]= cmd_aux;
 							param_name.str("");
 							param_name << string((*c)[i]->getName()).substr(0, 10);
 							param_name << "_CMD_" << nCMD;
 
-							rec_name.str("");
-							rec_name << YCPSWASYN::generatePrefix(p) << (*c)[i]->getName() << ":Exe";
+							rec_name.clear();
+							rec_name = YCPSWASYN::generatePrefix(p);
+							rec_name += (*c)[i]->getName();
+							rec_name = rec_name.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4);
+							rec_name += ":Exe";
 
 							db_params.str("");
 							db_params << "PORT=" << portName_;
 							db_params << ",ADDR=" << DEV_CMD;
 							db_params << ",P=" << recordPrefix_;
-							db_params << ",R=" << rec_name.str() << ",PARAM=" << param_name.str();
+							db_params << ",R=" << rec_name << ",PARAM=" << param_name.str();
 							
 							createParam(DEV_CMD, param_name.str().c_str(), asynParamInt32, &pCmdIndex);	
 							dbLoadRecords("../../db/ao.template", db_params.str().c_str());
-							// dbLoad
 							
-							//pCmdIndex++;
 							cmd[pCmdIndex]= cmd_aux;
 							nCMD++;
 						}
@@ -1038,36 +1051,45 @@ void YCPSWASYN::report(FILE *fp, int details)
 // - Methods overrided from asynPortDriver //
 /////////////////////////////////////////////
 
-extern "C" int YCPSWASYNConfig(const char *portName, const char *yaml_doc, const char *ipAddr, const char *recordPrefix)
+extern "C" int YCPSWASYNConfig(const char *portName, const char *yaml_doc, const char *ipAddr, const char *recordPrefix, int recordNameLenMax)
 {
 	int status; 
 	Path p;
 
+	if (recordNameLenMax <= (strlen(recordPrefix) + 4))
+	{
+		printf("ERROR! Record name length (%d) must be greater lenght of prefix (%zu) + 4\n\n", recordNameLenMax, strlen(recordPrefix));
+		return asynError;
+	}
+
+
 	status = YCPSWASYN::YCPSWASYNInit(yaml_doc, &p, ipAddr);
   
-	YCPSWASYN *pYCPSWASYN = new YCPSWASYN(portName, p, recordPrefix);
+	YCPSWASYN *pYCPSWASYN = new YCPSWASYN(portName, p, recordPrefix, recordNameLenMax);
 	pYCPSWASYN = NULL;
     
 	return (status==0) ? asynSuccess : asynError;
 }
 
-static const iocshArg confArg0 =	{ "portName",		iocshArgString};
-static const iocshArg confArg1 =	{ "yamlDoc",		iocshArgString};
-static const iocshArg confArg2 =	{ "ipAddr",			iocshArgString};
+static const iocshArg confArg0 =	{ "portName",			iocshArgString};
+static const iocshArg confArg1 =	{ "yamlDoc",			iocshArgString};
+static const iocshArg confArg2 =	{ "ipAddr",				iocshArgString};
 static const iocshArg confArg3 =	{ "recordPrefix",		iocshArgString};
+static const iocshArg confArg4 =	{ "recordNameLenMax",	iocshArgInt};
 
 static const iocshArg * const confArgs[] = {
 	&confArg0,
 	&confArg1,
 	&confArg2,
-	&confArg3
+	&confArg3,
+	&confArg4
 };
                                             
-static const iocshFuncDef configFuncDef = {"YCPSWASYNConfig",4,confArgs};
+static const iocshFuncDef configFuncDef = {"YCPSWASYNConfig",5,confArgs};
 
 static void configCallFunc(const iocshArgBuf *args)
 {
-	YCPSWASYNConfig(args[0].sval, args[1].sval, args[2].sval, args[3].sval);
+	YCPSWASYNConfig(args[0].sval, args[1].sval, args[2].sval, args[3].sval, args[4].ival);
 }
 
 void drvYCPSWASYNRegister(void)

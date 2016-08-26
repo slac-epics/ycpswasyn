@@ -19,6 +19,8 @@
 #define APP_KEY			"App"
 #define	APP_SUBS		"A"
 #define STREAM_KEY		"Stream"
+#define DB_NAME_PREFIX_LENGTH_MAX	10
+#define DB_NAME_LENGTH_MAX			37
 
 enum deviceTypeList 
 {
@@ -46,7 +48,7 @@ typedef struct
 
 class YCPSWASYN : public asynPortDriver {
 	public:
-		YCPSWASYN(const char *portName, Path p, const char *recordPrefix);
+		YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int recordNameLenMax);
 		
 		// Methods that we override from asynPortDriver
 		virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
@@ -82,6 +84,7 @@ class YCPSWASYN : public asynPortDriver {
 		Path p_;
 		const char *portName_;
 		const char *recordPrefix_;
+		const int 	recordNameLenMax_;
 
 		static void printChildrenPath(Path p);
 		static void printChildren(Hub h);

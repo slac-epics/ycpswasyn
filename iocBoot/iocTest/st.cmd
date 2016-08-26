@@ -29,7 +29,8 @@ ycpswasyn_registerRecordDeviceDriver(pdbbase)
 #    Yaml Doc,              # Path to the YAML file
 #    IP Address,            # OPTIONAL: Target FPGA IP Address. If not given it is taken from the YAML file
 #    Record name Prefix,    # Record name prefix
-YCPSWASYNConfig("LinkNode1", "../../yaml/system.yaml", "", "yamlIOC1")
+#    Record name Length Max,    # Record name maximum length (must be greater than lenght of prefix + 4)
+YCPSWASYNConfig("LinkNode1", "../../yaml/system.yaml", "", "yamlIOC1", 40)
 
 #synSetTraceMask(LinkNode1,, -1, 9)
 #asynSetTraceIOMask(LinkNode1,, -1, 2)
