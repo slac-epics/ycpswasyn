@@ -40,8 +40,8 @@ typedef struct
 } ThreadArgs;
 
 #define MAX_SIGNALS		((int)deviceTypeList(SIZE) + 1)
-#define	NUM_PARAMS		1000
-#define NUM_CMD			100
+#define	NUM_PARAMS		5000
+#define NUM_CMD			500
 //#define NUM_STREAMS		10
 #define STREAM_MAX_SIZE 	200UL*1024ULL*1024ULL
 

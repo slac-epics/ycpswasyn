@@ -279,9 +279,11 @@ void YCPSWASYN::generateDB(Path p)
 
 				nDevices++;
 
+				size_t found_key = string((*c)[i]->getName()).find(STREAM_KEY);
+
 				try 
 				{
-					if (string((*c)[i]->getName()).find(STREAM_KEY) != std::string::npos)
+					if ((found_key != std::string::npos) && (isdigit(((*c)[i]->getName())[found_key+strlen(STREAM_KEY)])))
 					{
 						Stream stm_aux;
 						int p16StmIndex, p32StmIndex;
@@ -505,7 +507,7 @@ void YCPSWASYN::generateDB(Path p)
 							rec_name = YCPSWASYN::generatePrefix(p);
 							rec_name += (*c)[i]->getName();
 							rec_name = rec_name.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4);
-							rec_name += ":Exe";
+							rec_name += ":Ex";
 
 							db_params.str("");
 							db_params << "PORT=" << portName_;
