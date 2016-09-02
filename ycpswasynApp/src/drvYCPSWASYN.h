@@ -1,3 +1,11 @@
+// This file is part of 'YCPSW EPICS module'.
+// It is subject to the license terms in the LICENSE.txt file found in the
+// top-level directory of this distribution and at:
+//    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+// No part of 'YCPSW EPICS module', including this file,
+// may be copied, modified, propagated, or distributed except according to
+// the terms contained in the LICENSE.txt file.
+
 #include <stdio.h>
 #include <string.h>
 #include <boost/array.hpp>
@@ -21,6 +29,48 @@
 #define STREAM_KEY		"Stream"
 #define DB_NAME_PREFIX_LENGTH_MAX	10
 #define DB_NAME_LENGTH_MAX			37
+#define DB_DESC_LENGTH_MAX			29
+#define DB_MBBX_NELEM_MAX			16
+
+char const *mbbxValParam[]
+{
+	"ZRVL",
+	"ONVL",
+	"TWVL",
+	"THVL",
+	"FRVL",
+	"FVVL",
+	"SXVL",
+	"SVVL",
+	"EIVL",
+	"NIVL",
+	"TEVL",
+	"ELVL",
+	"TVVL",
+	"TTVL",
+	"FTVL",
+	"FFVL"
+};
+
+char const *mbbxNameParams[]
+{
+	"ZRST",
+	"ONST",
+	"TWST",
+	"THST",
+	"FRST",
+	"FVST",
+	"SXST",
+	"SVST",
+	"EIST",
+	"NIST",
+	"TEST",
+	"ELST",
+	"TVST",
+	"TTST",
+	"FTST",
+	"FFST"
+};
 
 enum deviceTypeList 
 {
@@ -59,7 +109,9 @@ class YCPSWASYN : public asynPortDriver {
 		virtual asynStatus writeOctet (asynUser *pasynUser, const char *value, size_t maxChars, size_t *nActual);
 		virtual asynStatus readFloat64Array(asynUser *pasynUser, epicsFloat64 *value, size_t nElements, size_t *nIn);
 		virtual asynStatus writeFloat64Array(asynUser *pasynUser, epicsFloat64 *value, size_t nElements);
-		
+		virtual asynStatus writeUInt32Digital (asynUser *pasynUser, epicsUInt32 value, epicsUInt32 mask);
+		virtual asynStatus readUInt32Digital (asynUser *pasynUser, epicsUInt32 *value, epicsUInt32 mask);
+
 		virtual asynStatus getBounds(asynUser *pasynUser, epicsInt32 *low, epicsInt32 *high);
 
 		virtual void report(FILE *fp, int details);

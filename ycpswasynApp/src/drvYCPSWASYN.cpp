@@ -1,3 +1,11 @@
+// This file is part of 'YCPSW EPICS module'.
+// It is subject to the license terms in the LICENSE.txt file found in the
+// top-level directory of this distribution and at:
+//    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+// No part of 'YCPSW EPICS module', including this file,
+// may be copied, modified, propagated, or distributed except according to
+// the terms contained in the LICENSE.txt file.
+
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,6 +15,7 @@
 #include <boost/array.hpp>
 #include <iostream>
 #include <arpa/inet.h>
+#include <math.h>
 #include <epicsTypes.h>
 #include <epicsTime.h>
 #include <epicsThread.h>
@@ -316,6 +325,7 @@ void YCPSWASYN::generateDB(Path p)
 							db_params << ",ADDR=" << DEV_STM;
 							db_params << ",P=" << recordPrefix_;
 							db_params << ",R=" << rec_name << ",PARAM=" << param_name.str();
+							db_params << ",DESC=\"" << string((*c)[i]->getDescription()).substr(0, DB_DESC_LENGTH_MAX) << "\"";
 							//db_params << ",N=10000";
 
 							createParam(DEV_STM, param_name.str().c_str(), asynParamInt16Array, &p16StmIndex);
@@ -337,6 +347,7 @@ void YCPSWASYN::generateDB(Path p)
 							db_params << ",ADDR=" << DEV_STM;
 							db_params << ",P=" << recordPrefix_;
 							db_params << ",R=" << rec_name << ",PARAM=" << param_name.str();
+							db_params << ",DESC=\"" << string((*c)[i]->getDescription()).substr(0, DB_DESC_LENGTH_MAX) << "\"";
 
 							createParam(DEV_STM, param_name.str().c_str(), asynParamInt32Array, &p32StmIndex);	
 							dbLoadRecords("../../db/waveform_stream32.template", db_params.str().c_str());
@@ -407,38 +418,158 @@ void YCPSWASYN::generateDB(Path p)
 							db_params << ",ADDR=" << DEV_REG_RW;
 							db_params << ",P=" << recordPrefix_;
 							db_params << ",R=" << rec_name << ",PARAM=" << param_name.str();
+							db_params << ",DESC=\"" << string((*c)[i]->getDescription()).substr(0, DB_DESC_LENGTH_MAX) << "\"";
 
-							if (nElements == 1)
+							if (isEnum)
 							{
-								if (isEnum)
+								int nValues = isEnum->getNelms();
+								int mBits = log2(nValues);
+
+								if (nElements == 1)
 								{
-									createParam(DEV_REG_RW, param_name.str().c_str(), asynParamUInt32Digital, &pRwIndex);	
-									dbLoadRecords("../../db/mbbo.template", db_params.str().c_str());
+									if (nValues > DB_MBBX_NELEM_MAX)
+									{
+										printf("%s has %d elements, mmbbo record only supports %d. Loaded an ao record instead\n", (*c)[i]->getName(), nValues, DB_MBBX_NELEM_MAX);
+										createParam(DEV_REG_RW, param_name.str().c_str(), asynParamUInt32Digital, &pRwIndex);
+										dbLoadRecords("../../db/ao.template", db_params.str().c_str());
+										rw[pRwIndex] = rw_aux;
+										nRW++;
+									}
+									else
+									{
+										db_params << ",MASK=" << ((1 << nBits) - 1);
+										db_params << ",NOBT=" << nBits;
+
+										IEnum::iterator it;
+										int k;
+
+										for (it = isEnum->begin(), k = 0 ; k < DB_MBBX_NELEM_MAX ; k++)
+										{
+											if (it != isEnum->end())
+											{
+												db_params << "," << mbbxNameParams[k] << "=" << (*it).first->c_str();
+												db_params << "," << mbbxValParam[k] << "=" << (*it).second;
+												++it;
+											}
+											else
+											{
+												db_params << "," << mbbxNameParams[k] << "=";
+												db_params << "," << mbbxValParam[k] << "=";
+											}
+										}
+
+										createParam(DEV_REG_RW, param_name.str().c_str(), asynParamUInt32Digital, &pRwIndex);
+										dbLoadRecords("../../db/mbbo.template", db_params.str().c_str());
+										rw[pRwIndex] = rw_aux;
+										nRW++;
+									}
+	
 								}
 								else
 								{
+									if (nValues > DB_MBBX_NELEM_MAX)
+									{
+										printf("%s has %d elements, mmbbo record only supports %d. Loaded a waveform record instead\n", (*c)[i]->getName(), nValues, DB_MBBX_NELEM_MAX);
+										db_params << ",N=" << nElements;
+										if (nBits <= 8)
+										{
+											createParam(DEV_REG_RW, param_name.str().c_str(), asynParamOctet, &pRwIndex);
+											dbLoadRecords("../../db/waveform_8_out.template", db_params.str().c_str());
+										}
+										else
+										{
+											createParam(DEV_REG_RW, param_name.str().c_str(), asynParamInt32Array, &pRwIndex);
+											dbLoadRecords("../../db/waveform_out.template", db_params.str().c_str());
+										}
+										rw[pRwIndex] = rw_aux;
+										nRW++;
+									}
+									else
+									{
+										stringstream index_aux;
+										string c_name;
+
+                                        for (int j = 0 ; j < nElements ; j++)
+                                        {	
+                                        	index_aux.str("");
+                                        	index_aux << j;
+											
+                                        	c_name.clear();
+                                        	c_name = (*c)[i]->getName() + string("[") + index_aux.str() + string("]");
+                                        	Path c_path = p->findByName(c_name.c_str());
+											ScalVal c_rw = IScalVal::create(c_path);
+										
+											param_name.str("");
+                                        	param_name << string((*c)[i]->getName()).substr(0, 10);
+                                        	param_name << "_RW_" << nRW;
+											
+                                        	rec_name.clear();
+                                        	rec_name = YCPSWASYN::generatePrefix(p);
+                                        	rec_name += (*c)[i]->getName();
+                                        	rec_name = rec_name.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4 - 2);
+                                        	rec_name += index_aux.str();
+                                        	rec_name += ":St";
+                                       		db_params.str("");
+                                       		db_params << "PORT=" << portName_;
+                                       		db_params << ",ADDR=" << DEV_REG_RO;
+                                       		db_params << ",P=" << recordPrefix_;
+                                       		db_params << ",R=" << rec_name << ",PARAM=" << param_name.str();
+                                       		db_params << ",DESC=\"" << string((*c)[i]->getDescription()).substr(0, DB_DESC_LENGTH_MAX) << "\"";
+											db_params << ",MASK=" << ((1 << nBits) - 1);
+                                        	db_params << ",NOBT=" << nBits;
+
+                                        	IEnum::iterator it;
+                                        	int k;
+
+                                        	for (it = isEnum->begin(), k = 0 ; k < DB_MBBX_NELEM_MAX ; k++)
+                                        	{
+                                        	    if (it != isEnum->end())
+                                        	    {
+													db_params << "," << mbbxNameParams[k] << "=" << (*it).first->c_str();
+                                        	        db_params << "," << mbbxValParam[k] << "=" << (*it).second;
+                                        	        ++it;
+                                        	    }
+                                        	    else
+                                        	    {
+                                        	        db_params << "," << mbbxNameParams[k] << "=";
+                                        	        db_params << "," << mbbxValParam[k] << "=";
+                                        	    }
+	
+                                        	}
+											
+											createParam(DEV_REG_RW, param_name.str().c_str(), asynParamUInt32Digital, &pRwIndex);
+                                        	dbLoadRecords("../../db/mbbo.template", db_params.str().c_str());
+											rw[pRwIndex] = c_rw;
+											nRW++;
+										}
+									}
+								}
+							}
+							else
+							{
+								if (nElements == 1)
+								{
+	
 									createParam(DEV_REG_RW, param_name.str().c_str(), asynParamInt32, &pRwIndex);	
 									dbLoadRecords("../../db/ao.template", db_params.str().c_str());
 								}
-							}
-							else 
-							{						
-								db_params << ",N=" << nElements;
-								if (nBits <= 8)
-								{
-									createParam(DEV_REG_RW, param_name.str().c_str(), asynParamOctet, &pRwIndex);	
-									dbLoadRecords("../../db/waveform_8_out.template", db_params.str().c_str());
+								else 
+								{						
+									db_params << ",N=" << nElements;
+									if (nBits <= 8)
+									{
+										createParam(DEV_REG_RW, param_name.str().c_str(), asynParamOctet, &pRwIndex);	
+										dbLoadRecords("../../db/waveform_8_out.template", db_params.str().c_str());
+									}
+									else
+									{
+										createParam(DEV_REG_RW, param_name.str().c_str(), asynParamInt32Array, &pRwIndex);	
+										dbLoadRecords("../../db/waveform_out.template", db_params.str().c_str());
+									}
 								}
-								else
-								{
-									createParam(DEV_REG_RW, param_name.str().c_str(), asynParamInt32Array, &pRwIndex);	
-									dbLoadRecords("../../db/waveform_out.template", db_params.str().c_str());
-								}
+								rw[pRwIndex] = rw_aux;
+								nRW++;
 							}
-							rw[pRwIndex] = rw_aux;
-							nRW++;
-
-
 						}
 						
 						if (ro_aux)
@@ -457,44 +588,164 @@ void YCPSWASYN::generateDB(Path p)
 							rec_name += (*c)[i]->getName();
 							rec_name = rec_name.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4);
 							rec_name += ":Rd";
-
 							db_params.str("");
 							db_params << "PORT=" << portName_;
 							db_params << ",ADDR=" << DEV_REG_RO;
 							db_params << ",P=" << recordPrefix_;
 							db_params << ",R=" << rec_name << ",PARAM=" << param_name.str();
-	
-							if (nElements == 1)
+							db_params << ",DESC=\"" << string((*c)[i]->getDescription()).substr(0, DB_DESC_LENGTH_MAX) << "\"";
+
+							if (isEnum)
 							{
-								if (isEnum)
+								int nValues = isEnum->getNelms();
+								int mBits = log2(nValues);
+
+								if (nElements == 1)
 								{
-									createParam(DEV_REG_RO, param_name.str().c_str(), asynParamUInt32Digital, &pRoIndex);	
-									dbLoadRecords("../../db/mbbi.template", db_params.str().c_str());
+									if (nValues > DB_MBBX_NELEM_MAX)
+									{
+										printf("%s has %d elements, mmbbi record only supports %d. Loaded an ai record instead\n", (*c)[i]->getName(), nValues, DB_MBBX_NELEM_MAX);
+										createParam(DEV_REG_RO, param_name.str().c_str(), asynParamUInt32Digital, &pRoIndex);
+										dbLoadRecords("../../db/ai.template", db_params.str().c_str());
+										ro[pRoIndex] = ro_aux;
+										nRO++;
+									}
+									else
+									{
+										db_params << ",MASK=" << ((1 << nBits) - 1);
+										db_params << ",NOBT=" << nBits;
+
+										IEnum::iterator it;
+										int k;
+
+
+										for (it = isEnum->begin(), k = 0 ; k < DB_MBBX_NELEM_MAX ; k++)
+										{
+											if (it != isEnum->end())
+											{
+												db_params << "," << mbbxNameParams[k] << "=" << (*it).first->c_str();
+												db_params << "," << mbbxValParam[k] << "=" << (*it).second;
+												++it;
+											}
+											else
+											{
+												db_params << "," << mbbxNameParams[k] << "=";
+												db_params << "," << mbbxValParam[k] << "=";
+											}
+										}
+
+										createParam(DEV_REG_RO, param_name.str().c_str(), asynParamUInt32Digital, &pRoIndex);
+										dbLoadRecords("../../db/mbbi.template", db_params.str().c_str());
+										ro[pRoIndex] = ro_aux;
+										nRO++;
+									}
+	
 								}
 								else
+								{
+									if (nValues > DB_MBBX_NELEM_MAX)
+									{
+										printf("%s has %d elements, mmbbi record only supports %d. Loaded a waveform record instead\n", (*c)[i]->getName(), nValues, DB_MBBX_NELEM_MAX);
+										db_params << ",N=" << nElements;
+										if (nBits <= 8)
+										{
+											createParam(DEV_REG_RO, param_name.str().c_str(), asynParamOctet, &pRoIndex);
+											dbLoadRecords("../../db/waveform_8_in.template", db_params.str().c_str());
+										}
+										else
+										{
+											createParam(DEV_REG_RO, param_name.str().c_str(), asynParamInt32Array, &pRoIndex);
+											dbLoadRecords("../../db/waveform_in.template", db_params.str().c_str());
+										}
+										ro[pRoIndex] = ro_aux;
+										nRO++;
+									}
+									else
+									{
+										stringstream index_aux;
+										string c_name;
+
+                                        for (int j = 0 ; j < nElements ; j++)
+                                        {	
+                                        	index_aux.str("");
+                                        	index_aux << j;
+											
+                                        	c_name.clear();
+                                        	c_name = (*c)[i]->getName() + string("[") + index_aux.str() + string("]");
+                                        	Path c_path = p->findByName(c_name.c_str());
+											ScalVal_RO c_ro = IScalVal_RO::create(c_path);
+										
+											param_name.str("");
+                                        	param_name << string((*c)[i]->getName()).substr(0, 10);
+                                        	param_name << "_RO_" << nRO;
+											
+                                        	rec_name.clear();
+                                        	rec_name = YCPSWASYN::generatePrefix(p);
+                                        	rec_name += (*c)[i]->getName();
+                                        	rec_name = rec_name.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4 - 2);
+                                        	rec_name += index_aux.str();
+                                        	rec_name += ":Rd";
+                                       		db_params.str("");
+                                       		db_params << "PORT=" << portName_;
+                                       		db_params << ",ADDR=" << DEV_REG_RO;
+                                       		db_params << ",P=" << recordPrefix_;
+                                       		db_params << ",R=" << rec_name << ",PARAM=" << param_name.str();
+                                       		db_params << ",DESC=\"" << string((*c)[i]->getDescription()).substr(0, DB_DESC_LENGTH_MAX) << "\"";
+											db_params << ",MASK=" << ((1 << nBits) - 1);
+                                        	db_params << ",NOBT=" << nBits;
+
+                                        	IEnum::iterator it;
+                                        	int k;
+
+                                        	for (it = isEnum->begin(), k = 0 ; k < DB_MBBX_NELEM_MAX ; k++)
+                                        	{
+                                        	    if (it != isEnum->end())
+                                        	    {
+													db_params << "," << mbbxNameParams[k] << "=" << (*it).first->c_str();
+                                        	        db_params << "," << mbbxValParam[k] << "=" << (*it).second;
+                                        	        ++it;
+                                        	    }
+                                        	    else
+                                        	    {
+                                        	        db_params << "," << mbbxNameParams[k] << "=";
+                                        	        db_params << "," << mbbxValParam[k] << "=";
+                                        	    }
+	
+                                        	}
+											
+											createParam(DEV_REG_RO, param_name.str().c_str(), asynParamUInt32Digital, &pRoIndex);
+                                        	dbLoadRecords("../../db/mbbi.template", db_params.str().c_str());
+											ro[pRoIndex] = c_ro;
+											nRO++;
+										}
+									}
+								}
+							}
+							else
+							{							
+								if (nElements == 1)
 								{
 									createParam(DEV_REG_RO, param_name.str().c_str(), asynParamInt32, &pRoIndex);	
 									dbLoadRecords("../../db/ai.template", db_params.str().c_str());
 								}
-							}
-							else 
-							{
-								db_params << ",N=" << nElements;
-								if (nBits <= 8)
+								else 
 								{
-									createParam(DEV_REG_RO, param_name.str().c_str(), asynParamOctet, &pRoIndex);
-									dbLoadRecords("../../db/waveform_8_in.template", db_params.str().c_str());
+									db_params << ",N=" << nElements;
+									if (nBits <= 8)
+									{
+										createParam(DEV_REG_RO, param_name.str().c_str(), asynParamOctet, &pRoIndex);
+										dbLoadRecords("../../db/waveform_8_in.template", db_params.str().c_str());
+									}
+									else
+									{
+										createParam(DEV_REG_RO, param_name.str().c_str(), asynParamInt32Array, &pRoIndex);
+										dbLoadRecords("../../db/waveform_in.template", db_params.str().c_str());
+									}
 								}
-								else
-								{
-									createParam(DEV_REG_RO, param_name.str().c_str(), asynParamInt32Array, &pRoIndex);
-									dbLoadRecords("../../db/waveform_in.template", db_params.str().c_str());
-								}
-							}
 
-							ro[pRoIndex] = ro_aux;
-							nRO++;							
-		
+								ro[pRoIndex] = ro_aux;
+								nRO++;							
+							}
 						}
 
 						if (cmd_aux)
@@ -514,7 +765,8 @@ void YCPSWASYN::generateDB(Path p)
 							db_params << ",ADDR=" << DEV_CMD;
 							db_params << ",P=" << recordPrefix_;
 							db_params << ",R=" << rec_name << ",PARAM=" << param_name.str();
-							
+							db_params << ",DESC=\"" << string((*c)[i]->getDescription()).substr(0, DB_DESC_LENGTH_MAX) << "\"";
+
 							createParam(DEV_CMD, param_name.str().c_str(), asynParamInt32, &pCmdIndex);	
 							dbLoadRecords("../../db/ao.template", db_params.str().c_str());
 							
@@ -580,7 +832,7 @@ string YCPSWASYN::trimPath(Path p, size_t pos)
 		aux_str = c_str.substr(0,3);
 
 		if ((found_bracket = c_str.find('[')) != std::string::npos)
-			aux_str += "_" + c_str.substr(found_bracket+1, c_str.length() - found_bracket - 2);
+			aux_str += c_str.substr(found_bracket+1, c_str.length() - found_bracket - 2);
 
 		pre_str = aux_str + ":" + pre_str;
 
@@ -1023,6 +1275,134 @@ asynStatus YCPSWASYN::writeFloat64Array(asynUser *pasynUser, epicsFloat64 *value
   	return (status==0) ? asynSuccess : asynError;
 }
 
+asynStatus YCPSWASYN::writeUInt32Digital (asynUser *pasynUser, epicsUInt32 value, epicsUInt32 mask)
+{
+	int addr;
+	int function = pasynUser->reason;
+	int status=0;
+	const char *name;
+	epicsUInt32 val;
+
+	this->getAddress(pasynUser, &addr);
+     
+	static const char *functionName = "writeUInt32Digital";
+     
+	this->getAddress(pasynUser, &addr);
+
+	if (!getParamName(addr, function, &name))
+	{
+		try
+		{
+			if (addr == DEV_REG_RW)
+			{
+				val &= ~mask;
+				val |= value;
+				rw[function]->setVal((uint32_t*)&val, 1);
+			}
+			else
+				status = -1;
+		}
+		catch (CPSWError &e)
+		{
+			asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
+		}
+
+		if (status == 0)
+		{
+			asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
+						"%s:%s(%d), port %s parameter %s set to %d\n", \
+						driverName_, functionName, function, this->portName, name, value);
+		}
+		else
+		{
+			asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+						"%s:%s(%d), port %s ERROR setting parameter %s to %d\n", \
+						driverName_, functionName, function, this->portName, name, value);				
+		}
+
+	}
+   	else
+		status = asynPortDriver::writeUInt32Digital(pasynUser, value, mask);
+    
+	callParamCallbacks(addr);
+ 
+	return (status==0) ? asynSuccess : asynError;
+}
+
+asynStatus YCPSWASYN::readUInt32Digital (asynUser *pasynUser, epicsUInt32 *value, epicsUInt32 mask)
+{
+	int addr;
+	int function = pasynUser->reason;
+	int status=0;
+	uint32_t u32;
+	const char *name;
+
+	this->getAddress(pasynUser, &addr);
+     
+	static const char *functionName = "readUInt32Digital";
+
+	if (!getParamName(addr, function, &name))
+	{
+		try
+		{
+			if (addr == DEV_REG_RO)
+			{
+				try
+				{
+					ro[function]->getVal(&u32, 1);
+				}
+				catch (CPSWError &e)
+				{
+					status = -1;
+					asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
+				}
+			}
+			else if (addr == DEV_REG_RW)
+			{
+				try
+				{
+					rw[function]->getVal(&u32, 1);
+				}
+				catch (CPSWError &e)
+				{
+					status = -1;
+					asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
+				}
+			}
+			else
+				status = -1;
+		}
+		catch (CPSWError &e)
+		{
+			status = -1;
+			asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
+		}
+
+		if (status == 0)
+		{
+			u32 &= mask;
+			*value = (epicsInt32)u32;
+			setUIntDigitalParam(addr, function, (epicsUInt32)u32, mask);
+
+			asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
+						"%s:%s(%d), port %s read %d from register %s\n", \
+						driverName_, functionName, function, this->portName, *value, name);
+		}
+		else
+		{
+			asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+						"%s:%s(%d), port %s ERROR reading register %s\n", \
+								driverName_, functionName, function, this->portName, name);
+		}
+	}
+	else
+		status = asynPortDriver::readUInt32Digital(pasynUser, value, mask);
+     
+	callParamCallbacks(addr);
+     
+  	return (status==0) ? asynSuccess : asynError;
+}
+
 asynStatus YCPSWASYN::getBounds(asynUser *pasynUser, epicsInt32 *low, epicsInt32 *high)
 {
 	int addr;
@@ -1049,6 +1429,7 @@ void YCPSWASYN::report(FILE *fp, int details)
 	fprintf(fp, "  Port: %s\n", this->portName);
 	asynPortDriver::report(fp, details);
 }
+
 /////////////////////////////////////////////
 // - Methods overrided from asynPortDriver //
 /////////////////////////////////////////////

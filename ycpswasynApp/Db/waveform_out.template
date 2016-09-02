@@ -1,4 +1,5 @@
 record(waveform, "$(P):$(R)") {
+  field(DESC, "$(DESC)")
   field(DTYP,	"asynInt32ArrayOut")
   field(NELM,	"$(N)")
   field(FTVL,	"LONG")

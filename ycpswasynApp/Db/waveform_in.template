@@ -1,8 +1,9 @@
 record(waveform, "$(P):$(R)") {
+  field(DESC, "$(DESC)")
   #field(DTYP,	"asynFloat64ArrayIn")
   field(DTYP,	"asynInt32ArrayIn")
   field(NELM,	"$(N)")
   field(FTVL,	"LONG")
-  field(SCAN,	"5 second")
+  field(SCAN,	"Passive")
   field(INP,	"@asyn($(PORT),$(ADDR))$(PARAM)")
 }
