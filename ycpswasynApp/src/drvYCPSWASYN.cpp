@@ -437,8 +437,8 @@ void YCPSWASYN::generateDB(Path p)
 									}
 									else
 									{
-										db_params << ",MASK=" << ((1 << nBits) - 1);
-										db_params << ",NOBT=" << nBits;
+										db_params << ",MASK=" << ((1 << mBits) - 1);
+										db_params << ",NOBT=" << mBits;
 
 										IEnum::iterator it;
 										int k;
@@ -612,8 +612,8 @@ void YCPSWASYN::generateDB(Path p)
 									}
 									else
 									{
-										db_params << ",MASK=" << ((1 << nBits) - 1);
-										db_params << ",NOBT=" << nBits;
+										db_params << ",MASK=" << ((1 << mBits) - 1);
+										db_params << ",NOBT=" << mBits;
 
 										IEnum::iterator it;
 										int k;
