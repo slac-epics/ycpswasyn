@@ -430,7 +430,7 @@ void YCPSWASYN::generateDB(Path p)
 									if (nValues > DB_MBBX_NELEM_MAX)
 									{
 										printf("%s has %d elements, mmbbo record only supports %d. Loaded an ao record instead\n", (*c)[i]->getName(), nValues, DB_MBBX_NELEM_MAX);
-										createParam(DEV_REG_RW, param_name.str().c_str(), asynParamUInt32Digital, &pRwIndex);
+										createParam(DEV_REG_RW, param_name.str().c_str(), asynParamInt32, &pRwIndex);
 										dbLoadRecords("../../db/ao.template", db_params.str().c_str());
 										rw[pRwIndex] = rw_aux;
 										nRW++;
@@ -511,7 +511,7 @@ void YCPSWASYN::generateDB(Path p)
                                         	rec_name += ":St";
                                        		db_params.str("");
                                        		db_params << "PORT=" << portName_;
-                                       		db_params << ",ADDR=" << DEV_REG_RO;
+                                       		db_params << ",ADDR=" << DEV_REG_RW;
                                        		db_params << ",P=" << recordPrefix_;
                                        		db_params << ",R=" << rec_name << ",PARAM=" << param_name.str();
                                        		db_params << ",DESC=\"" << string((*c)[i]->getDescription()).substr(0, DB_DESC_LENGTH_MAX) << "\"";
@@ -536,7 +536,7 @@ void YCPSWASYN::generateDB(Path p)
                                         	    }
 	
                                         	}
-											
+
 											createParam(DEV_REG_RW, param_name.str().c_str(), asynParamUInt32Digital, &pRwIndex);
                                         	dbLoadRecords("../../db/mbbo.template", db_params.str().c_str());
 											rw[pRwIndex] = c_rw;
@@ -605,7 +605,7 @@ void YCPSWASYN::generateDB(Path p)
 									if (nValues > DB_MBBX_NELEM_MAX)
 									{
 										printf("%s has %d elements, mmbbi record only supports %d. Loaded an ai record instead\n", (*c)[i]->getName(), nValues, DB_MBBX_NELEM_MAX);
-										createParam(DEV_REG_RO, param_name.str().c_str(), asynParamUInt32Digital, &pRoIndex);
+										createParam(DEV_REG_RO, param_name.str().c_str(), asynParamInt32, &pRoIndex);
 										dbLoadRecords("../../db/ai.template", db_params.str().c_str());
 										ro[pRoIndex] = ro_aux;
 										nRO++;
@@ -712,7 +712,7 @@ void YCPSWASYN::generateDB(Path p)
                                         	    }
 	
                                         	}
-											
+                                        	
 											createParam(DEV_REG_RO, param_name.str().c_str(), asynParamUInt32Digital, &pRoIndex);
                                         	dbLoadRecords("../../db/mbbi.template", db_params.str().c_str());
 											ro[pRoIndex] = c_ro;
