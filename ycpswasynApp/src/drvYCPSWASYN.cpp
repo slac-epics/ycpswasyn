@@ -805,7 +805,6 @@ string YCPSWASYN::generatePrefix(Path p)
 	if ((found = p_str.find(CARRIER_KEY)) != std::string::npos)
 		return (std::string(CARRIER_SUBS) + ":" + YCPSWASYN::trimPath(p, found));	
 
-
 	if ((found = p_str.find(APP_KEY)) != std::string::npos)
 		return (std::string(APP_SUBS) + ":" + YCPSWASYN::trimPath(p, found));
 

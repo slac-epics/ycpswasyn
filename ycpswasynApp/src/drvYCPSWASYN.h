@@ -19,7 +19,7 @@
 #define DRIVER_NAME		"YCPSWASYN_v1"
 
 #define CARRIER_KEY		"CarrierCore"
-#define	CARRIER_SUBS		"C"
+#define	CARRIER_SUBS	"C"
 #define BAY0_KEY		"Bay0"
 #define	BAY0_SUBS		"B0"
 #define BAY1_KEY		"Bay1"
@@ -29,7 +29,7 @@
 #define STREAM_KEY		"Stream"
 #define DB_NAME_PREFIX_LENGTH_MAX	10
 #define DB_NAME_LENGTH_MAX			37
-#define DB_DESC_LENGTH_MAX			29
+#define DB_DESC_LENGTH_MAX			28
 #define DB_MBBX_NELEM_MAX			16
 
 char const *mbbxValParam[]
