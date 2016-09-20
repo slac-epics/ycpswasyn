@@ -14,7 +14,7 @@ expandYaml () {
 }
 
 usage() {
-    echo "usage: start_control_server.sh -t <yaml.tar.gz> [-a <ip_addr>] [-d <defaults.xml>]"
+    echo "usage: yamlUnpack.sh -t <yaml.tar.gz> -d <destination>"
     echo "    -t <yaml.tar.gz>  : tar file with yaml defintions"
     echo "    -d <destination>  : path to destination folder"
     exit

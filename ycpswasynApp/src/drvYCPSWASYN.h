@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <fstream>
 #include <boost/array.hpp>
 #include "asynPortDriver.h"
 
@@ -31,6 +32,7 @@
 #define DB_NAME_LENGTH_MAX			37
 #define DB_DESC_LENGTH_MAX			28
 #define DB_MBBX_NELEM_MAX			16
+#define DB_NAME_PATH_TRIM_SIZE		3
 
 char const *mbbxValParam[]
 {
@@ -78,6 +80,8 @@ enum deviceTypeList
 	DEV_REG_RW,
 	DEV_CMD,
 	DEV_STM,
+	DEV_STM_16,
+	DEV_STM_32,
 	SIZE
 };
 
@@ -86,15 +90,35 @@ typedef struct
 	void 	*pPvt;
 	Stream 	stm;
 	int 	param16index;
-	int	param32index;
+	int		param32index;
 } ThreadArgs;
+
+
+enum recordTypeList
+{
+	REC_A,
+	REC_MBB,
+	REC_WF8,
+	REC_WF
+};
+	
+
+template <typename T>
+struct recordParams
+{
+	int recType;
+	std::string recName;
+	std::string recDesc;
+	std::string paramName;
+	Enum isEnum;
+	T reg;
+};
 
 #define MAX_SIGNALS		((int)deviceTypeList(SIZE) + 1)
 #define	NUM_PARAMS		5000
 #define NUM_CMD			500
 //#define NUM_STREAMS		10
 #define STREAM_MAX_SIZE 	200UL*1024ULL*1024ULL
-
 
 class YCPSWASYN : public asynPortDriver {
 	public:
@@ -119,31 +143,30 @@ class YCPSWASYN : public asynPortDriver {
 		// New Methods for this class
 		void streamTask(Stream stm, int param16index, int param32index);
 		static int YCPSWASYNInit(const char *yaml_doc, Path *p, const char *ipAddr);
-
-		
-	protected:
-		int 		pRwIndex;
-		int 		pRoIndex;
-		int 		pCmdIndex;
-		//int 		pStmIndex;
-		ScalVal		rw[NUM_PARAMS];
-		ScalVal_RO 	ro[NUM_PARAMS];
-		Command		cmd[NUM_CMD];
-		//Stream		stm[NUM_STREAMS];
 			
 	private:
-		const char *driverName_;
-		Path p_;
-		const char *portName_;
-		const char *recordPrefix_;
-		const int 	recordNameLenMax_;
+		const char 			*driverName_;
+		Path 				p_;
+		const char 			*portName_;
+		const char 			*recordPrefix_;
+		const int 			recordNameLenMax_;
+		const std::string	dbParamBase;
+		long 				nRO, nRW, nCMD, nSTM;
+		long 				recordCount;
+		ScalVal				rw[NUM_PARAMS];
+		ScalVal_RO 			ro[NUM_PARAMS];
+		Command				cmd[NUM_CMD];
 
-		static void printChildrenPath(Path p);
-		static void printChildren(Hub h);
+		void dumpRegisterMap(Path p, std::ofstream& dumpFile);
 		static std::string generatePrefix(Path p);
 		static std::string trimPath(Path p, size_t pos);
-
 		virtual void generateDB(Path p);
+		template <typename T>
+		int CreateRecord(T reg);
+		template <typename T>
+		int CreateRecord(T reg, Path p);
+		template <typename T>
+		void LoadRecord(recordParams<T> *rp);
 };
 
 void streamTask(ThreadArgs *arglist);
