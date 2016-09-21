@@ -65,15 +65,26 @@ YCPSWASYN::YCPSWASYN(const char *portName, Path p , const char *recordPrefix, in
 {
 	//const char *functionName = "YCPSWASYN";
 
-	const char *regDumpFileName = "/tmp/regMap.txt";
-	std::ofstream regDumpFile;
-	printf("Dumping register map into %s...\n", regDumpFileName);
-	regDumpFile.open(regDumpFileName);
-	dumpRegisterMap(p, regDumpFile);
+	//const char *regDumpFileName = "/tmp/regMap.txt";
+	//std::ofstream regDumpFile;
+	printf("Dumping register map into %s...\n", REG_DUMP_FILE_NAME);
+	//regDumpFile.open(regDumpFileName);
+	regDumpFile.open(REG_DUMP_FILE_NAME);
+	
+	dumpRegisterMap(p);
+
 	regDumpFile.close();
 	printf("Done!\n");
 
+	//const char *pvDumpFileName = "/tmp/pvList.txt";
+	printf("Generatin database from yaml file and dumping pv list on %s...\n", PV_DUMP_FILE_NAME);
+	//pvDumpFile.open(pvDumpFileName);
+	pvDumpFile.open(PV_DUMP_FILE_NAME);
+
 	generateDB(p);
+
+	pvDumpFile.close();
+	printf("Done!\n");
 	
 	printf("nRO = %ld\nnRW = %ld\nnCMD = %ld\nnSTM = %ld\nrecordCount = %ld\n", nRO, nRW, nCMD, nSTM, recordCount);
 }
@@ -176,7 +187,7 @@ int YCPSWASYN::YCPSWASYNInit(const char *yaml_doc, Path *p, const char *ipAddr)
 	return 0;
 }
 
-void YCPSWASYN::dumpRegisterMap(Path p, std::ofstream& dumpFile)
+void YCPSWASYN::dumpRegisterMap(const Path& p)
 {
 
   	Path p_aux = p->clone();
@@ -198,19 +209,24 @@ void YCPSWASYN::dumpRegisterMap(Path p, std::ofstream& dumpFile)
 		if (h2)
 		{
 			Path p2 = p->findByName((*c)[i]->getName());
-			YCPSWASYN::dumpRegisterMap(p2, dumpFile);
+			YCPSWASYN::dumpRegisterMap(p2);
 		}
 		else
 		{
-			dumpFile << p->toString() << (*c)[i]->getName() << std::endl;			
+			regDumpFile << p->toString() << '/' << (*c)[i]->getName() << std::endl;			
 		}
 	}
 
 	return;
 }
 
+
+///////////////////////////////////////////////////////
+// + template <typename T>                           //
+// 	  void LoadRecord(const recordParams<T>& rp);    //
+///////////////////////////////////////////////////////
 template <>
-void YCPSWASYN::LoadRecord(recordParams<ScalVal_RO> *rp)
+void YCPSWASYN::LoadRecord(const recordParams<ScalVal_RO>& rp)
 {
 	stringstream 	db_params;
 	int paramIndex;
@@ -219,21 +235,21 @@ void YCPSWASYN::LoadRecord(recordParams<ScalVal_RO> *rp)
 	string recordTemplate;
 
 	pName.str("");
-	pName << rp->paramName.substr(0, 10) << "_RO_" << nRO;
+	pName << rp.paramName.substr(0, 10) << "_RO_" << nRO;
 
 	db_params.str("");
 	db_params << "PORT=" << portName_;
 	db_params << ",ADDR=" << DEV_REG_RO;
 	db_params << ",P=" << recordPrefix_;
-	db_params << ",R=" << rp->recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4) + ":Rd";
+	db_params << ",R=" << rp.recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4) + ":Rd";
 	db_params << ",PARAM=" << pName.str();
-	db_params << ",DESC=\"" << rp->recDesc.substr(0, DB_DESC_LENGTH_MAX) << "\"";
+	db_params << ",DESC=\"" << rp.recDesc.substr(0, DB_DESC_LENGTH_MAX) << "\"";
 
-	switch (rp->recType)
+	switch (rp.recType)
 	{
 		case REC_MBB:
 		{
-			int nValues = rp->isEnum->getNelms();
+			int nValues = rp.isEnum->getNelms();
 			int mBits = log2(nValues);
 
 			db_params << ",MASK=" << ((1 << mBits) - 1);
@@ -241,9 +257,9 @@ void YCPSWASYN::LoadRecord(recordParams<ScalVal_RO> *rp)
 
 			IEnum::iterator it;
 			int k;
-			for (it = rp->isEnum->begin(), k = 0 ; k < DB_MBBX_NELEM_MAX ; k++)
+			for (it = rp.isEnum->begin(), k = 0 ; k < DB_MBBX_NELEM_MAX ; k++)
 			{
-				if (it != rp->isEnum->end())
+				if (it != rp.isEnum->end())
 				{
 					db_params << "," << mbbxNameParams[k] << "=" << (*it).first->c_str();
 					db_params << "," << mbbxValParam[k] << "=" << (*it).second;
@@ -262,13 +278,13 @@ void YCPSWASYN::LoadRecord(recordParams<ScalVal_RO> *rp)
 			break;
 		}
 		case REC_WF8:
-			db_params << ",N=" << rp->reg->getNelms();
+			db_params << ",N=" << rp.reg->getNelms();
 
 			paramType = asynParamOctet;
 			recordTemplate = "../../db/waveform_8_in.template";
 			break;
 		case REC_WF:
-			db_params << ",N=" << rp->reg->getNelms();
+			db_params << ",N=" << rp.reg->getNelms();
 
 			paramType = asynParamInt32Array;
 			recordTemplate = "../../db/waveform_in.template";
@@ -283,14 +299,16 @@ void YCPSWASYN::LoadRecord(recordParams<ScalVal_RO> *rp)
 	createParam(DEV_REG_RO, pName.str().c_str(), paramType, &paramIndex);
 	dbLoadRecords(recordTemplate.c_str(), db_params.str().c_str());
 
-	ro[paramIndex] = rp->reg;
+pvDumpFile << recordPrefix_ << ':' << rp.recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4) << ":Rd" << std::endl;
+
+	ro[paramIndex] = rp.reg;
 
 	++nRO;
 	++recordCount;
 }
 
 template <>
-void YCPSWASYN::LoadRecord(recordParams<ScalVal> *rp)
+void YCPSWASYN::LoadRecord(const recordParams<ScalVal>& rp)
 {
 	stringstream 	db_params;
 	int paramIndex;
@@ -299,21 +317,21 @@ void YCPSWASYN::LoadRecord(recordParams<ScalVal> *rp)
 	string recordTemplate;
 
 	pName.str("");
-	pName << rp->paramName.substr(0, 10) << "_RW_" << nRW;	//
+	pName << rp.paramName.substr(0, 10) << "_RW_" << nRW;	//
 
 	db_params.str("");
 	db_params << "PORT=" << portName_;
 	db_params << ",ADDR=" << DEV_REG_RW;	//
 	db_params << ",P=" << recordPrefix_;
-	db_params << ",R=" << rp->recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4) + ":St";	//
+	db_params << ",R=" << rp.recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4) + ":St";	//
 	db_params << ",PARAM=" << pName.str();
-	db_params << ",DESC=\"" << rp->recDesc.substr(0, DB_DESC_LENGTH_MAX) << "\"";
+	db_params << ",DESC=\"" << rp.recDesc.substr(0, DB_DESC_LENGTH_MAX) << "\"";
 
-	switch (rp->recType)
+	switch (rp.recType)
 	{
 		case REC_MBB:
 		{
-			int nValues = rp->isEnum->getNelms();
+			int nValues = rp.isEnum->getNelms();
 			int mBits = log2(nValues);
 
 			db_params << ",MASK=" << ((1 << mBits) - 1);
@@ -321,9 +339,9 @@ void YCPSWASYN::LoadRecord(recordParams<ScalVal> *rp)
 
 			IEnum::iterator it;
 			int k;
-			for (it = rp->isEnum->begin(), k = 0 ; k < DB_MBBX_NELEM_MAX ; k++)
+			for (it = rp.isEnum->begin(), k = 0 ; k < DB_MBBX_NELEM_MAX ; k++)
 			{
-				if (it != rp->isEnum->end())
+				if (it != rp.isEnum->end())
 				{
 					db_params << "," << mbbxNameParams[k] << "=" << (*it).first->c_str();
 					db_params << "," << mbbxValParam[k] << "=" << (*it).second;
@@ -342,13 +360,13 @@ void YCPSWASYN::LoadRecord(recordParams<ScalVal> *rp)
 			break;
 		}
 		case REC_WF8:
-			db_params << ",N=" << rp->reg->getNelms();
+			db_params << ",N=" << rp.reg->getNelms();
 
 			paramType = asynParamOctet;
 			recordTemplate = "../../db/waveform_8_out.template";	//
 			break;
 		case REC_WF:
-			db_params << ",N=" << rp->reg->getNelms();
+			db_params << ",N=" << rp.reg->getNelms();
 
 			paramType = asynParamInt32Array;
 			recordTemplate = "../../db/waveform_out.template";	//
@@ -363,54 +381,58 @@ void YCPSWASYN::LoadRecord(recordParams<ScalVal> *rp)
 	createParam(DEV_REG_RW, pName.str().c_str(), paramType, &paramIndex);	//
 	dbLoadRecords(recordTemplate.c_str(), db_params.str().c_str());
 
-	rw[paramIndex] = rp->reg;	//
+pvDumpFile << recordPrefix_ << ':' << rp.recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4) << ":St" << std::endl;
+
+	rw[paramIndex] = rp.reg;	//
 
 	++nRW;	//
 	++recordCount;
 }
 
 template <>
-void YCPSWASYN::LoadRecord(recordParams<Command> *rp)
+void YCPSWASYN::LoadRecord(const recordParams<Command>& rp)
 {
 	stringstream 	db_params;
 	int paramIndex;
 	stringstream pName;
 
 	pName.str("");
-	pName << rp->paramName.substr(0, 10) << "_CMD_" << nCMD;
+	pName << rp.paramName.substr(0, 10) << "_CMD_" << nCMD;
 
 
 	db_params.str("");
 	db_params << "PORT=" << portName_;
 	db_params << ",ADDR=" << DEV_CMD;
 	db_params << ",P=" << recordPrefix_;
-	db_params << ",R=" << rp->recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4) + ":Ex";
+	db_params << ",R=" << rp.recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4) + ":Ex";
 	db_params << ",PARAM=" << pName.str();
-	db_params << ",DESC=\"" << rp->recDesc.substr(0, DB_DESC_LENGTH_MAX) << "\"";
+	db_params << ",DESC=\"" << rp.recDesc.substr(0, DB_DESC_LENGTH_MAX) << "\"";
 
 	createParam(DEV_CMD, pName.str().c_str(), asynParamInt32, &paramIndex);
 	dbLoadRecords("../../db/ao.template", db_params.str().c_str());
 
-	cmd[paramIndex] = rp->reg;
+pvDumpFile << recordPrefix_ << ':' << rp.recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4) << ":Ex" << std::endl;
+
+	cmd[paramIndex] = rp.reg;
 
 	++nCMD;
 	++recordCount;
 }
 
 template <>
-void YCPSWASYN::LoadRecord(recordParams<Stream> *rp)
+void YCPSWASYN::LoadRecord(const recordParams<Stream>& rp)
 {
 	stringstream db_params;
 	int p16StmIndex, p32StmIndex;
 	string rName; 
 	stringstream pName;
-	string rDesc = "\"" + rp->recDesc.substr(0, DB_DESC_LENGTH_MAX) + "\"";
+	string rDesc = "\"" + rp.recDesc.substr(0, DB_DESC_LENGTH_MAX) + "\"";
 
 	// Create PVs for 16-bit stream data
 	rName.clear();
-	rName = rp->recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4) + ":16";
+	rName = rp.recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4) + ":16";
 	pName.str("");
-	pName << rp->paramName.substr(0, 10) << "_STM16_" << nSTM;
+	pName << rp.paramName.substr(0, 10) << "_STM16_" << nSTM;
 
 	db_params.str("");
 	db_params << "PORT=" << portName_;
@@ -422,14 +444,17 @@ void YCPSWASYN::LoadRecord(recordParams<Stream> *rp)
 
 	createParam(DEV_STM, pName.str().c_str(), asynParamInt16Array, &p16StmIndex);
 	dbLoadRecords("../../db/waveform_stream16.template", db_params.str().c_str());
+
+pvDumpFile << recordPrefix_ << ':' << rName  << std::endl;
+
 	++recordCount;
 
 	// Create PVs for 32-bit stream data
 
 	rName.clear();
-	rName = rp->recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4) + ":32";
+	rName = rp.recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4) + ":32";
 	pName.str("");
-	pName << rp->paramName.substr(0, 10) << "_STM32_" << nSTM;
+	pName << rp.paramName.substr(0, 10) << "_STM32_" << nSTM;
 
 	db_params.str("");
 	db_params << "PORT=" << portName_;
@@ -441,13 +466,16 @@ void YCPSWASYN::LoadRecord(recordParams<Stream> *rp)
 
 	createParam(DEV_STM, pName.str().c_str(), asynParamInt32Array, &p32StmIndex);
 	dbLoadRecords("../../db/waveform_stream32.template", db_params.str().c_str());
+
+pvDumpFile << recordPrefix_ << ':' << rName  << std::endl;
+
 	++recordCount;
 
 	// Crteate Acquisition Thread 
 	asynStatus status;
 	ThreadArgs arglist;
 	arglist.pPvt = this;
-	arglist.stm = rp->reg;
+	arglist.stm = rp.reg;
 	arglist.param16index = p16StmIndex;
 	arglist.param32index = p32StmIndex;
 	status = (asynStatus)(epicsThreadCreate("Stream", epicsThreadPriorityLow, 
@@ -455,17 +483,25 @@ void YCPSWASYN::LoadRecord(recordParams<Stream> *rp)
 	 
 	if (status) 
 	{
-	    printf("epicsThreadCreate failure for stream %s\n", rp->recName.c_str());
+	    printf("epicsThreadCreate failure for stream %s\n", rp.recName.c_str());
 	    return;
 	}
 	else
-		printf("epicsThreadCreate successfully for stream %s\n", rp->recName.c_str());
+		printf("epicsThreadCreate successfully for stream %s\n", rp.recName.c_str());
 
 	++nSTM;
 }
+///////////////////////////////////////////////////////
+// - template <typename T>                           //
+// 	  void LoadRecord(const recordParams<T>& rp);    //
+///////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////
+// + template <typename T>                           //
+//   int CreateRecord(const T& reg);                 //
+///////////////////////////////////////////////////////
 template <typename T>
-int YCPSWASYN::CreateRecord(T reg)
+int YCPSWASYN::CreateRecord(const T& reg)
 {
 	Path p = reg->getPath();
 	Child c = p->tail();
@@ -492,13 +528,13 @@ int YCPSWASYN::CreateRecord(T reg)
 				// create ao record
 				printf("%s has %d elements, mmbbx record only supports %d. Loaded an ax record instead\n", c->getName(), nValues, DB_MBBX_NELEM_MAX);
 				trp.recType = REC_A;
-				LoadRecord(&trp);
+				LoadRecord(trp);
 			}
 			else
 			{
 				// create mbbi record
 				trp.recType = REC_MBB;
-				LoadRecord(&trp);
+				LoadRecord(trp);
 			}
 
 		}
@@ -511,21 +547,19 @@ int YCPSWASYN::CreateRecord(T reg)
 				{
 					// create waveform_8_in record
 					trp.recType = REC_WF8;
-					LoadRecord(&trp);
+					LoadRecord(trp);
 
 				}
 				else
 				{
 					// create waform_in record
 					trp.recType = REC_WF;
-					LoadRecord(&trp);
+					LoadRecord(trp);
 					
 				}
 			}
 			else
-			{
-				// MUST CREATE ARRAY IN HERE //
-								
+			{								
 				stringstream index_aux;
 				string c_name;			
 				Path pClone = p->clone();
@@ -545,11 +579,9 @@ int YCPSWASYN::CreateRecord(T reg)
 					trp.recType = REC_MBB;
 					trp.reg = c_reg;
 
-					LoadRecord(&trp);
+					LoadRecord(trp);
 					
 				}
-
-				// MUST CREATE ARRAY IN HERE //
 			}
 
 		}
@@ -560,7 +592,7 @@ int YCPSWASYN::CreateRecord(T reg)
 		{
 			// create ai record
 			trp.recType = REC_A;
-			LoadRecord(&trp);
+			LoadRecord(trp);
 
 		}
 		else
@@ -569,23 +601,31 @@ int YCPSWASYN::CreateRecord(T reg)
 			{
 				// create waveform_8_in record
 				trp.recType = REC_WF8;
-				LoadRecord(&trp);				
+				LoadRecord(trp);				
 							
 			}
 			else
 			{
 				// create waform_in record
 				trp.recType = REC_WF;
-				LoadRecord(&trp);
+				LoadRecord(trp);
 
 			}
 		}
 	}
 
 }
+///////////////////////////////////////////////////////
+// - template <typename T>                           //
+//   int CreateRecord(const T& reg);                 //
+///////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////
+// + template <typename T>                           //
+//   int CreateRecord(const T& reg, const Path& p);  //
+///////////////////////////////////////////////////////
 template <typename T>
-int YCPSWASYN::CreateRecord(T reg, Path p_)
+int YCPSWASYN::CreateRecord(const T& reg, const Path& p_)
 {
 	//Path p = reg->getPath();	// NOTE: Command/Stream don't support getPath() as ScalVal does. 
 								// Workaround: using overloaded function with argument  Path p.
@@ -598,11 +638,15 @@ int YCPSWASYN::CreateRecord(T reg, Path p_)
 	trp.recDesc = string(c->getDescription());
 	trp.reg = reg;
 
-	LoadRecord(&trp);
+	LoadRecord(trp);
 
 }
+///////////////////////////////////////////////////////
+// - template <typename T>                           //
+//   int CreateRecord(const T& reg, const Path& p);  //
+///////////////////////////////////////////////////////
 
-void YCPSWASYN::generateDB(Path p)
+void YCPSWASYN::generateDB(const Path& p)
 {
 	Path p_aux = p->clone();
 	Child c_aux = p_aux->tail();
@@ -720,7 +764,7 @@ void YCPSWASYN::generateDB(Path p)
 	return;
 }
 
-string YCPSWASYN::generatePrefix(Path p)
+string YCPSWASYN::generatePrefix(const Path& p)
 {
 	string p_str = p->toString();
 	std::size_t found; 
@@ -740,7 +784,7 @@ string YCPSWASYN::generatePrefix(Path p)
 	return std::string();
 }
 
-string YCPSWASYN::trimPath(Path p, size_t pos)
+string YCPSWASYN::trimPath(const Path& p, size_t pos)
 {
 	string p_str = p->toString();
 	string c_str, pre_str, aux_str;

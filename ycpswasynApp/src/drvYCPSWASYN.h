@@ -34,6 +34,9 @@
 #define DB_MBBX_NELEM_MAX			16
 #define DB_NAME_PATH_TRIM_SIZE		3
 
+#define REG_DUMP_FILE_NAME	"/tmp/regMap.txt"
+#define PV_DUMP_FILE_NAME	"/tmp/pvList.txt"
+
 char const *mbbxValParam[]
 {
 	"ZRVL",
@@ -156,17 +159,19 @@ class YCPSWASYN : public asynPortDriver {
 		ScalVal				rw[NUM_PARAMS];
 		ScalVal_RO 			ro[NUM_PARAMS];
 		Command				cmd[NUM_CMD];
+		std::ofstream 		pvDumpFile;
+		std::ofstream		regDumpFile;
 
-		void dumpRegisterMap(Path p, std::ofstream& dumpFile);
-		static std::string generatePrefix(Path p);
-		static std::string trimPath(Path p, size_t pos);
-		virtual void generateDB(Path p);
+		void dumpRegisterMap(const Path& p);
+		static std::string generatePrefix(const Path& p);
+		static std::string trimPath(const Path& p, size_t pos);
+		virtual void generateDB(const Path& p);
 		template <typename T>
-		int CreateRecord(T reg);
+		int CreateRecord(const T& reg);
 		template <typename T>
-		int CreateRecord(T reg, Path p);
+		int CreateRecord(const T& reg, const Path& p);
 		template <typename T>
-		void LoadRecord(recordParams<T> *rp);
+		void LoadRecord(const recordParams<T>& rp);
 };
 
 void streamTask(ThreadArgs *arglist);
