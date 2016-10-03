@@ -6,6 +6,7 @@ export LD_LIBRARY_PATH=/afs/slac/g/lcls/package/python/python2.7.9/linux-x86_64/
 . "`pwd`/scripts/array"
 
 expandYaml () {
+  dos2unix $DIR/$1
   for i in $( cat $DIR/$1 | grep -hv ^[[:space:]]*# | tr ' ' '\n' | grep .yaml ); do
     expandYaml $i
   done
