@@ -1,7 +1,7 @@
 record(mbbi, "$(P):$(R)") {
   field(DESC, "$(DESC)")
   field(DTYP, "asynUInt32Digital")
-  field(SCAN, "Passive")
+  field(SCAN, "5 second")
   field(INP, "@asynMask($(PORT),$(ADDR),$(MASK))$(PARAM)")
   field(NOBT, "$(NOBT)")
   field(ZRVL, "$(ZRVL)")
