@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <fstream>
 #include <boost/array.hpp>
 #include "asynPortDriver.h"
 
@@ -18,20 +19,29 @@
 
 #define DRIVER_NAME		"YCPSWASYN_v1"
 
-#define CARRIER_KEY		"CarrierCore"
-#define	CARRIER_SUBS	"C"
-#define BAY0_KEY		"Bay0"
+// Key and substitution string to look for when creating the record name from it path
+#define CARRIER_KEY		"CarrierCore"	// Carrier core 
+#define	CARRIER_SUBS	"C"	
+#define BAY0_KEY		"Bay0"			// Bay 0
 #define	BAY0_SUBS		"B0"
-#define BAY1_KEY		"Bay1"
+#define BAY1_KEY		"Bay1"			// Bay 1
 #define	BAY1_SUBS		"B1"
-#define APP_KEY			"App"
+#define APP_KEY			"App"			// Application
 #define	APP_SUBS		"A"
-#define STREAM_KEY		"Stream"
-#define DB_NAME_PREFIX_LENGTH_MAX	10
-#define DB_NAME_LENGTH_MAX			37
-#define DB_DESC_LENGTH_MAX			28
-#define DB_MBBX_NELEM_MAX			16
+#define STREAM_KEY		"Stream"		// Stream
+#define STREAM_SUBS		""
 
+#define DB_NAME_PREFIX_LENGTH_MAX	10		// Max lenght of the record prefix name provided by the user
+#define DB_DESC_LENGTH_MAX			28		// Max lenght of the record description field
+#define DB_MBBX_NELEM_MAX			16		// Max number of menu entries on a MBBx record
+#define DB_NAME_PATH_TRIM_SIZE		3		// Number of chars that the name of the device will be trim to
+
+// Record and PV list dump file definitions
+#define DUMP_FILE_PATH		"/tmp/"
+#define REG_DUMP_FILE_NAME	"regMap.txt"
+#define PV_DUMP_FILE_NAME	"pvList.txt"
+
+// MBBx record menu value names
 char const *mbbxValParam[]
 {
 	"ZRVL",
@@ -52,6 +62,7 @@ char const *mbbxValParam[]
 	"FFVL"
 };
 
+// MBBx record menu string names
 char const *mbbxNameParams[]
 {
 	"ZRST",
@@ -72,7 +83,8 @@ char const *mbbxNameParams[]
 	"FFST"
 };
 
-enum deviceTypeList 
+// Types of registers
+enum registerTypeList 
 {
 	DEV_REG_RO,
 	DEV_REG_RW,
@@ -81,23 +93,52 @@ enum deviceTypeList
 	SIZE
 };
 
+// record template list
+const char *templateList[SIZE][4] = 
+{
+	{"../../db/ai.template", "../../db/mbbi.template", "../../db/waveform_in.template", "../../db/waveform_8_in.template"},		//DEV_REG_RO
+	{"../../db/ao.template", "../../db/mbbo.template", "../../db/waveform_out.template", "../../db/waveform_8_out.template"},	//DEV_REG_RW
+	{"../../db/ao.template"},	//DEV_CMD
+	{"../../db/waveform_stream32.template", "../../db/waveform_stream16.template"}	//DEV_STM
+};
+
+// record name sufix list
+const char *recordSufix[SIZE] = 
+{
+	":Rd", 	// DEV_REG_RO
+	":St",	// DEV_REG_RW
+	":Ex",	// DEV_CMD
+	""	// DEV_STM
+};
+
+// Argument list passed to the stream handling thread
 typedef struct
 {
 	void 	*pPvt;
 	Stream 	stm;
 	int 	param16index;
-	int	param32index;
+	int		param32index;
 } ThreadArgs;
 
-#define MAX_SIGNALS		((int)deviceTypeList(SIZE) + 1)
-#define	NUM_PARAMS		5000
-#define NUM_CMD			500
-//#define NUM_STREAMS		10
-#define STREAM_MAX_SIZE 	200UL*1024ULL*1024ULL
+// Argument list passed to load a record
+struct recordParams
+{
+	std::string recName;
+	std::string recDesc;
+	std::string recTemplate;
+	std::string paramName;
+	asynParamType paramType;
+};
 
+#define MAX_SIGNALS			((int)registerTypeList(SIZE))	// Max number of parameter list (size of register type list)
+#define	NUM_SCALVALS		5000							// Max number of ScalVals
+#define NUM_CMD				500								// Max number of commands
+#define NUM_PARAMS			(NUM_SCALVALS + NUM_CMD)		// Max number of paramters
+#define STREAM_MAX_SIZE 	200UL*1024ULL*1024ULL			// Size of the stream buffers
 
 class YCPSWASYN : public asynPortDriver {
 	public:
+		// Constructor
 		YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int recordNameLenMax);
 		
 		// Methods that we override from asynPortDriver
@@ -111,39 +152,66 @@ class YCPSWASYN : public asynPortDriver {
 		virtual asynStatus writeFloat64Array(asynUser *pasynUser, epicsFloat64 *value, size_t nElements);
 		virtual asynStatus writeUInt32Digital (asynUser *pasynUser, epicsUInt32 value, epicsUInt32 mask);
 		virtual asynStatus readUInt32Digital (asynUser *pasynUser, epicsUInt32 *value, epicsUInt32 mask);
-
 		virtual asynStatus getBounds(asynUser *pasynUser, epicsInt32 *low, epicsInt32 *high);
-
 		virtual void report(FILE *fp, int details);
 		
 		// New Methods for this class
+		// Streamn hanlding function
 		void streamTask(Stream stm, int param16index, int param32index);
-		static int YCPSWASYNInit(const char *yaml_doc, Path *p, const char *ipAddr);
 
-		
-	protected:
-		int 		pRwIndex;
-		int 		pRoIndex;
-		int 		pCmdIndex;
-		//int 		pStmIndex;
-		ScalVal		rw[NUM_PARAMS];
-		ScalVal_RO 	ro[NUM_PARAMS];
-		Command		cmd[NUM_CMD];
-		//Stream		stm[NUM_STREAMS];
+		// Initialization routine
+		static int YCPSWASYNInit(const char *yaml_doc, Path *p, const char *ipAddr);
 			
 	private:
-		const char *driverName_;
-		Path p_;
-		const char *portName_;
-		const char *recordPrefix_;
-		const int 	recordNameLenMax_;
+		const char 			*driverName_;			// Name of the driver (passed from st.cmd)
+		Path 				p_;						// Path on root
+		const char 			*portName_;				// Name of the port (passed from st.cmd)
+		const char 			*recordPrefix_;			// Record name prefix defined by the user (passed from st.cmd)
+		const int 			recordNameLenMax_;		// Max lenght of the record name (passed from st.cmd)
+		long 				nRO, nRW, nCMD, nSTM;	// Counter for RO/RW register, command and Stremas found on the YAML file
+		long 				recordCount;			//Counter for the total number of register loaded 
+		ScalVal				rw[NUM_SCALVALS];		// Array of ScalVals (RW)
+		ScalVal_RO 			ro[NUM_SCALVALS];		// Array of ScalVals (RO)
+		Command				cmd[NUM_CMD];			// Array of Commands
+		std::ofstream 		pvDumpFile;				// File with the list of Pvs
+		std::ofstream		regDumpFile;			// File with the list of registers
 
-		static void printChildrenPath(Path p);
-		static void printChildren(Hub h);
-		static std::string generatePrefix(Path p);
-		static std::string trimPath(Path p, size_t pos);
+		// Write list of register to file
+		void dumpRegisterMap(const Path& p);
 
-		virtual void generateDB(Path p);
+		//
+		static std::string generatePrefix(const Path& p);
+
+		//
+		static std::string trimPath(const Path& p, size_t pos);
+
+		//
+		virtual void generateDB(const Path& p);
+	
+		// Create a record from a register pointer 
+		template <typename T>
+		void CreateRecord(const T& reg);
+
+		// Create a record from a register pointer and its path. 
+		// This is for Command and Stream which don't support the getPath() function
+		template <typename T>
+		void CreateRecord(const T& reg, const Path& p);
+		
+		// Load a EPICS record with the provided infomation
+		int LoadRecord(int regType, const recordParams& rp, const std::string& dbParams);
+		
+		// Get the register type
+		template <typename T>
+		int getRegType(const T& reg);
+
+		// Push the register pointer to its respective list based on the parameter index
+		template <typename T>
+		void pushParameter(const T& reg, const int& paramIndex);
+
+		// Extract record parameters related to MBBx records
+		std::string extractMbbxDbParams(const Enum& isEnum);
+
 };
 
-void streamTask(ThreadArgs *arglist);
+// Stream handling function caller
+void streamTaskC(ThreadArgs *arglist);

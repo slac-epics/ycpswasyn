@@ -14,6 +14,7 @@
 #include <sstream>
 #include <boost/array.hpp>
 #include <iostream>
+#include <fstream>
 #include <arpa/inet.h>
 #include <math.h>
 #include <epicsTypes.h>
@@ -40,8 +41,6 @@
 using std::string;
 using std::stringstream;
 
-long nDevices, nRO, nRW, nCMD, nSTM;
-
 YCPSWASYN::YCPSWASYN(const char *portName, Path p , const char *recordPrefix, int recordNameLenMax)
 	: asynPortDriver(	portName, 
 				MAX_SIGNALS, 
@@ -56,42 +55,61 @@ YCPSWASYN::YCPSWASYN(const char *portName, Path p , const char *recordPrefix, in
 	p_(p),
 	portName_(portName),
 	recordPrefix_(recordPrefix),
-	recordNameLenMax_(recordNameLenMax)
+	recordNameLenMax_(recordNameLenMax),
+	nRO(0),
+	nRW(0),
+	nCMD(0),
+	nSTM(0),
+	recordCount(0)
 {
 	//const char *functionName = "YCPSWASYN";
 
-	nDevices = 0;
-	nRO = 0;
-	nRW =0;
-	nCMD = 0;
-	nSTM = 0;
+	// Create file names from the register and PV list dumps
+	std::string regDumpFileName = DUMP_FILE_PATH + string(recordPrefix_) + "_" + REG_DUMP_FILE_NAME;
+	std::string pvDumpFileName = DUMP_FILE_PATH + string(recordPrefix_) + "_" + PV_DUMP_FILE_NAME;
 
+	// Write the list of register
+	printf("Dumping register map into %s...\n", regDumpFileName.c_str()); //REG_DUMP_FILE_NAME);
+	regDumpFile.open(regDumpFileName.c_str()); //REG_DUMP_FILE_NAME);
+	dumpRegisterMap(p);
+	regDumpFile.close();
+	printf("Done!\n");
+
+	// Open the PV list file
+	printf("Generatin database from yaml file and dumping pv list on %s...\n", pvDumpFileName.c_str()); //PV_DUMP_FILE_NAME);
+	pvDumpFile.open(pvDumpFileName.c_str()); //PV_DUMP_FILE_NAME);
+
+	// Generate the EPICS databse from the root path
 	generateDB(p);
+
+	// Close the PV list file
+	pvDumpFile.close();
+	printf("Done!\n");
 	
-	printf("nDevices = %ld\nnRO = %ld\nnRW = %ld\nnCMD = %ld\nnSTM = %ld\n", nDevices, nRO, nRW, nCMD, nSTM);
+	// Print the counters
+	printf("nRO = %ld\nnRW = %ld\nnCMD = %ld\nnSTM = %ld\nrecordCount = %ld\n", nRO, nRW, nCMD, nSTM, recordCount);
 }
 
 ///////////////////////////////////
 // + Stream acquisition routines //
 ///////////////////////////////////
-void streamTask(ThreadArgs *arglist)
+void streamTaskC(ThreadArgs *arglist)
 {
     YCPSWASYN *pYCPSWASYN = (YCPSWASYN *)arglist->pPvt;
     pYCPSWASYN->streamTask(arglist->stm, arglist->param16index, arglist->param32index);
 }
 
+/////////////////////////////////////////////////////////////////////////////////
+// void YCPSWASYN::streamTask(Stream stm, int param16index, int param32index); //
+//                                                                             //
+// - Stream handling function                                                  //
+/////////////////////////////////////////////////////////////////////////////////
 void YCPSWASYN::streamTask(Stream stm, int param16index, int param32index)
 {
-	//int i;
 	uint64_t got = 0;
 	size_t nWords16, nWords32, nBytes;
 	int nFrame;
 	uint8_t *buf = new uint8_t[STREAM_MAX_SIZE];
-	//size_t n = STREAM_MAX_SIZE;
-	//epicsInt16 *buffer16 = (epicsInt16 *)calloc(n, sizeof(epicsInt16));
-	//epicsInt32 *buffer32 = (epicsInt32 *)calloc(n, sizeof(epicsInt32));
-	//epicsInt16 *pData16;
-	//epicsInt32 *pData32;
 
 	if (!stm)
 	{
@@ -134,17 +152,9 @@ void YCPSWASYN::streamTask(Stream stm, int param16index, int param32index)
 		        nFrame = (buf[1]<<4) | (buf[0] >> 4);
 
 		        printf("got = %zu bytes (%zu 32-bit words, %zu 16-bit words). Fame # %d\n", nBytes, nWords32, nWords16, nFrame);
-
-		        //pData16 = (epicsInt16*)(buf+8);
-		        //std::copy(pData16, pData16 + nWords16 - 1, buffer16);
-
-		        //pData32 = (epicsInt32*)(buf+8);
-		        //std::copy(pData32, pData32 + nWords32 - 1, buffer32);
-        		
-			//doCallbacksInt16Array(buffer16, nWords16, param16index, DEV_STM); 	
-			//doCallbacksInt32Array(buffer32, nWords32, param32index, DEV_STM); 	
-			doCallbacksInt16Array((epicsInt16*)(buf+8), nWords16, param16index, DEV_STM); 	
-			doCallbacksInt32Array((epicsInt32*)(buf+8), nWords32, param32index, DEV_STM); 	
+	
+				doCallbacksInt16Array((epicsInt16*)(buf+8), nWords16, param16index, DEV_STM); 	
+				doCallbacksInt32Array((epicsInt32*)(buf+8), nWords32, param32index, DEV_STM); 	
 
         		memset(buf, 0, STREAM_MAX_SIZE*sizeof(uint8_t));
 
@@ -162,12 +172,19 @@ void YCPSWASYN::streamTask(Stream stm, int param16index, int param32index)
 // - Stream acquisition routines //
 ///////////////////////////////////
 
+/////////////////////////////////////////////////////////////////////////////////////
+// int YCPSWASYN::YCPSWASYNInit(const char *yaml_doc, Path *p, const char *ipAddr) //
+// - Initialization routine                                                        //
+//                                                                                 //
+/////////////////////////////////////////////////////////////////////////////////////
 int YCPSWASYN::YCPSWASYNInit(const char *yaml_doc, Path *p, const char *ipAddr)
 {
 	unsigned char buf[sizeof(struct in6_addr)];
 
+	// Read YAML file
 	YAML::Node doc =  YAML::LoadFile( yaml_doc );
 
+	// Check if the IP address was especify. Otherwise use the one defined on the YAML file
 	if (inet_pton(AF_INET, ipAddr, buf))
 	{
 		printf("Using IP address: %s\n", ipAddr);
@@ -176,19 +193,28 @@ int YCPSWASYN::YCPSWASYNInit(const char *yaml_doc, Path *p, const char *ipAddr)
 	else
 		printf("Using IP address from YAML file\n");
 
+	// Create an NetIODev from the YAML file definition
 	NetIODev  root = doc.as<NetIODev>();
 
+	// Create a Path on the root
 	*p = IPath::create( root );
 
 	return 0;
 }
 
-void YCPSWASYN::printChildrenPath(Path p)
+/////////////////////////////////////////////////////
+// void YCPSWASYN::dumpRegisterMap(const Path& p); //
+//                                                 //
+// - Write list of register to file                //
+/////////////////////////////////////////////////////
+void YCPSWASYN::dumpRegisterMap(const Path& p)
 {
-	Path p_aux = p->clone();
+
+  	Path p_aux = p->clone();
 	Child c_aux = p_aux->tail();
 	Hub h_aux;
 
+	// Check if the child is null which mean where are the origin
 	if (c_aux)
 		h_aux = c_aux->isHub();
 	else
@@ -198,50 +224,436 @@ void YCPSWASYN::printChildrenPath(Path p)
 	Children 	c = h_aux->getChildren();
 	int 		n = c->size();
 	
+	// Recursively look for hubs.
 	for (int i = 0 ; i < n ; i++)
 	{
 		Hub h2 = (*c)[i]->isHub();
 		if (h2)
 		{
 			Path p2 = p->findByName((*c)[i]->getName());
-			YCPSWASYN::printChildrenPath(p2);
+			YCPSWASYN::dumpRegisterMap(p2);
 		}
 		else
 		{
-			printf("%s/%s\n", p->toString().c_str(), (*c)[i]->getName());			
+			// When a leave is found, write it path and name to the output file
+			regDumpFile << p->toString() << '/' << (*c)[i]->getName() << std::endl;			
 		}
 	}
 
 	return;
 }
 
-void YCPSWASYN::printChildren(Hub h)
+/////////////////////////////////////////////////////////////////////////////////////////////
+// int YCPSWASYN::LoadRecord(int regType, const recordParams& rp, const string& dbParams); //
+//                                                                                         //
+// - Load a EPICS record with the provided infomation                                      //
+/////////////////////////////////////////////////////////////////////////////////////////////
+//template <typename T>
+int YCPSWASYN::LoadRecord(int regType, const recordParams& rp, const string& dbParams)
 {
-	Children 	c = h->getChildren();
-	int 		n = c->size();
+	int paramIndex;
+	stringstream dbParamsLocal;
 
-	for (int i = 0 ; i < n ; i++, nDevices++)
+	// Create list of paramater to pass to the  dbLoadRecords function
+	dbParamsLocal.str("");
+	dbParamsLocal << "PORT=" << portName_;
+	dbParamsLocal << ",ADDR=" << regType;
+	dbParamsLocal << ",P=" << recordPrefix_;
+	dbParamsLocal << ",R=" << rp.recName;
+	dbParamsLocal << ",PARAM=" << rp.paramName;
+	//dbParamsLocal << ",DESC=\"" << rp.recDesc.substr(0, DB_DESC_LENGTH_MAX) << "\"";
+	dbParamsLocal << ",DESC=" << rp.recDesc;
+	dbParamsLocal << dbParams;
+	
+	// Create the asyn paramater
+	createParam(regType, rp.paramName.c_str(), rp.paramType, &paramIndex);	//
+	
+	// Cretae the record
+	dbLoadRecords(rp.recTemplate.c_str(), dbParamsLocal.str().c_str());
+
+	// Write the record name to the PV list file
+	pvDumpFile << recordPrefix_ << ':' << rp.recName << std::endl;
+
+	// Incrfement the umber of created records
+	++recordCount;
+
+	// Return the parameter index
+	return paramIndex;
+}
+
+//////////////////////////////////////
+// + template <typename T>          //
+//   int getRegType(const T& reg);  //
+//                                  //
+// - Get the register type          //
+//////////////////////////////////////
+template <>
+int YCPSWASYN::getRegType(const ScalVal_RO& reg)
+{
+	return DEV_REG_RO;
+}
+
+template <>
+int YCPSWASYN::getRegType(const ScalVal& reg)
+{
+	return DEV_REG_RW;
+}
+
+template <>
+int YCPSWASYN::getRegType(const Command& reg)
+{
+	return DEV_CMD;
+}
+
+template <>
+int YCPSWASYN::getRegType(const Stream& reg)
+{
+	return DEV_STM;
+}
+//////////////////////////////////////
+// - template <typename T>          //
+//   int getRegType(const T& reg);  //
+//////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////
+// + template <typename T>                                     //
+//   void pushParameter(const T& reg, const int& parmaIndex);  //
+//                                                             //
+// - Push the register pointer to its respective list based    //
+//   on the parameter index                                    //
+/////////////////////////////////////////////////////////////////
+template <>
+void YCPSWASYN::pushParameter(const ScalVal_RO& reg, const int& paramIndex)
+{
+	ro[paramIndex] = reg;
+	nRO++;
+}
+
+template <>
+void YCPSWASYN::pushParameter(const ScalVal& reg, const int& paramIndex)
+{
+	rw[paramIndex] = reg;
+	nRW++;
+}
+
+template <>
+void YCPSWASYN::pushParameter(const Command& reg, const int& paramIndex)
+{
+	cmd[paramIndex] = reg;
+	nCMD++;
+}
+
+template <>
+void YCPSWASYN::pushParameter(const Stream& reg, const int& paramIndex)
+{
+	nSTM++;
+}
+/////////////////////////////////////////////////////////////////
+// - template <typename T>                                     //
+//   void pushParameter(const T& reg, const int& parmaIndex);  //
+/////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////
+// std::string YCPSWASYN::extractMbbxDbParams(const Enum& isEnum); //
+//  - Extract record parameters related to MBBx records            //
+/////////////////////////////////////////////////////////////////////
+std::string YCPSWASYN::extractMbbxDbParams(const Enum& isEnum)
+{
+
+	int nValues = isEnum->getNelms();
+	int mBits = log2(nValues);
+	stringstream dbParamsLocal;
+
+	dbParamsLocal.str("");
+	dbParamsLocal << ",MASK=" << ((1 << mBits) - 1);
+	dbParamsLocal << ",NOBT=" << mBits;
+
+	IEnum::iterator it;
+	int k;
+	for (it = isEnum->begin(), k = 0 ; k < DB_MBBX_NELEM_MAX ; k++)
 	{
-		Hub h2 = (*c)[i]->isHub();
-		if (h2)
+		if (it != isEnum->end())
 		{
-			YCPSWASYN::printChildren(h2);
+			dbParamsLocal << "," << mbbxNameParams[k] << "=" << (*it).first->c_str();
+			dbParamsLocal << "," << mbbxValParam[k] << "=" << (*it).second;
+			++it;
 		}
 		else
 		{
-			printf("%s\n", (*c)[i]->getName());
+			dbParamsLocal << "," << mbbxNameParams[k] << "=";
+			dbParamsLocal << "," << mbbxValParam[k] << "=";
+		}
+	}
+
+	return dbParamsLocal.str();
+}
+
+///////////////////////////////////////////////////////
+// + template <typename T>                           //
+//   int CreateRecord(const T& reg);                 //
+//                                                   //
+// - Create a record from a register pointer         //
+///////////////////////////////////////////////////////
+template <typename T>
+void YCPSWASYN::CreateRecord(const T& reg)
+{
+	string dbParams;
+	stringstream pName;
+	int paramIndex;
+
+	// Get the path to the register
+	Path p = reg->getPath();
+
+	// Get the child at the tail
+	Child c = p->tail();
+
+	// Het the register type
+	int regType = getRegType(reg);
+
+	// Get the register information
+	long nBits = reg->getSizeBits();
+	Enum isEnum	= reg->getEnum();
+	int nElements = reg->getNelms();
+
+	// Create the argument list used when loading the record
+	recordParams trp;
+	// + record name
+	trp.recName = YCPSWASYN::generatePrefix(p) + c->getName();
+	trp.recName = trp.recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4) + recordSufix[regType];
+	// + parameter name
+	pName.str("");
+    pName << string(c->getName()).substr(0, 10) << recordCount;
+	trp.paramName = pName.str();
+	// + record description field
+	trp.recDesc = string("\"") + string(c->getDescription()).substr(0, DB_DESC_LENGTH_MAX) + string("\"");
+
+	// Look trough the register properties and create the appropiate record type
+	if ((!isEnum) || (isEnum->getNelms() > DB_MBBX_NELEM_MAX))
+	{
+		if (nElements == 1)
+		{
+			// Create ax record
+			trp.paramType = asynParamInt32;
+			trp.recTemplate = templateList[regType][0];
+			paramIndex = LoadRecord(regType, trp, dbParams);
+			pushParameter(reg, paramIndex);
+		}
+		else
+		{
+			// Create waveform record
+			stringstream dbParamsLocal;
+			dbParamsLocal.str("");
+			dbParamsLocal << ",N=" << reg->getNelms();
+			dbParams += dbParamsLocal.str();
+
+			if (nBits == 8)
+			{
+				// Create waveform_8_x record
+				trp.paramType = asynParamOctet;
+                trp.recTemplate = templateList[regType][3];
+
+			}
+			else
+			{
+				// Create waveform_x record
+				trp.paramType = asynParamInt32Array;
+                trp.recTemplate = templateList[regType][2];
+
+			}
+			
+			paramIndex = LoadRecord(regType, trp, dbParams);
+			pushParameter(reg, paramIndex);
 
 		}
 	}
-	return;
+	else
+	{
+		if (nElements == 1)
+		{
+			// Create mbbx record
+			dbParams += extractMbbxDbParams(isEnum);
+
+			trp.paramType = asynParamUInt32Digital;
+			trp.recTemplate = templateList[regType][1];
+				
+			paramIndex = LoadRecord(regType, trp, dbParams);
+			pushParameter(reg, paramIndex);
+
+		}
+		else
+		{
+			// Create array of mbbx records
+			stringstream index_aux;
+			string c_name;			
+			Path pClone = p->clone();
+			pClone->up();
+
+			for (int j = 0 ; j < nElements ; j++)
+			{
+				index_aux.str("");
+				index_aux << j;
+
+				c_name.clear();
+				c_name = c->getName() + string("[") + index_aux.str() + string("]");
+				Path c_path = pClone->findByName(c_name.c_str());
+				T c_reg = IScalVal::create(c_path);
+
+				trp.recName = YCPSWASYN::generatePrefix(p) + c->getName();
+        		trp.recName = trp.recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 5) + index_aux.str() + recordSufix[regType];
+
+        		pName.str("");
+    			pName << string(c->getName()).substr(0, 10) << recordCount;
+				trp.paramName = pName.str();
+
+				Enum isEnumLocal = c_reg->getEnum();
+
+				dbParams += extractMbbxDbParams(isEnumLocal);
+
+				trp.paramType = asynParamUInt32Digital;
+				trp.recTemplate = templateList[regType][1];
+ 
+				paramIndex = LoadRecord(regType, trp, dbParams);                   
+				pushParameter(c_reg, paramIndex);
+			}
+
+		}
+	}
+}
+///////////////////////////////////////////////////////
+// - template <typename T>                           //
+//   int CreateRecord(const T& reg);                 //
+///////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////
+// + template <typename T>                           //
+//   int CreateRecord(const T& reg, const Path& p);  //
+//                                                   //
+//  - Create a record from a register pointer and    //
+//     its path. This is for Command and Stream      //
+//     which don't support the getPath() function    // 
+///////////////////////////////////////////////////////
+template <>
+void YCPSWASYN::CreateRecord(const Command& reg, const Path& p_)
+{
+	//Path p = reg->getPath();	// NOTE: Command/Stream don't support getPath() as ScalVal does. 
+								// Workaround: using overloaded function with argument  Path p.
+	Path p = p_->clone();
+	Child c = p->tail();
+
+	recordParams trp;
+	string dbParams;
+	int regType;
+	int paramIndex;
+	stringstream pName;
+
+	trp.recDesc = string(c->getDescription());
+
+	regType = getRegType(reg);
+
+	trp.recName = YCPSWASYN::generatePrefix(p) + c->getName();
+	trp.recName = trp.recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4) + recordSufix[regType];
+
+	pName.str("");
+    pName << string(c->getName()).substr(0, 10) << recordCount;
+	trp.paramName = pName.str();
+
+	trp.paramType = asynParamInt32;
+	trp.recTemplate = templateList[regType][0];
+
+	paramIndex = LoadRecord(regType, trp, dbParams);
+	pushParameter(reg, paramIndex);
+
 }
 
-void YCPSWASYN::generateDB(Path p)
+template <>
+void YCPSWASYN::CreateRecord(const Stream& reg, const Path& p_)
+{
+
+	//Path p = reg->getPath();	// NOTE: Command/Stream don't support getPath() as ScalVal does. 
+								// Workaround: using overloaded function with argument  Path p.
+	Path p = p_->clone();
+	Child c = p->tail();
+
+	recordParams trp;
+	string dbParams;
+	int regType;
+	int p16StmIndex, p32stmIndex;
+	stringstream pName;
+
+	trp.recDesc = string(c->getDescription());
+
+	regType = getRegType(reg);
+
+	// Create PVs for 32-bit stream data
+	trp.recName = YCPSWASYN::generatePrefix(p) + c->getName();
+	trp.recName = trp.recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4) + ":32";
+
+	pName.str("");
+    pName << string(c->getName()).substr(0, 10) << recordCount;
+	trp.paramName = pName.str();
+
+	trp.paramType = asynParamInt32;
+	trp.recTemplate = templateList[regType][0];
+
+	p32stmIndex = LoadRecord(regType, trp, dbParams);
+	
+
+	// Create PVs for 16-bit stream data
+	dbParams.clear();
+
+	trp.recName = YCPSWASYN::generatePrefix(p) + c->getName();
+	trp.recName = trp.recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4) + ":16";
+
+	pName.str("");
+    pName << string(c->getName()).substr(0, 10) << recordCount;
+	trp.paramName = pName.str();
+
+	trp.paramType = asynParamInt32;
+	trp.recTemplate = templateList[regType][1];
+
+	p16StmIndex = LoadRecord(regType, trp, dbParams);
+
+
+	// Crteate Acquisition Thread 
+	asynStatus status;
+	ThreadArgs arglist;
+	arglist.pPvt = this;
+	arglist.stm = reg;
+	arglist.param16index = p16StmIndex;
+	arglist.param32index = p32stmIndex;
+	status = (asynStatus)(epicsThreadCreate("Stream", epicsThreadPriorityLow, 
+	        epicsThreadGetStackSize(epicsThreadStackMedium), (EPICSTHREADFUNC)::streamTaskC, &arglist) == NULL);
+	 
+	if (status) 
+	{
+	    printf("epicsThreadCreate failure for stream %s\n", trp.recName.c_str());
+	    return;
+	}
+	else
+		printf("epicsThreadCreate successfully for stream %s\n", trp.recName.c_str());
+
+	nSTM++;
+
+}
+///////////////////////////////////////////////////////
+// - template <typename T>                           //
+//   int CreateRecord(const T& reg, const Path& p);  //
+///////////////////////////////////////////////////////
+
+////////////////////////////////////////////////
+// void YCPSWASYN::generateDB(const Path& p); //
+//                                            //
+// - Generate the EPICS databse for all the   //
+//   registers on the especified path         //
+////////////////////////////////////////////////
+void YCPSWASYN::generateDB(const Path& p)
 {
 	Path p_aux = p->clone();
 	Child c_aux = p_aux->tail();
 	Hub h_aux;
 
+	// Check if the child is null which mean where are the origin
 	if (c_aux)
 		h_aux = c_aux->isHub();
 	else
@@ -252,6 +664,7 @@ void YCPSWASYN::generateDB(Path p)
 	stringstream 	db_params, param_name;
 	string 			rec_name;
 
+	// Recursively look for hubs.
 	for (int i = 0 ; i < n ; i++)
 	{
 		try 
@@ -262,7 +675,7 @@ void YCPSWASYN::generateDB(Path p)
 
 			if (h2)
 			{
-				
+				// If this is an arrayof hubs, parse one at a time.
 				if (m > 1)
 				{
 					stringstream c_name;
@@ -286,16 +699,15 @@ void YCPSWASYN::generateDB(Path p)
 			{			
 				p2 = p->findByName((*c)[i]->getName());
 
-				nDevices++;
-
+				// Look first for stream interfaces (based only on its name)
 				size_t found_key = string((*c)[i]->getName()).find(STREAM_KEY);
 
 				try 
 				{
+					// If found, try to attached an stream interface and create a record
 					if ((found_key != std::string::npos) && (isdigit(((*c)[i]->getName())[found_key+strlen(STREAM_KEY)])))
 					{
 						Stream stm_aux;
-						int p16StmIndex, p32StmIndex;
 
 						try
 						{
@@ -306,80 +718,16 @@ void YCPSWASYN::generateDB(Path p)
 						}
 
 						if (stm_aux)
-						{	
-							printf("Stream [%s] found on path: %s\n", (*c)[i]->getName(), p->toString().c_str());
-						 	
-							// Create PVs for 16-bit stream data
-							param_name.str("");
-						 	param_name << string((*c)[i]->getName()).substr(0, 10);
-						 	param_name << "_STM16_" << nSTM;
-
-						 	rec_name.clear();
-						 	rec_name = YCPSWASYN::generatePrefix(p);
-						 	rec_name += (*c)[i]->getName();
-						 	rec_name = rec_name.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4);
-						 	rec_name += ":16" ;
-
-							db_params.str("");
-							db_params << "PORT=" << portName_;
-							db_params << ",ADDR=" << DEV_STM;
-							db_params << ",P=" << recordPrefix_;
-							db_params << ",R=" << rec_name << ",PARAM=" << param_name.str();
-							db_params << ",DESC=\"" << string((*c)[i]->getDescription()).substr(0, DB_DESC_LENGTH_MAX) << "\"";
-							//db_params << ",N=10000";
-
-							createParam(DEV_STM, param_name.str().c_str(), asynParamInt16Array, &p16StmIndex);
-							dbLoadRecords("../../db/waveform_stream16.template", db_params.str().c_str());
-
-							// Create PVs for 32-bit stream data
-							param_name.str("");
-							param_name << string((*c)[i]->getName()).substr(0, 10);
-							param_name << "_STM32_" << nSTM;
-
-							rec_name.clear();
-							rec_name = YCPSWASYN::generatePrefix(p);
-							rec_name += (*c)[i]->getName();
-							rec_name = rec_name.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4);
-							rec_name += ":32" ;
-
-							db_params.str("");
-							db_params << "PORT=" << portName_;
-							db_params << ",ADDR=" << DEV_STM;
-							db_params << ",P=" << recordPrefix_;
-							db_params << ",R=" << rec_name << ",PARAM=" << param_name.str();
-							db_params << ",DESC=\"" << string((*c)[i]->getDescription()).substr(0, DB_DESC_LENGTH_MAX) << "\"";
-
-							createParam(DEV_STM, param_name.str().c_str(), asynParamInt32Array, &p32StmIndex);	
-							dbLoadRecords("../../db/waveform_stream32.template", db_params.str().c_str());
-
-							// Crteate Acquisition Thread 
-							asynStatus status;
-							ThreadArgs arglist;
-							arglist.pPvt = this;
-							arglist.stm = stm_aux;
-							arglist.param16index = p16StmIndex;
-							arglist.param32index = p32StmIndex;
-						
-							status = (asynStatus)(epicsThreadCreate("Stream", epicsThreadPriorityLow, 
-    						        epicsThreadGetStackSize(epicsThreadStackMedium), (EPICSTHREADFUNC)::streamTask, &arglist) == NULL);
-    						 
-    						if (status) 
-    						{
-    						    printf("epicsThreadCreate failure\n");
-    						    return;
-    						}
-    						else
-    							printf("epicsThreadCreate successfully\n");
-
-							nSTM++;
-						}
+							YCPSWASYN::CreateRecord(stm_aux, p2);
 					}
+					// Continue with not-stream registers
 					else
 					{
 						ScalVal		rw_aux;
 						ScalVal_RO 	ro_aux;
 						Command		cmd_aux;
 
+						// Try to attach a ScalVal_RO and ScalVal interface
 						try 
 						{
 							ro_aux = IScalVal_RO::create(p2);
@@ -389,6 +737,7 @@ void YCPSWASYN::generateDB(Path p)
 						{
 						}
 						
+						// Now, try to attach a command interface
 						try 
 						{
 							cmd_aux = ICommand::create(p2);							
@@ -397,382 +746,15 @@ void YCPSWASYN::generateDB(Path p)
 						{
 						}
 
+						// Depending on the attached interface, create a record for it
 						if (rw_aux)
-						{
-							long nBits      = rw_aux->getSizeBits();
-							Enum isEnum	= rw_aux->getEnum();
-							int nElements = rw_aux->getNelms();
+							YCPSWASYN::CreateRecord(rw_aux);
 
-							param_name.str("");
-							param_name <<  string((*c)[i]->getName()).substr(0, 10);
-							param_name << "_RW_" << nRW;
-
-							rec_name.clear();
-							rec_name = YCPSWASYN::generatePrefix(p);
-							rec_name += (*c)[i]->getName();
-							rec_name = rec_name.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4);
-							rec_name += ":St";
-
-							db_params.str("");
-							db_params << "PORT=" << portName_;
-							db_params << ",ADDR=" << DEV_REG_RW;
-							db_params << ",P=" << recordPrefix_;
-							db_params << ",R=" << rec_name << ",PARAM=" << param_name.str();
-							db_params << ",DESC=\"" << string((*c)[i]->getDescription()).substr(0, DB_DESC_LENGTH_MAX) << "\"";
-
-							if (isEnum)
-							{
-								int nValues = isEnum->getNelms();
-								int mBits = log2(nValues);
-
-								if (nElements == 1)
-								{
-									if (nValues > DB_MBBX_NELEM_MAX)
-									{
-										printf("%s has %d elements, mmbbo record only supports %d. Loaded an ao record instead\n", (*c)[i]->getName(), nValues, DB_MBBX_NELEM_MAX);
-										createParam(DEV_REG_RW, param_name.str().c_str(), asynParamInt32, &pRwIndex);
-										dbLoadRecords("../../db/ao.template", db_params.str().c_str());
-										rw[pRwIndex] = rw_aux;
-										nRW++;
-									}
-									else
-									{
-										db_params << ",MASK=" << ((1 << mBits) - 1);
-										db_params << ",NOBT=" << mBits;
-
-										IEnum::iterator it;
-										int k;
-
-										for (it = isEnum->begin(), k = 0 ; k < DB_MBBX_NELEM_MAX ; k++)
-										{
-											if (it != isEnum->end())
-											{
-												db_params << "," << mbbxNameParams[k] << "=" << (*it).first->c_str();
-												db_params << "," << mbbxValParam[k] << "=" << (*it).second;
-												++it;
-											}
-											else
-											{
-												db_params << "," << mbbxNameParams[k] << "=";
-												db_params << "," << mbbxValParam[k] << "=";
-											}
-										}
-
-										createParam(DEV_REG_RW, param_name.str().c_str(), asynParamUInt32Digital, &pRwIndex);
-										dbLoadRecords("../../db/mbbo.template", db_params.str().c_str());
-										rw[pRwIndex] = rw_aux;
-										nRW++;
-									}
-	
-								}
-								else
-								{
-									if (nValues > DB_MBBX_NELEM_MAX)
-									{
-										printf("%s has %d elements, mmbbo record only supports %d. Loaded a waveform record instead\n", (*c)[i]->getName(), nValues, DB_MBBX_NELEM_MAX);
-										db_params << ",N=" << nElements;
-										if (nBits <= 8)
-										{
-											createParam(DEV_REG_RW, param_name.str().c_str(), asynParamOctet, &pRwIndex);
-											dbLoadRecords("../../db/waveform_8_out.template", db_params.str().c_str());
-										}
-										else
-										{
-											createParam(DEV_REG_RW, param_name.str().c_str(), asynParamInt32Array, &pRwIndex);
-											dbLoadRecords("../../db/waveform_out.template", db_params.str().c_str());
-										}
-										rw[pRwIndex] = rw_aux;
-										nRW++;
-									}
-									else
-									{
-										stringstream index_aux;
-										string c_name;
-
-                                        for (int j = 0 ; j < nElements ; j++)
-                                        {	
-                                        	index_aux.str("");
-                                        	index_aux << j;
-											
-                                        	c_name.clear();
-                                        	c_name = (*c)[i]->getName() + string("[") + index_aux.str() + string("]");
-                                        	Path c_path = p->findByName(c_name.c_str());
-											ScalVal c_rw = IScalVal::create(c_path);
-										
-											param_name.str("");
-                                        	param_name << string((*c)[i]->getName()).substr(0, 10);
-                                        	param_name << "_RW_" << nRW;
-											
-                                        	rec_name.clear();
-                                        	rec_name = YCPSWASYN::generatePrefix(p);
-                                        	rec_name += (*c)[i]->getName();
-                                        	rec_name = rec_name.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4 - 2);
-                                        	rec_name += index_aux.str();
-                                        	rec_name += ":St";
-                                       		db_params.str("");
-                                       		db_params << "PORT=" << portName_;
-                                       		db_params << ",ADDR=" << DEV_REG_RW;
-                                       		db_params << ",P=" << recordPrefix_;
-                                       		db_params << ",R=" << rec_name << ",PARAM=" << param_name.str();
-                                       		db_params << ",DESC=\"" << string((*c)[i]->getDescription()).substr(0, DB_DESC_LENGTH_MAX) << "\"";
-											db_params << ",MASK=" << ((1 << nBits) - 1);
-                                        	db_params << ",NOBT=" << nBits;
-
-                                        	IEnum::iterator it;
-                                        	int k;
-
-                                        	for (it = isEnum->begin(), k = 0 ; k < DB_MBBX_NELEM_MAX ; k++)
-                                        	{
-                                        	    if (it != isEnum->end())
-                                        	    {
-													db_params << "," << mbbxNameParams[k] << "=" << (*it).first->c_str();
-                                        	        db_params << "," << mbbxValParam[k] << "=" << (*it).second;
-                                        	        ++it;
-                                        	    }
-                                        	    else
-                                        	    {
-                                        	        db_params << "," << mbbxNameParams[k] << "=";
-                                        	        db_params << "," << mbbxValParam[k] << "=";
-                                        	    }
-	
-                                        	}
-
-											createParam(DEV_REG_RW, param_name.str().c_str(), asynParamUInt32Digital, &pRwIndex);
-                                        	dbLoadRecords("../../db/mbbo.template", db_params.str().c_str());
-											rw[pRwIndex] = c_rw;
-											nRW++;
-										}
-									}
-								}
-							}
-							else
-							{
-								if (nElements == 1)
-								{
-	
-									createParam(DEV_REG_RW, param_name.str().c_str(), asynParamInt32, &pRwIndex);	
-									dbLoadRecords("../../db/ao.template", db_params.str().c_str());
-								}
-								else 
-								{						
-									db_params << ",N=" << nElements;
-									if (nBits <= 8)
-									{
-										createParam(DEV_REG_RW, param_name.str().c_str(), asynParamOctet, &pRwIndex);	
-										dbLoadRecords("../../db/waveform_8_out.template", db_params.str().c_str());
-									}
-									else
-									{
-										createParam(DEV_REG_RW, param_name.str().c_str(), asynParamInt32Array, &pRwIndex);	
-										dbLoadRecords("../../db/waveform_out.template", db_params.str().c_str());
-									}
-								}
-								rw[pRwIndex] = rw_aux;
-								nRW++;
-							}
-						}
-						
 						if (ro_aux)
-						{
-
-							long nBits	= ro_aux->getSizeBits();
-							Enum isEnum	= ro_aux->getEnum();
-							int nElements = ro_aux->getNelms();
-
-							param_name.str("");
-							param_name << string((*c)[i]->getName()).substr(0, 10);
-							param_name << "_RO_" << nRO;
-														
-							rec_name.clear();
-							rec_name = YCPSWASYN::generatePrefix(p);
-							rec_name += (*c)[i]->getName();
-							rec_name = rec_name.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4);
-							rec_name += ":Rd";
-							db_params.str("");
-							db_params << "PORT=" << portName_;
-							db_params << ",ADDR=" << DEV_REG_RO;
-							db_params << ",P=" << recordPrefix_;
-							db_params << ",R=" << rec_name << ",PARAM=" << param_name.str();
-							db_params << ",DESC=\"" << string((*c)[i]->getDescription()).substr(0, DB_DESC_LENGTH_MAX) << "\"";
-
-							if (isEnum)
-							{
-								int nValues = isEnum->getNelms();
-								int mBits = log2(nValues);
-
-								if (nElements == 1)
-								{
-									if (nValues > DB_MBBX_NELEM_MAX)
-									{
-										printf("%s has %d elements, mmbbi record only supports %d. Loaded an ai record instead\n", (*c)[i]->getName(), nValues, DB_MBBX_NELEM_MAX);
-										createParam(DEV_REG_RO, param_name.str().c_str(), asynParamInt32, &pRoIndex);
-										dbLoadRecords("../../db/ai.template", db_params.str().c_str());
-										ro[pRoIndex] = ro_aux;
-										nRO++;
-									}
-									else
-									{
-										db_params << ",MASK=" << ((1 << mBits) - 1);
-										db_params << ",NOBT=" << mBits;
-
-										IEnum::iterator it;
-										int k;
-
-
-										for (it = isEnum->begin(), k = 0 ; k < DB_MBBX_NELEM_MAX ; k++)
-										{
-											if (it != isEnum->end())
-											{
-												db_params << "," << mbbxNameParams[k] << "=" << (*it).first->c_str();
-												db_params << "," << mbbxValParam[k] << "=" << (*it).second;
-												++it;
-											}
-											else
-											{
-												db_params << "," << mbbxNameParams[k] << "=";
-												db_params << "," << mbbxValParam[k] << "=";
-											}
-										}
-
-										createParam(DEV_REG_RO, param_name.str().c_str(), asynParamUInt32Digital, &pRoIndex);
-										dbLoadRecords("../../db/mbbi.template", db_params.str().c_str());
-										ro[pRoIndex] = ro_aux;
-										nRO++;
-									}
-	
-								}
-								else
-								{
-									if (nValues > DB_MBBX_NELEM_MAX)
-									{
-										printf("%s has %d elements, mmbbi record only supports %d. Loaded a waveform record instead\n", (*c)[i]->getName(), nValues, DB_MBBX_NELEM_MAX);
-										db_params << ",N=" << nElements;
-										if (nBits <= 8)
-										{
-											createParam(DEV_REG_RO, param_name.str().c_str(), asynParamOctet, &pRoIndex);
-											dbLoadRecords("../../db/waveform_8_in.template", db_params.str().c_str());
-										}
-										else
-										{
-											createParam(DEV_REG_RO, param_name.str().c_str(), asynParamInt32Array, &pRoIndex);
-											dbLoadRecords("../../db/waveform_in.template", db_params.str().c_str());
-										}
-										ro[pRoIndex] = ro_aux;
-										nRO++;
-									}
-									else
-									{
-										stringstream index_aux;
-										string c_name;
-
-                                        for (int j = 0 ; j < nElements ; j++)
-                                        {	
-                                        	index_aux.str("");
-                                        	index_aux << j;
-											
-                                        	c_name.clear();
-                                        	c_name = (*c)[i]->getName() + string("[") + index_aux.str() + string("]");
-                                        	Path c_path = p->findByName(c_name.c_str());
-											ScalVal_RO c_ro = IScalVal_RO::create(c_path);
-										
-											param_name.str("");
-                                        	param_name << string((*c)[i]->getName()).substr(0, 10);
-                                        	param_name << "_RO_" << nRO;
-											
-                                        	rec_name.clear();
-                                        	rec_name = YCPSWASYN::generatePrefix(p);
-                                        	rec_name += (*c)[i]->getName();
-                                        	rec_name = rec_name.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4 - 2);
-                                        	rec_name += index_aux.str();
-                                        	rec_name += ":Rd";
-                                       		db_params.str("");
-                                       		db_params << "PORT=" << portName_;
-                                       		db_params << ",ADDR=" << DEV_REG_RO;
-                                       		db_params << ",P=" << recordPrefix_;
-                                       		db_params << ",R=" << rec_name << ",PARAM=" << param_name.str();
-                                       		db_params << ",DESC=\"" << string((*c)[i]->getDescription()).substr(0, DB_DESC_LENGTH_MAX) << "\"";
-											db_params << ",MASK=" << ((1 << nBits) - 1);
-                                        	db_params << ",NOBT=" << nBits;
-
-                                        	IEnum::iterator it;
-                                        	int k;
-
-                                        	for (it = isEnum->begin(), k = 0 ; k < DB_MBBX_NELEM_MAX ; k++)
-                                        	{
-                                        	    if (it != isEnum->end())
-                                        	    {
-													db_params << "," << mbbxNameParams[k] << "=" << (*it).first->c_str();
-                                        	        db_params << "," << mbbxValParam[k] << "=" << (*it).second;
-                                        	        ++it;
-                                        	    }
-                                        	    else
-                                        	    {
-                                        	        db_params << "," << mbbxNameParams[k] << "=";
-                                        	        db_params << "," << mbbxValParam[k] << "=";
-                                        	    }
-	
-                                        	}
-                                        	
-											createParam(DEV_REG_RO, param_name.str().c_str(), asynParamUInt32Digital, &pRoIndex);
-                                        	dbLoadRecords("../../db/mbbi.template", db_params.str().c_str());
-											ro[pRoIndex] = c_ro;
-											nRO++;
-										}
-									}
-								}
-							}
-							else
-							{							
-								if (nElements == 1)
-								{
-									createParam(DEV_REG_RO, param_name.str().c_str(), asynParamInt32, &pRoIndex);	
-									dbLoadRecords("../../db/ai.template", db_params.str().c_str());
-								}
-								else 
-								{
-									db_params << ",N=" << nElements;
-									if (nBits <= 8)
-									{
-										createParam(DEV_REG_RO, param_name.str().c_str(), asynParamOctet, &pRoIndex);
-										dbLoadRecords("../../db/waveform_8_in.template", db_params.str().c_str());
-									}
-									else
-									{
-										createParam(DEV_REG_RO, param_name.str().c_str(), asynParamInt32Array, &pRoIndex);
-										dbLoadRecords("../../db/waveform_in.template", db_params.str().c_str());
-									}
-								}
-
-								ro[pRoIndex] = ro_aux;
-								nRO++;							
-							}
-						}
+							YCPSWASYN::CreateRecord(ro_aux);
 
 						if (cmd_aux)
-						{
-							param_name.str("");
-							param_name << string((*c)[i]->getName()).substr(0, 10);
-							param_name << "_CMD_" << nCMD;
-
-							rec_name.clear();
-							rec_name = YCPSWASYN::generatePrefix(p);
-							rec_name += (*c)[i]->getName();
-							rec_name = rec_name.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4);
-							rec_name += ":Ex";
-
-							db_params.str("");
-							db_params << "PORT=" << portName_;
-							db_params << ",ADDR=" << DEV_CMD;
-							db_params << ",P=" << recordPrefix_;
-							db_params << ",R=" << rec_name << ",PARAM=" << param_name.str();
-							db_params << ",DESC=\"" << string((*c)[i]->getDescription()).substr(0, DB_DESC_LENGTH_MAX) << "\"";
-
-							createParam(DEV_CMD, param_name.str().c_str(), asynParamInt32, &pCmdIndex);	
-							dbLoadRecords("../../db/ao.template", db_params.str().c_str());
-							
-							cmd[pCmdIndex]= cmd_aux;
-							nCMD++;
-						}
+							YCPSWASYN::CreateRecord(cmd_aux, p2);
 					}
 				}
 				catch (CPSWError &e)
@@ -791,11 +773,18 @@ void YCPSWASYN::generateDB(Path p)
 	return;
 }
 
-string YCPSWASYN::generatePrefix(Path p)
+///////////////////////////////////////////////////////////
+// std::string YCPSWASYN::generatePrefix(const Path& p); //
+//                                                       //
+// - Create the record name prefix from its path         //
+///////////////////////////////////////////////////////////
+std::string YCPSWASYN::generatePrefix(const Path& p)
 {
 	string p_str = p->toString();
 	std::size_t found; 
 
+	// Look for the defined keys and substitute it with its corresponding string
+	// plus a trim version of the path
 	if ((found = p_str.find(BAY0_KEY)) != std::string::npos)
 		return (std::string(BAY0_SUBS) + ":" + YCPSWASYN::trimPath(p, found));
 
@@ -808,35 +797,43 @@ string YCPSWASYN::generatePrefix(Path p)
 	if ((found = p_str.find(APP_KEY)) != std::string::npos)
 		return (std::string(APP_SUBS) + ":" + YCPSWASYN::trimPath(p, found));
 
+	// return an empty string if not key is found
 	return std::string();
 }
 
-string YCPSWASYN::trimPath(Path p, size_t pos)
+/////////////////////////////////////////////////////////////////
+// std::string YCPSWASYN::trimPath(const Path& p, size_t pos); //
+//                                                             //
+// - Trim the path for the generation of the record name       //
+/////////////////////////////////////////////////////////////////
+std::string YCPSWASYN::trimPath(const Path& p, size_t pos)
 {
 	string p_str = p->toString();
 	string c_str, pre_str, aux_str;
 	std::size_t found_bracket, found_slash;
 
+	// Look for the fisrt / on the path. 
+	// If not found return an empty string
 	if ((found_slash = p_str.find("/", pos)) == std::string::npos)
 		return std::string();
 
-	p_str = p_str.substr(found_slash);
+	// Remove everything to the left of /
+	p_str = p_str.substr(found_slash+1);
 
-	while ( (found_slash = p_str.find_last_of("/")) != std::string::npos)
+	// Look for all / on the path
+	while ( (found_slash = p_str.find("/")) != std::string::npos)
 	{
+		c_str = p_str.substr(0, found_slash);
+		p_str = p_str.substr(found_slash + 1);
 
-
-		c_str = p_str.substr(found_slash+1);
-		p_str = p_str.substr(0, found_slash);
-		aux_str = c_str.substr(0,3);
-
+		// Trim the device name
+		aux_str = c_str.substr(0,DB_NAME_PATH_TRIM_SIZE);
 		if ((found_bracket = c_str.find('[')) != std::string::npos)
 			aux_str += c_str.substr(found_bracket+1, c_str.length() - found_bracket - 2);
 
-		pre_str = aux_str + ":" + pre_str;
+		pre_str += aux_str + ":";
 
 	}
-
 	return pre_str;
 }
 
