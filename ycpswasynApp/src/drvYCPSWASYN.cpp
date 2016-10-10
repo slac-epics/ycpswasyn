@@ -64,27 +64,100 @@ YCPSWASYN::YCPSWASYN(const char *portName, Path p , const char *recordPrefix, in
 {
 	//const char *functionName = "YCPSWASYN";
 
-	// Create file names from the register and PV list dumps
+	// Create file names for the register and PV list dumps
 	std::string regDumpFileName = DUMP_FILE_PATH + string(recordPrefix_) + "_" + REG_DUMP_FILE_NAME;
 	std::string pvDumpFileName = DUMP_FILE_PATH + string(recordPrefix_) + "_" + PV_DUMP_FILE_NAME;
+	
+	// Create file names for the ubstitution map list
+	std::string mapFileName = string(MAP_FILE_PATH) + string(MAP_FILE_NAME);
+	std::string mapTopFileName = string(MAP_FILE_PATH) + string(MAP_TOP_FILE_NAME);
+
+	// Create file names for the "keys not found" dump 
+	std::string keysNotFoundFileName = DUMP_FILE_PATH + string(recordPrefix_) + "_" + KEYS_NOT_FOUND_FILE_NAME;
+
+	// Create the substitution maps
+	std::ifstream mapFile;
+	std::string key, subs;
+
+	printf("Opening top map file \"%s\"... ", mapTopFileName.c_str());
+	mapFile.open(mapTopFileName.c_str());
+	if (mapFile.is_open())
+	{
+		printf("Done.\n");
+		while(!mapFile.eof())
+		{
+			mapFile >> key >> subs;
+			mapTop.insert(std::pair<std::string, std::string>(key, subs));
+		}
+		mapFile.close();
+	}
+	else
+	{
+		printf("Error!\n");
+	}
+
+	printf("Opening map file \"%s\"... ", mapFileName.c_str());
+	mapFile.open(mapFileName.c_str());
+	if (mapFile.is_open())
+	{
+		printf("Done.\n");
+		while(!mapFile.eof())
+		{
+			mapFile >> key >> subs;
+			map.insert(std::pair<std::string, std::string>(key, subs));
+		}
+		mapFile.close();
+	}
+	else
+	{
+		printf("Error!\n");
+	}
 
 	// Write the list of register
-	printf("Dumping register map into %s...\n", regDumpFileName.c_str()); //REG_DUMP_FILE_NAME);
-	regDumpFile.open(regDumpFileName.c_str()); //REG_DUMP_FILE_NAME);
-	dumpRegisterMap(p);
-	regDumpFile.close();
-	printf("Done!\n");
+	printf("Opening file \"%s\" for dumping register map... ", regDumpFileName.c_str());
+	regDumpFile.open(regDumpFileName.c_str());
+	if (regDumpFile.is_open())
+	{
+		printf("Done.\n");
+		printf("Dumping register map... ");
+		dumpRegisterMap(p);
+		printf("Done.\n");
+		regDumpFile.close();
+	}
+	else
+	{
+		printf("Error!\n");
+	}
+	
 
 	// Open the PV list file
-	printf("Generatin database from yaml file and dumping pv list on %s...\n", pvDumpFileName.c_str()); //PV_DUMP_FILE_NAME);
-	pvDumpFile.open(pvDumpFileName.c_str()); //PV_DUMP_FILE_NAME);
+	printf("Opening file \"%s\" for dumping pv list... ", pvDumpFileName.c_str());
+	pvDumpFile.open(pvDumpFileName.c_str());
+	if (pvDumpFile.is_open())
+		printf("Done.\n");
+	else
+		printf("Error!\n");
+	
+	// Open the "keys not found" file
+	printf("Opening file \"%s\" for dumping not found keys... ", keysNotFoundFileName.c_str());
+	keysNotFoundFile.open(keysNotFoundFileName.c_str());
+	if (keysNotFoundFile.is_open())
+		printf("Done.\n");
+	else
+		printf("Error!\n");
 
 	// Generate the EPICS databse from the root path
+	printf("Generating EPICS database from yaml file...\n");
 	generateDB(p);
+	printf("Generation of EPICS database from yaml file Done!.\n");
+
+	// Close the "keys not found" file
+	if (keysNotFoundFile.is_open())
+		keysNotFoundFile.close();
 
 	// Close the PV list file
-	pvDumpFile.close();
-	printf("Done!\n");
+	if (pvDumpFile.is_open())
+		pvDumpFile.close();
 	
 	// Print the counters
 	printf("nRO = %ld\nnRW = %ld\nnCMD = %ld\nnSTM = %ld\nrecordCount = %ld\n", nRO, nRW, nCMD, nSTM, recordCount);
@@ -272,7 +345,8 @@ int YCPSWASYN::LoadRecord(int regType, const recordParams& rp, const string& dbP
 	dbLoadRecords(rp.recTemplate.c_str(), dbParamsLocal.str().c_str());
 
 	// Write the record name to the PV list file
-	pvDumpFile << recordPrefix_ << ':' << rp.recName << std::endl;
+	if (pvDumpFile.is_open())
+		pvDumpFile << recordPrefix_ << ':' << rp.recName << std::endl;
 
 	// Incrfement the umber of created records
 	++recordCount;
@@ -419,8 +493,7 @@ void YCPSWASYN::CreateRecord(const T& reg)
 	// Create the argument list used when loading the record
 	recordParams trp;
 	// + record name
-	trp.recName = YCPSWASYN::generatePrefix(p) + c->getName();
-	trp.recName = trp.recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4) + recordSufix[regType];
+	trp.recName = YCPSWASYN::generateRecordName(p) + recordSufix[regType];
 	// + parameter name
 	pName.str("");
     pName << string(c->getName()).substr(0, 10) << recordCount;
@@ -499,8 +572,7 @@ void YCPSWASYN::CreateRecord(const T& reg)
 				Path c_path = pClone->findByName(c_name.c_str());
 				T c_reg = IScalVal::create(c_path);
 
-				trp.recName = YCPSWASYN::generatePrefix(p) + c->getName();
-        		trp.recName = trp.recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 5) + index_aux.str() + recordSufix[regType];
+        		trp.recName = YCPSWASYN::generateRecordName(c_path) + recordSufix[regType];
 
         		pName.str("");
     			pName << string(c->getName()).substr(0, 10) << recordCount;
@@ -540,25 +612,25 @@ void YCPSWASYN::CreateRecord(const Command& reg, const Path& p_)
 								// Workaround: using overloaded function with argument  Path p.
 	Path p = p_->clone();
 	Child c = p->tail();
+	int regType = getRegType(reg);
 
-	recordParams trp;
 	string dbParams;
-	int regType;
 	int paramIndex;
 	stringstream pName;
 
-	trp.recDesc = string(c->getDescription());
-
-	regType = getRegType(reg);
-
-	trp.recName = YCPSWASYN::generatePrefix(p) + c->getName();
-	trp.recName = trp.recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4) + recordSufix[regType];
-
+	// Create the argument list used when loading the record
+	recordParams trp;
+	// + record name
+	trp.recName = YCPSWASYN::generateRecordName(p) + recordSufix[regType];
+	// + parameter name
 	pName.str("");
     pName << string(c->getName()).substr(0, 10) << recordCount;
 	trp.paramName = pName.str();
-
+	// + record description field
+	trp.recDesc = string(c->getDescription());
+	// + parameter type
 	trp.paramType = asynParamInt32;
+	// + record template 
 	trp.recTemplate = templateList[regType][0];
 
 	paramIndex = LoadRecord(regType, trp, dbParams);
@@ -574,26 +646,26 @@ void YCPSWASYN::CreateRecord(const Stream& reg, const Path& p_)
 								// Workaround: using overloaded function with argument  Path p.
 	Path p = p_->clone();
 	Child c = p->tail();
+	int regType = getRegType(reg);
 
-	recordParams trp;
 	string dbParams;
-	int regType;
 	int p16StmIndex, p32stmIndex;
 	stringstream pName;
 
-	trp.recDesc = string(c->getDescription());
-
-	regType = getRegType(reg);
-
 	// Create PVs for 32-bit stream data
-	trp.recName = YCPSWASYN::generatePrefix(p) + c->getName();
-	trp.recName = trp.recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4) + ":32";
-
+	// Create the argument list used when loading the record
+	recordParams trp;
+	// + record name
+	trp.recName = YCPSWASYN::generateRecordName(p) + ":32";
+	// + parameter name
 	pName.str("");
     pName << string(c->getName()).substr(0, 10) << recordCount;
 	trp.paramName = pName.str();
-
+	// + record description field
+	trp.recDesc = string(c->getDescription());
+	// + parameter type
 	trp.paramType = asynParamInt32;
+	// + record template 
 	trp.recTemplate = templateList[regType][0];
 
 	p32stmIndex = LoadRecord(regType, trp, dbParams);
@@ -601,19 +673,18 @@ void YCPSWASYN::CreateRecord(const Stream& reg, const Path& p_)
 
 	// Create PVs for 16-bit stream data
 	dbParams.clear();
-
-	trp.recName = YCPSWASYN::generatePrefix(p) + c->getName();
-	trp.recName = trp.recName.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - 4) + ":16";
-
+	// + record name
+	trp.recName = YCPSWASYN::generateRecordName(p) + ":16";
+	// + parameter name
 	pName.str("");
     pName << string(c->getName()).substr(0, 10) << recordCount;
 	trp.paramName = pName.str();
-
+	// + parameter type
 	trp.paramType = asynParamInt32;
+	// + record template 
 	trp.recTemplate = templateList[regType][1];
 
 	p16StmIndex = LoadRecord(regType, trp, dbParams);
-
 
 	// Crteate Acquisition Thread 
 	asynStatus status;
@@ -773,68 +844,115 @@ void YCPSWASYN::generateDB(const Path& p)
 	return;
 }
 
-///////////////////////////////////////////////////////////
-// std::string YCPSWASYN::generatePrefix(const Path& p); //
-//                                                       //
-// - Create the record name prefix from its path         //
-///////////////////////////////////////////////////////////
-std::string YCPSWASYN::generatePrefix(const Path& p)
+///////////////////////////////////////////////////////////////
+// std::string YCPSWASYN::generateRecordName(const Path& p); //
+//                                                           //
+// - Create the record name from its path                    //
+///////////////////////////////////////////////////////////////
+std::string YCPSWASYN::generateRecordName(const Path& p)
 {
-	string p_str = p->toString();
-	std::size_t found; 
+	Path pLocal = p->clone();
+	Child tail;
 
-	// Look for the defined keys and substitute it with its corresponding string
-	// plus a trim version of the path
-	if ((found = p_str.find(BAY0_KEY)) != std::string::npos)
-		return (std::string(BAY0_SUBS) + ":" + YCPSWASYN::trimPath(p, found));
+	std::map<std::string, std::string>::iterator it;
+	std::size_t found_key, found_top_key, found_bracket;
+	std::string childName, childIndexStr;
+	std::string resultPrefix, pathStrAux;
+	std::size_t firstElementIndexLen = 0;
 
-	if ((found = p_str.find(BAY1_KEY)) != std::string::npos)
-		return (std::string(BAY1_SUBS) + ":" + YCPSWASYN::trimPath(p, found));
+	// First element (don't look it up on the map definitions)
+	tail = pLocal->tail();
 
-	if ((found = p_str.find(CARRIER_KEY)) != std::string::npos)
-		return (std::string(CARRIER_SUBS) + ":" + YCPSWASYN::trimPath(p, found));	
-
-	if ((found = p_str.find(APP_KEY)) != std::string::npos)
-		return (std::string(APP_SUBS) + ":" + YCPSWASYN::trimPath(p, found));
-
-	// return an empty string if not key is found
-	return std::string();
-}
-
-/////////////////////////////////////////////////////////////////
-// std::string YCPSWASYN::trimPath(const Path& p, size_t pos); //
-//                                                             //
-// - Trim the path for the generation of the record name       //
-/////////////////////////////////////////////////////////////////
-std::string YCPSWASYN::trimPath(const Path& p, size_t pos)
-{
-	string p_str = p->toString();
-	string c_str, pre_str, aux_str;
-	std::size_t found_bracket, found_slash;
-
-	// Look for the fisrt / on the path. 
-	// If not found return an empty string
-	if ((found_slash = p_str.find("/", pos)) == std::string::npos)
+	if (!tail)
 		return std::string();
-
-	// Remove everything to the left of /
-	p_str = p_str.substr(found_slash+1);
-
-	// Look for all / on the path
-	while ( (found_slash = p_str.find("/")) != std::string::npos)
+	
+	// Look for the array index, if any
+	pathStrAux = pLocal->toString();
+	if (*pathStrAux.rbegin() == ']')
 	{
-		c_str = p_str.substr(0, found_slash);
-		p_str = p_str.substr(found_slash + 1);
+		found_bracket = pathStrAux.find_last_of('[');
+		firstElementIndexLen = pathStrAux.length() - found_bracket - 2;
+		childIndexStr = pathStrAux.substr(found_bracket + 1 , firstElementIndexLen);
 
-		// Trim the device name
-		aux_str = c_str.substr(0,DB_NAME_PATH_TRIM_SIZE);
-		if ((found_bracket = c_str.find('[')) != std::string::npos)
-			aux_str += c_str.substr(found_bracket+1, c_str.length() - found_bracket - 2);
-
-		pre_str += aux_str + ":";
-
+		// Omit if it is a range instead of a single element
+		if (childIndexStr.find('-') != std::string::npos)
+		{
+			firstElementIndexLen = 0;
+			childIndexStr.clear();
+		}
 	}
-	return pre_str;
+	resultPrefix = tail->getName() + childIndexStr;
+
+	// Continue with rest of the path
+	pLocal->up();
+	while (tail = pLocal->tail())
+	{
+		found_top_key = std::string::npos;
+		found_key = std::string::npos;
+		found_bracket = std::string::npos;
+		childIndexStr.clear();
+
+		childName = tail->getName();
+
+		// Look for the array index, if any
+		pathStrAux = pLocal->toString();
+		if (*pathStrAux.rbegin() == ']')
+		{
+			found_bracket = pathStrAux.find_last_of('[');
+			childIndexStr = pathStrAux.substr(found_bracket + 1 , pathStrAux.length() - found_bracket - 2);
+		}
+		
+		// Look for keys on the map definition
+		for (it = map.begin(); it != map.end(); ++it)
+		{
+			found_key = childName.find(it->first);
+
+			if (found_key != std::string::npos)
+			{
+				childName = it->second;
+				break;
+			}
+		}
+		
+		// Look for keys on the top map definition 
+		if (found_key == std::string::npos)
+		{
+			for (it = mapTop.begin(); it != mapTop.end(); ++it)
+			{
+				found_top_key = childName.find(it->first);
+
+				if (found_top_key != std::string::npos)
+				{
+					childName = it->second;
+					break;
+				}
+			}
+		}
+		
+		// If the current child name was not found either on the map or top map, trim the name 
+		// and write its name to the dump file
+		if ((found_key == std::string::npos) && (found_top_key == std::string::npos))
+		{
+			if (keysNotFoundFile.is_open())
+				keysNotFoundFile << childName << std::endl;
+
+			childName = childName.substr(0,DB_NAME_PATH_TRIM_SIZE);
+		}
+
+		// Updte the prefix up to now
+		resultPrefix = childName + childIndexStr + ":" + resultPrefix;
+
+		// If we found a key on the top map, stop the creation of the prefix
+		if (found_top_key != std::string::npos)
+			break;
+
+		// Go up one level con the path and continue
+		pLocal->up();		
+	}
+	
+	// Return a truncated string (if necessary) to satisfy the rencor max lenght
+	// (record prefix lenght) + (record name lenght) + (record sufix length) + (first element index lenght)<= record max lenght
+	return resultPrefix.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - DB_NAME_SUFIX_LENGHT - firstElementIndexLen - 1);
 }
 
 /////////////////////////////////////////////
