@@ -857,31 +857,27 @@ std::string YCPSWASYN::generateRecordName(const Path& p)
 	std::map<std::string, std::string>::iterator it;
 	std::size_t found_key, found_top_key, found_bracket;
 	std::string childName, childIndexStr;
-	std::string resultPrefix, pathStrAux;
-	std::size_t firstElementIndexLen = 0;
+	std::string resultPrefix, pathStrAux, firstElementIndexStr;
 
 	// First element (don't look it up on the map definitions)
 	tail = pLocal->tail();
 
 	if (!tail)
 		return std::string();
+
+	resultPrefix = tail->getName();
 	
 	// Look for the array index, if any
 	pathStrAux = pLocal->toString();
 	if (*pathStrAux.rbegin() == ']')
 	{
 		found_bracket = pathStrAux.find_last_of('[');
-		firstElementIndexLen = pathStrAux.length() - found_bracket - 2;
-		childIndexStr = pathStrAux.substr(found_bracket + 1 , firstElementIndexLen);
+		firstElementIndexStr = pathStrAux.substr(found_bracket + 1 ,  pathStrAux.length() - found_bracket - 2);
 
 		// Omit if it is a range instead of a single element
 		if (childIndexStr.find('-') != std::string::npos)
-		{
-			firstElementIndexLen = 0;
-			childIndexStr.clear();
-		}
+			firstElementIndexStr.clear();
 	}
-	resultPrefix = tail->getName() + childIndexStr;
 
 	// Continue with rest of the path
 	pLocal->up();
@@ -950,9 +946,9 @@ std::string YCPSWASYN::generateRecordName(const Path& p)
 		pLocal->up();		
 	}
 	
-	// Return a truncated string (if necessary) to satisfy the rencor max lenght
-	// (record prefix lenght) + (record name lenght) + (record sufix length) + (first element index lenght)<= record max lenght
-	return resultPrefix.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - DB_NAME_SUFIX_LENGHT - firstElementIndexLen - 1);
+	// Return a truncated string (if necessary) to satisfy the rencor max lenght and adding the index to the first element if any
+	// (record prefix lenght) + (separator ':' = 1) + (record name lenght) + (first element index lenght) + (record sufix length) <= record max lenght
+	return resultPrefix.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - DB_NAME_SUFIX_LENGHT - firstElementIndexStr.length() - 1) + firstElementIndexStr;
 }
 
 /////////////////////////////////////////////
