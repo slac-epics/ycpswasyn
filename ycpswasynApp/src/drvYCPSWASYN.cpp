@@ -875,7 +875,7 @@ std::string YCPSWASYN::generateRecordName(const Path& p)
 		firstElementIndexStr = pathStrAux.substr(found_bracket + 1 ,  pathStrAux.length() - found_bracket - 2);
 
 		// Omit if it is a range instead of a single element
-		if (childIndexStr.find('-') != std::string::npos)
+		if (firstElementIndexStr.find('-') != std::string::npos)
 			firstElementIndexStr.clear();
 	}
 
