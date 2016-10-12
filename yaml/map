@@ -25,12 +25,12 @@ RssiServerSw			RSS
 UdpEngineWrapper		UEW
 Adc16Dx370			Adc
 AttHMC624			Att
-DacAD5541			DacAD5541
-DacAD5541Mux			DacAD5541M
+DacAD5541			Dac
+DacAD5541Mux			DacM
 JesdRx				JR
 JesdTx				JT
 Lmk04828			Lmk
-DacLtc2000			DacL
+DacLtc2000			Dac
 LvdsSigGen			LSG
 SigGenRam			SGR
 CircularBufferBay0		CBB0
@@ -40,7 +40,7 @@ CircularBufferCtrlBay1		CBCB1
 DaqMuxV2			DM
 Timestamps			T
 AmcGenericAdcDacCtrl		AGADC
-Dac38J84			Dac38J84
+Dac38J84			Dac
 AxiLiteGenRegItf		ALGRI
 SigGenLane			SGL
 DspCoreConfig			DCC
