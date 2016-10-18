@@ -30,7 +30,8 @@ ycpswasyn_registerRecordDeviceDriver(pdbbase)
 #    IP Address,            # OPTIONAL: Target FPGA IP Address. If not given it is taken from the YAML file
 #    Record name Prefix,    # Record name prefix
 #    Record name Length Max,    # Record name maximum length (must be greater than lenght of prefix + 4)
-YCPSWASYNConfig("Atca1", "../../yaml/system.yaml", "10.0.1.102", "yamlIOC1", 40)
+#YCPSWASYNConfig("Atca1", "../../yaml/system.yaml", "10.0.1.102", "yamlIOC1", 40)
+YCPSWASYNConfig("Atca1", "../../yaml/AmcCarrierSsrlEth2x_project.yaml/000TopLevel.yaml", "10.0.0.102", "yamlIOC1", 40)
 
 #asynSetTraceMask(Atca1,, -1, 9)
 #asynSetTraceIOMask(Atca1,, -1, 2)

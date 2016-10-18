@@ -20,6 +20,7 @@ DB += mbbi.template
 DB += mbbo.template
 DB += waveform_stream16.template
 DB += waveform_stream32.template
+DB += saveLoadConfig.template
 
 #----------------------------------------------------
 # If <anyname>.db template is not named <anyname>*.template add

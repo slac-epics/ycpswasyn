@@ -36,17 +36,18 @@
 #include <cpsw_api_builder.h>
 #include <cpsw_api_user.h>
 #include <cpsw_yaml.h>
+#include <cpsw_preproc.h>
 #include <yaml-cpp/yaml.h>
 
 using std::string;
 using std::stringstream;
 
-YCPSWASYN::YCPSWASYN(const char *portName, Path p , const char *recordPrefix, int recordNameLenMax)
+YCPSWASYN::YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int recordNameLenMax)
 	: asynPortDriver(	portName, 
 				MAX_SIGNALS, 
 				NUM_PARAMS, 
 				asynInt32Mask | asynDrvUserMask | asynInt16ArrayMask | asynInt32ArrayMask | asynOctetMask | asynFloat64ArrayMask | asynUInt32DigitalMask ,	// Interface Mask
-				asynInt16ArrayMask | asynInt32ArrayMask | asynInt32Mask, 	  		// Interrupt Mask
+				asynInt16ArrayMask | asynInt32ArrayMask | asynInt32Mask | asynUInt32DigitalMask, 	  		// Interrupt Mask
 				ASYN_MULTIDEVICE | ASYN_CANBLOCK, 			// asynFlags
 				1, 							// Autoconnect
 				0, 							// Default priority
@@ -161,6 +162,22 @@ YCPSWASYN::YCPSWASYN(const char *portName, Path p , const char *recordPrefix, in
 	
 	// Print the counters
 	printf("nRO = %ld\nnRW = %ld\nnCMD = %ld\nnSTM = %ld\nrecordCount = %ld\n", nRO, nRW, nCMD, nSTM, recordCount);
+
+
+	createParam(DEV_CONFIG, loadConfigString,		asynParamInt32,			&loadConfigValue_);
+	createParam(DEV_CONFIG, saveConfigString,		asynParamInt32,			&saveConfigValue_);
+	createParam(DEV_CONFIG, loadConfigFileString,	asynParamOctet, 		&loadConfigFileValue_);
+	createParam(DEV_CONFIG, saveConfigFileString,	asynParamOctet, 		&saveConfigFileValue_);
+	createParam(DEV_CONFIG,	loadConfigStatusString,	asynParamUInt32Digital, &loadConfigStatusValue_);
+	createParam(DEV_CONFIG,	saveConfigStatusString,	asynParamUInt32Digital, &saveConfigStatusValue_);
+
+	stringstream dbParamsLocal;
+	dbParamsLocal.str("");
+	dbParamsLocal << "PORT=" << portName_;
+	dbParamsLocal << ",ADDR=" << DEV_CONFIG;
+	dbParamsLocal << ",P=" << recordPrefix_;
+	dbLoadRecords("../../db/saveLoadConfig.template", dbParamsLocal.str().c_str());
+
 }
 
 ///////////////////////////////////
@@ -250,10 +267,48 @@ void YCPSWASYN::streamTask(Stream stm, int param16index, int param32index)
 // - Initialization routine                                                        //
 //                                                                                 //
 /////////////////////////////////////////////////////////////////////////////////////
+class IYamlSetIP : public IYamlFixup {
+public:
+        IYamlSetIP( const char* ip_addr ) : ip_addr_(ip_addr) {}
+        virtual void operator()(YAML::Node &node)
+        {
+          node["ipAddr"] = ip_addr_;
+        }
+
+        virtual ~IYamlSetIP() {}
+private:
+        std::string ip_addr_;
+};
+
 int YCPSWASYN::YCPSWASYNInit(const char *yaml_doc, Path *p, const char *ipAddr)
 {
 	unsigned char buf[sizeof(struct in6_addr)];
 
+	// Check if the IP address was especify. Otherwise use the one defined on the YAML file
+	if (inet_pton(AF_INET, ipAddr, buf))
+	{
+		printf("Using IP address: %s\n", ipAddr);
+		IYamlSetIP setIP(ipAddr);
+
+		// Read YAML file
+		*p = IPath::loadYamlFile( yaml_doc, "NetIODev", NULL, &setIP );
+	}
+	else
+	{
+		printf("Using IP address from YAML file\n");
+
+		// Read YAML file
+        *p = IPath::loadYamlFile( yaml_doc, "NetIODev" );
+	}
+
+	return 0;
+}
+/*
+int YCPSWASYN::YCPSWASYNInitV3(const char *yaml_doc, Path *p, const char *ipAddr)
+{
+	unsigned char buf[sizeof(struct in6_addr)];
+
+	printf("Using YAML schema version 3\n");
 	// Read YAML file
 	YAML::Node doc =  YAML::LoadFile( yaml_doc );
 
@@ -261,20 +316,24 @@ int YCPSWASYN::YCPSWASYNInit(const char *yaml_doc, Path *p, const char *ipAddr)
 	if (inet_pton(AF_INET, ipAddr, buf))
 	{
 		printf("Using IP address: %s\n", ipAddr);
-		doc["ipAddr"] = ipAddr;
+		IYamlSetIP setIP(ipAddr);
+		*p = IPath::loadYamlFile( yaml_doc, "NetIODev", NULL, &setIP );
 	}
 	else
+	{
 		printf("Using IP address from YAML file\n");
+        *p = IPath::loadYamlFile( yaml_doc, "NetIODev" );
+	}
 
 	// Create an NetIODev from the YAML file definition
-	NetIODev  root = doc.as<NetIODev>();
+	//NetIODev  root = doc.as<NetIODev>();
 
 	// Create a Path on the root
-	*p = IPath::create( root );
+	//*p = IPath::create( root );
 
 	return 0;
 }
-
+*/
 /////////////////////////////////////////////////////
 // void YCPSWASYN::dumpRegisterMap(const Path& p); //
 //                                                 //
@@ -951,6 +1010,59 @@ std::string YCPSWASYN::generateRecordName(const Path& p)
 	return resultPrefix.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - DB_NAME_SUFIX_LENGHT - firstElementIndexStr.length() - 1) + firstElementIndexStr;
 }
 
+void YCPSWASYN::loadConfiguration()
+{
+	std::ifstream loadFile;	
+
+	loadFile.open(loadConfigFileName.c_str());
+
+	if (!loadFile.is_open())
+	{
+		setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_ERROR, PROCESS_CONFIG_MASK);
+		//callParamCallbacks(DEV_CONFIG);
+		return;		
+	}
+
+	setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_PROCESSING, PROCESS_CONFIG_MASK);
+	callParamCallbacks(DEV_CONFIG);
+	
+	YAML::Node conf(YAML::LoadFile(loadConfigFileName.c_str()));
+	p_->loadConfigFromYaml(conf);
+	
+	loadFile.close();
+
+	setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_SUCCESS, PROCESS_CONFIG_MASK);
+	//callParamCallbacks(DEV_CONFIG);
+}
+
+void YCPSWASYN::saveConfiguration()
+{
+	std::ofstream saveFile;	
+
+
+	saveFile.open(saveConfigFileName.c_str());
+
+	if (!saveFile.is_open())
+	{
+		setUIntDigitalParam(DEV_CONFIG, saveConfigStatusValue_, CONFIG_STAT_ERROR, PROCESS_CONFIG_MASK);
+		//callParamCallbacks(DEV_CONFIG);
+		return;
+	}
+
+	setUIntDigitalParam(DEV_CONFIG, saveConfigStatusValue_, CONFIG_STAT_PROCESSING, PROCESS_CONFIG_MASK);
+	callParamCallbacks(DEV_CONFIG);
+
+	YAML::Node n;
+   	p_->dumpConfigToYaml(n);
+    saveFile << n << std::endl;
+
+	saveFile.close();
+
+	setUIntDigitalParam(DEV_CONFIG, saveConfigStatusValue_, CONFIG_STAT_SUCCESS, PROCESS_CONFIG_MASK);
+	//callParamCallbacks(DEV_CONFIG);
+
+}
+
 /////////////////////////////////////////////
 // + Methods overrided from asynPortDriver //
 /////////////////////////////////////////////
@@ -975,6 +1087,15 @@ asynStatus YCPSWASYN::writeInt32(asynUser *pasynUser, epicsInt32 value)
 				rw[function]->setVal((uint32_t*)&value, 1);
 			else if (addr == DEV_CMD)
 				cmd[function]->execute();
+			else if (addr == DEV_CONFIG)
+			{
+				if (function == saveConfigValue_)
+					saveConfiguration();
+				else if (function == loadConfigValue_)
+					loadConfiguration();
+				else
+					status = asynPortDriver::writeInt32(pasynUser, value);
+			}
 			else
 				status = -1;
 		}
@@ -1259,6 +1380,24 @@ asynStatus YCPSWASYN::writeOctet (asynUser *pasynUser, const char *value, size_t
 
 				if (*nActual <= 0)
 						status = -1;
+			}
+			else if (addr == DEV_CONFIG)
+			{
+				if (function == saveConfigFileValue_)
+				{
+					saveConfigFileName = std::string(value);
+					printf("Save configuration file name = %s\n", saveConfigFileName.c_str());
+					*nActual = maxChars;
+				}
+				else if (function == loadConfigFileValue_)
+				{
+					loadConfigFileName = std::string(value);
+					printf("Load configuration file name = %s\n", loadConfigFileName.c_str());
+					*nActual = maxChars;
+				}
+				else
+					status = writeOctet (pasynUser, value, maxChars, nActual);
+
 			}
 			else
 				status = -1;
@@ -1554,7 +1693,6 @@ extern "C" int YCPSWASYNConfig(const char *portName, const char *yaml_doc, const
 		printf("ERROR! Record name length (%d) must be greater lenght of prefix (%zu) + 4\n\n", recordNameLenMax, strlen(recordPrefix));
 		return asynError;
 	}
-
 
 	status = YCPSWASYN::YCPSWASYNInit(yaml_doc, &p, ipAddr);
   
