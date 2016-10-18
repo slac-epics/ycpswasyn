@@ -3,6 +3,7 @@ record(ao, "$(P):loadConfig") {
   field(DTYP, "asynInt32")
   field(SCAN, "Passive")
   field(OUT, "@asyn($(PORT),$(ADDR))CONFIG_LOAD")
+  info(asyn:READBACK, "1")
 }
 
 record(ao, "$(P):saveConfig") {
@@ -10,6 +11,7 @@ record(ao, "$(P):saveConfig") {
   field(DTYP, "asynInt32")
   field(SCAN, "Passive")
   field(OUT, "@asyn($(PORT),$(ADDR))CONFIG_SAVE")
+  info(asyn:READBACK, "1")
 }
 
 record(stringout, "$(P):saveConfigFile") {

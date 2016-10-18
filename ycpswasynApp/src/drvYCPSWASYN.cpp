@@ -1010,57 +1010,73 @@ std::string YCPSWASYN::generateRecordName(const Path& p)
 	return resultPrefix.substr(0, recordNameLenMax_ - strlen(recordPrefix_) - DB_NAME_SUFIX_LENGHT - firstElementIndexStr.length() - 1) + firstElementIndexStr;
 }
 
+/////////////////////////////////////////
+// void YCPSWASYN::loadConfiguration() //
+//                                     //
+// - Load configurtion from YAML       //
+/////////////////////////////////////////
 void YCPSWASYN::loadConfiguration()
 {
 	std::ifstream loadFile;	
 
+	// Try to open file
 	loadFile.open(loadConfigFileName.c_str());
 
 	if (!loadFile.is_open())
 	{
+		// If unsuccessfull, update status and return
 		setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_ERROR, PROCESS_CONFIG_MASK);
-		//callParamCallbacks(DEV_CONFIG);
 		return;		
 	}
 
+	// Once file is open, update status
 	setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_PROCESSING, PROCESS_CONFIG_MASK);
 	callParamCallbacks(DEV_CONFIG);
 	
+	// Load configuration
 	YAML::Node conf(YAML::LoadFile(loadConfigFileName.c_str()));
 	p_->loadConfigFromYaml(conf);
 	
+	// Close file
 	loadFile.close();
 
+	// Update status
 	setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_SUCCESS, PROCESS_CONFIG_MASK);
-	//callParamCallbacks(DEV_CONFIG);
 }
 
+/////////////////////////////////////////
+// void YCPSWASYN::saveConfiguration() //
+//                                     //
+// - Save configurtion to YAML         //
+/////////////////////////////////////////
 void YCPSWASYN::saveConfiguration()
 {
 	std::ofstream saveFile;	
 
-
+	// Try to open file
 	saveFile.open(saveConfigFileName.c_str());
 
 	if (!saveFile.is_open())
 	{
+		// If unsuccessfull, update status and return
 		setUIntDigitalParam(DEV_CONFIG, saveConfigStatusValue_, CONFIG_STAT_ERROR, PROCESS_CONFIG_MASK);
-		//callParamCallbacks(DEV_CONFIG);
 		return;
 	}
 
+	// Once file is open, update status
 	setUIntDigitalParam(DEV_CONFIG, saveConfigStatusValue_, CONFIG_STAT_PROCESSING, PROCESS_CONFIG_MASK);
 	callParamCallbacks(DEV_CONFIG);
 
+	// Save configuration
 	YAML::Node n;
    	p_->dumpConfigToYaml(n);
     saveFile << n << std::endl;
 
+    // Close file
 	saveFile.close();
 
+	// Update status
 	setUIntDigitalParam(DEV_CONFIG, saveConfigStatusValue_, CONFIG_STAT_SUCCESS, PROCESS_CONFIG_MASK);
-	//callParamCallbacks(DEV_CONFIG);
-
 }
 
 /////////////////////////////////////////////
@@ -1081,6 +1097,7 @@ asynStatus YCPSWASYN::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
 	if (!getParamName(addr, function, &name))
 	{
+
 		try
 		{
 			if (addr == DEV_REG_RW)
@@ -1097,12 +1114,14 @@ asynStatus YCPSWASYN::writeInt32(asynUser *pasynUser, epicsInt32 value)
 					status = asynPortDriver::writeInt32(pasynUser, value);
 			}
 			else
-				status = -1;
+				status = asynPortDriver::writeInt32(pasynUser, value);
 		}
 		catch (CPSWError &e)
 		{
 			asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
 		}
+		
+
 
 		if (status == 0)
 		{
@@ -1113,8 +1132,8 @@ asynStatus YCPSWASYN::writeInt32(asynUser *pasynUser, epicsInt32 value)
 		else
 		{
 			asynPrint(pasynUser, ASYN_TRACE_ERROR, \
-						"%s:%s(%d), port %s ERROR setting parameter %s to %d\n", \
-						driverName_, functionName, function, this->portName, name, value);				
+						"%s:%s(%d), port %s ERROR setting parameter %s to %d (status = %d)\n", \
+						driverName_, functionName, function, this->portName, name, value, status);				
 		}
 
 	}
@@ -1140,66 +1159,51 @@ asynStatus YCPSWASYN::readInt32(asynUser *pasynUser, epicsInt32 *value)
 
 	if (!getParamName(addr, function, &name))
 	{
-
 		try
 		{
 			if (addr == DEV_REG_RO)
 			{
-				try
-				{
-					ro[function]->getVal(&u32, 1);
-				}
-				catch (CPSWError &e)
-				{
-					status = -1;
-					asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
-				}
+				ro[function]->getVal(&u32, 1);
+				*value = (epicsInt32)u32;
+				setIntegerParam(addr, function, (int)u32);
 			}
 			else if (addr == DEV_REG_RW)
 			{
-				try
-				{
-					rw[function]->getVal(&u32, 1);
-				}
-				catch (CPSWError &e)
-				{
-					status = -1;
-					asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
-				}
+				rw[function]->getVal(&u32, 1);
+				*value = (epicsInt32)u32;
+				setIntegerParam(addr, function, (int)u32);
 			}
 			else if (addr == DEV_CMD)
 			{
 				u32 = 0;
-				status = 0;
+				*value = (epicsInt32)u32;
+				setIntegerParam(addr, function, (int)u32);
 			}
 			else
-				status = -1;
+				status = asynPortDriver::readInt32(pasynUser, value);
 		}
 		catch (CPSWError &e)
 		{
 			status = -1;
 			asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
 		}
-
-		if (status == 0)
-		{
-			*value = (epicsInt32)u32;
-			setIntegerParam(addr, function, (int)u32);
-
-			asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
-						"%s:%s(%d), port %s read %d from register %s\n", \
-						driverName_, functionName, function, this->portName, *value, name);
-		}
-		else
-		{
-			asynPrint(pasynUser, ASYN_TRACE_ERROR, \
-						"%s:%s(%d), port %s ERROR reading register %s\n", \
-								driverName_, functionName, function, this->portName, name);
-		}
 	}
 	else
 		status = asynPortDriver::readInt32(pasynUser, value);
-     
+    
+    if (status == 0)
+	{
+		asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
+					"%s:%s(%d), port %s read %d from parameter %s\n", \
+					driverName_, functionName, function, this->portName, *value, name);
+	}
+	else
+	{
+		asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+					"%s:%s(%d), port %s ERROR reading parameter %s (status = %d)\n", \
+					driverName_, functionName, function, this->portName, name, status);
+	}
+
 	callParamCallbacks(addr);
      
   	return (status==0) ? asynSuccess : asynError;
@@ -1224,32 +1228,30 @@ asynStatus YCPSWASYN::writeInt32Array(asynUser *pasynUser, epicsInt32 *value, si
 			if (addr == DEV_REG_RW)
 				n = rw[function]->setVal((uint32_t*)value, nElements, &range);
 			else
-				status = -1;
+				status = asynPortDriver::writeInt32Array(pasynUser, value, nElements);
 		}
 		catch (CPSWError &e)
 		{
 			status = -1;
 			asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
 		}
-
-		if (status == 0)
-		{
-			asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
-						"%s:%s(%d), port %s set new content on parameter %s. Requested = %zu, written = %zu\n", \
-						driverName_, functionName, function, this->portName, name, nElements, n);
-		}
-		else
-		{
-			asynPrint(pasynUser, ASYN_TRACE_ERROR, \
-						"%s:%s(%d), port %s ERROR setting parameter %s. Requested = %zu\n", \
-						driverName_, functionName, function, this->portName, name, nElements);				
-
-		}
-
 	}
 	else
-
 		status = asynPortDriver::writeInt32Array(pasynUser, value, nElements);
+
+	if (status == 0)
+	{
+		asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
+					"%s:%s(%d), port %s set new content on parameter %s. Requested = %zu, written = %zu\n", \
+					driverName_, functionName, function, this->portName, name, nElements, n);
+	}
+	else
+	{
+		asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+					"%s:%s(%d), port %s ERROR setting parameter %s. Requested = %zu (status = %d)\n", \
+					driverName_, functionName, function, this->portName, name, nElements, status);				
+	}
+
 
 	return (status==0) ? asynSuccess : asynError;
 
@@ -1270,114 +1272,116 @@ asynStatus YCPSWASYN::readInt32Array(asynUser *pasynUser, epicsInt32 *value, siz
 		try
 		{
 			if (addr == DEV_REG_RO)
+			{
 				ro[function]->getVal(buffer, nElements);
+				std::copy(buffer, buffer+nElements, value);
+				*nIn = nElements;
+			}
 			else if (addr == DEV_REG_RW)
+			{
 				rw[function]->getVal(buffer, nElements);
+				std::copy(buffer, buffer+nElements, value);
+				*nIn = nElements;
+			}
 			else
-				status = -1;
+				status = asynPortDriver::readInt32Array(pasynUser, value, nElements, nIn);
 		}
 		catch (CPSWError &e)
 		{
 			status = -1;
 			asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
 		}
-
-		if (status == 0)
-		{
-
-			std::copy(buffer, buffer+nElements, value);
-			*nIn = nElements;
-		
-			asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
-						"%s:%s(%d), port %s got parameter %s, requested = %zu, got = %zu\n", \
-						driverName_, functionName, function, this->portName, name, nElements, *nIn);
-		}
-		else
-		{
-			asynPrint(pasynUser, ASYN_TRACE_ERROR, \
-						"%s:%s(%d), port %s ERROR getting  parameter %s. Requested = %zu\n", \
-						driverName_, functionName, function, this->portName, name, nElements);
-		}
 	}
 	else
 		status = asynPortDriver::readInt32Array(pasynUser, value, nElements, nIn);
+
+	if (status == 0)
+	{
+		asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
+					"%s:%s(%d), port %s got parameter %s, requested = %zu, got = %zu\n", \
+					driverName_, functionName, function, this->portName, name, nElements, *nIn);
+	}
+	else
+	{
+		asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+					"%s:%s(%d), port %s ERROR getting  parameter %s. Requested = %zu (status = %d)\n", \
+					driverName_, functionName, function, this->portName, name, nElements, status);
+	}
   
 	return (status==0) ? asynSuccess : asynError;
 }
 
 asynStatus YCPSWASYN::readOctet(asynUser *pasynUser, char *value, size_t maxChars, size_t *nActual, int *eomReason)
 {
-        int addr;
-        int function = pasynUser->reason;
-        int status=0; 
-        const char *name;
-        static const char *functionName = "readOctet";
-        uint8_t *buffer = new uint8_t[maxChars];
-        this->getAddress(pasynUser, &addr);
+    int addr;
+    int function = pasynUser->reason;
+    int status=0; 
+    const char *name;
+    static const char *functionName = "readOctet";
+    uint8_t *buffer = new uint8_t[maxChars];
+    this->getAddress(pasynUser, &addr);
 
-        if (!getParamName(addr, function, &name))
+    if (!getParamName(addr, function, &name))
+	{
+		try
 		{
-			try
+			if (addr == DEV_REG_RO)
 			{
-				if (addr == DEV_REG_RO)
-					ro[function]->getVal(buffer, maxChars);
-				else if (addr == DEV_REG_RW)
-					rw[function]->getVal(buffer, maxChars);
-				else
-					status = -1;
-			}
-			catch (CPSWError &e)
-			{
-				status = -1;
-				asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
-			}
-			
-			if (status == 0)
-			{
+				ro[function]->getVal(buffer, maxChars);
 				std::copy(buffer, buffer+maxChars, value);
 				*nActual = maxChars;
-			
-				asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
-							"%s:%s(%d), port %s maxChars = %zu, nActual = %zu, eomReason %d\n", \
-							driverName_, functionName, function, this->portName, maxChars, *nActual, *eomReason);
+			}
+			else if (addr == DEV_REG_RW)
+			{
+				rw[function]->getVal(buffer, maxChars);
+				std::copy(buffer, buffer+maxChars, value);
+				*nActual = maxChars;
 			}
 			else
-			{
-				asynPrint(pasynUser, ASYN_TRACE_ERROR, \
-							"%s:%s(%d), port %s ERROR getting parameter %s. Requested = %zu\n", \
-							driverName_, functionName, function, this->portName, name, maxChars);
-			}
+				status = asynPortDriver::readOctet(pasynUser, value, maxChars, nActual, eomReason);
 		}
-        else
-                status = asynPortDriver::readOctet(pasynUser, value, maxChars, nActual, eomReason);
+		catch (CPSWError &e)
+		{
+			status = -1;
+			asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
+		}	
+	}
+    else
+        status = asynPortDriver::readOctet(pasynUser, value, maxChars, nActual, eomReason);
 
-        return (status==0) ? asynSuccess : asynError;
+    if (status == 0)
+	{
+		asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
+					"%s:%s(%d), port %s maxChars = %zu, nActual = %zu, eomReason %d\n", \
+					driverName_, functionName, function, this->portName, maxChars, *nActual, *eomReason);
+	}
+	else
+	{
+		asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+					"%s:%s(%d), port %s ERROR getting parameter %s. Requested = %zu (status = %d)\n", \
+					driverName_, functionName, function, this->portName, name, maxChars, status);
+	}
+
+    return (status==0) ? asynSuccess : asynError;
 }
 
 asynStatus YCPSWASYN::writeOctet (asynUser *pasynUser, const char *value, size_t maxChars, size_t *nActual)
 {
-	    int addr;
-        int function = pasynUser->reason;
-        int status=0;
-        const char *name;
-        static const char *functionName = "writeOctet";
-        this->getAddress(pasynUser, &addr);
-       	IndexRange range(0, maxChars-1);
+	int addr;
+    int function = pasynUser->reason;
+    int status=0;
+    const char *name;
+    static const char *functionName = "writeOctet";
+    this->getAddress(pasynUser, &addr);
+    IndexRange range(0, maxChars-1);
         
-        if (!getParamName(addr, function, &name))
+    if (!getParamName(addr, function, &name))
+	{
+		try
 		{
 			if (addr == DEV_REG_RW)
 			{
-				try
-				{
-					*nActual = (size_t)rw[function]->setVal((uint8_t*)value, maxChars, &range);
-				}
-				catch (CPSWError &e)
-				{
-					status = -1;
-					asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
-				}
-
+				*nActual = (size_t)rw[function]->setVal((uint8_t*)value, maxChars, &range);
 				if (*nActual <= 0)
 						status = -1;
 			}
@@ -1397,28 +1401,33 @@ asynStatus YCPSWASYN::writeOctet (asynUser *pasynUser, const char *value, size_t
 				}
 				else
 					status = writeOctet (pasynUser, value, maxChars, nActual);
-
 			}
 			else
-				status = -1;
-
-			if (status == 0)
-			{
-				asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
-							"%s:%s(%d), port %s set new content on parameter %s. Requested = %zu, written = %zu\n", \
-							driverName_, functionName, function, this->portName, name, maxChars, *nActual);
-			}
-			else
-			{
-				asynPrint(pasynUser, ASYN_TRACE_ERROR, \
-							"%s:%s(%d), port %s ERROR setting parameter %s. Requested = %zu\n", \
-							driverName_, functionName, function, this->portName, name, maxChars);
-			}
+				status = writeOctet (pasynUser, value, maxChars, nActual);
 		}
-		else
-			status = writeOctet (pasynUser, value, maxChars, nActual);
+		catch (CPSWError &e)
+		{
+			status = -1;
+			asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
+		}
+	}
+	else
+		status = writeOctet (pasynUser, value, maxChars, nActual);
 
-		return (status==0) ? asynSuccess : asynError;
+	if (status == 0)
+	{
+		asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
+					"%s:%s(%d), port %s set new content on parameter %s. Requested = %zu, written = %zu\n", \
+					driverName_, functionName, function, this->portName, name, maxChars, *nActual);
+	}
+	else
+	{
+		asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+					"%s:%s(%d), port %s ERROR setting parameter %s. Requested = %zu (status = %d)\n", \
+					driverName_, functionName, function, this->portName, name, maxChars, status);
+	}
+
+	return (status==0) ? asynSuccess : asynError;
 }
 
 
@@ -1438,36 +1447,41 @@ asynStatus YCPSWASYN::readFloat64Array(asynUser *pasynUser, epicsFloat64 *value,
 		try
 		{
 			if (addr == DEV_REG_RO)
+			{
 				ro[function]->getVal(buffer, nElements);
+				std::copy(buffer, buffer+nElements, value);
+				*nIn = nElements;
+			}
 			else if (addr == DEV_REG_RW)
+			{
 				rw[function]->getVal(buffer, nElements);
+				std::copy(buffer, buffer+nElements, value);
+				*nIn = nElements;
+			}
 			else
-				status = -1;
+				status = asynPortDriver::readFloat64Array(pasynUser, value, nElements, nIn);
 		}
 		catch (CPSWError &e)
 		{
 			status = -1;
 			asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
 		}
-
-		if (status == 0)
-		{
-			std::copy(buffer, buffer+nElements, value);
-			*nIn = nElements;
-			
-			asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
-						"%s:%s(%d), port %s get parameter %s. Requested = %zu, got = %zu\n", \
-						driverName_, functionName, function, this->portName, name, nElements, *nIn);
-		}
-		else
-		{
-			asynPrint(pasynUser, ASYN_TRACE_ERROR, \
-						"%s:%s(%d), port %s ERROR getting parameter %s. Requested = %zu\n", \
-						driverName_, functionName, function, this->portName, name, nElements);
-		}
 	}
 	else
 		status = asynPortDriver::readFloat64Array(pasynUser, value, nElements, nIn);
+
+	if (status == 0)
+	{
+		asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
+					"%s:%s(%d), port %s get parameter %s. Requested = %zu, got = %zu\n", \
+					driverName_, functionName, function, this->portName, name, nElements, *nIn);
+	}
+	else
+	{
+		asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+					"%s:%s(%d), port %s ERROR getting parameter %s. Requested = %zu (status = %d)\n", \
+					driverName_, functionName, function, this->portName, name, nElements, status);
+	}
      
 	callParamCallbacks();
      
@@ -1495,29 +1509,29 @@ asynStatus YCPSWASYN::writeFloat64Array(asynUser *pasynUser, epicsFloat64 *value
 			if (addr == DEV_REG_RW)
 				n = rw[function]->setVal((uint32_t*)value, nElements, &range);
 			else
-				status = -1;
+				status = asynPortDriver::writeFloat64Array(pasynUser, value, nElements);
 		}
 		catch (CPSWError &e)
 		{
 			status = -1;
 			asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
 		}
-
-		if (status == 0)
-		{
-			asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
-						"%s:%s(%d), port %s set new content on parameter %s. Requested = %zu, written = %zu\n", \
-						driverName_, functionName, function, this->portName, name, nElements, n);
-		}
-		else
-		{
-			asynPrint(pasynUser, ASYN_TRACE_ERROR, \
-						"%s:%s(%d), port %s ERROR setting parameter %s. Requested = %zu\n", \
-						driverName_, functionName, function, this->portName, name, nElements);
-		}
 	}
 	else
 		status = asynPortDriver::writeFloat64Array(pasynUser, value, nElements);
+
+	if (status == 0)
+	{
+		asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
+					"%s:%s(%d), port %s set new content on parameter %s. Requested = %zu, written = %zu\n", \
+					driverName_, functionName, function, this->portName, name, nElements, n);
+	}
+	else
+	{
+		asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+					"%s:%s(%d), port %s ERROR setting parameter %s. Requested = %zu (status = %d)\n", \
+					driverName_, functionName, function, this->portName, name, nElements, status);
+	}
      
 	callParamCallbacks();
      
@@ -1549,29 +1563,28 @@ asynStatus YCPSWASYN::writeUInt32Digital (asynUser *pasynUser, epicsUInt32 value
 				rw[function]->setVal((uint32_t*)&val, 1);
 			}
 			else
-				status = -1;
+				status = asynPortDriver::writeUInt32Digital(pasynUser, value, mask);
 		}
 		catch (CPSWError &e)
 		{
 			asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
 		}
-
-		if (status == 0)
-		{
-			asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
-						"%s:%s(%d), port %s parameter %s set to %d\n", \
-						driverName_, functionName, function, this->portName, name, value);
-		}
-		else
-		{
-			asynPrint(pasynUser, ASYN_TRACE_ERROR, \
-						"%s:%s(%d), port %s ERROR setting parameter %s to %d\n", \
-						driverName_, functionName, function, this->portName, name, value);				
-		}
-
 	}
    	else
 		status = asynPortDriver::writeUInt32Digital(pasynUser, value, mask);
+
+	if (status == 0)
+	{
+		asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
+					"%s:%s(%d), port %s parameter %s set to %d\n", \
+					driverName_, functionName, function, this->portName, name, value);
+	}
+	else
+	{
+		asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+					"%s:%s(%d), port %s ERROR setting parameter %s to %d (status = %d)\n", \
+					driverName_, functionName, function, this->portName, name, value, status);				
+	}
     
 	callParamCallbacks(addr);
  
@@ -1596,56 +1609,42 @@ asynStatus YCPSWASYN::readUInt32Digital (asynUser *pasynUser, epicsUInt32 *value
 		{
 			if (addr == DEV_REG_RO)
 			{
-				try
-				{
-					ro[function]->getVal(&u32, 1);
-				}
-				catch (CPSWError &e)
-				{
-					status = -1;
-					asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
-				}
+				ro[function]->getVal(&u32, 1);
+				u32 &= mask;
+				*value = (epicsInt32)u32;
+				setUIntDigitalParam(addr, function, (epicsUInt32)u32, mask);
 			}
 			else if (addr == DEV_REG_RW)
 			{
-				try
-				{
-					rw[function]->getVal(&u32, 1);
-				}
-				catch (CPSWError &e)
-				{
-					status = -1;
-					asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
-				}
+				rw[function]->getVal(&u32, 1);
+				u32 &= mask;
+				*value = (epicsInt32)u32;
+				setUIntDigitalParam(addr, function, (epicsUInt32)u32, mask);
 			}
 			else
-				status = -1;
+				status = asynPortDriver::readUInt32Digital(pasynUser, value, mask);
 		}
 		catch (CPSWError &e)
 		{
 			status = -1;
 			asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
 		}
-
-		if (status == 0)
-		{
-			u32 &= mask;
-			*value = (epicsInt32)u32;
-			setUIntDigitalParam(addr, function, (epicsUInt32)u32, mask);
-
-			asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
-						"%s:%s(%d), port %s read %d from register %s\n", \
-						driverName_, functionName, function, this->portName, *value, name);
-		}
-		else
-		{
-			asynPrint(pasynUser, ASYN_TRACE_ERROR, \
-						"%s:%s(%d), port %s ERROR reading register %s\n", \
-								driverName_, functionName, function, this->portName, name);
-		}
 	}
 	else
 		status = asynPortDriver::readUInt32Digital(pasynUser, value, mask);
+
+	if (status == 0)
+	{
+		asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
+					"%s:%s(%d), port %s read %d from parameter %s\n", \
+					driverName_, functionName, function, this->portName, *value, name);
+	}
+	else
+	{
+		asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+					"%s:%s(%d), port %s ERROR reading parameter %s (status = %d)\n", \
+							driverName_, functionName, function, this->portName, name, status);
+	}
      
 	callParamCallbacks(addr);
      

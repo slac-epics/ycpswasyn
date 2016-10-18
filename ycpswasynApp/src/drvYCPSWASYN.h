@@ -204,14 +204,14 @@ class YCPSWASYN : public asynPortDriver {
 		std::ofstream		regDumpFile;				// File with the list of registers
 		std::ofstream 		keysNotFoundFile;			// File with the name of elements not found on the substitution map
 		std::map<std::string, std::string> mapTop, map;	// Substitution maps
-		int loadConfigValue_;
-		int saveConfigValue_;
-		int loadConfigFileValue_;
-		int saveConfigFileValue_;
-		int loadConfigStatusValue_;
-		int saveConfigStatusValue_;
-		std::string 	saveConfigFileName;
-		std::string 	loadConfigFileName;
+		int 				loadConfigValue_;			// Load configuration parameter index
+		int 				saveConfigValue_;			// Save configuration parameter index
+		int 				loadConfigFileValue_;		// Save configuration file name parameter index
+		int 				saveConfigFileValue_;		// Load configuration file name parameter index
+		int 				loadConfigStatusValue_;		// Load configuration status parameter index
+		int 				saveConfigStatusValue_;		// Save configuration status parameter index
+		std::string 		saveConfigFileName;			// Save configuration file name
+		std::string 		loadConfigFileName;			// Load configuration file name
 
 		// Write list of register to file
 		void dumpRegisterMap(const Path& p);
@@ -245,7 +245,10 @@ class YCPSWASYN : public asynPortDriver {
 		// Extract record parameters related to MBBx records
 		std::string extractMbbxDbParams(const Enum& isEnum);
 
+		// Load configuration from YAML
 		void loadConfiguration();
+
+		// Save configuration to YAML
 		void saveConfiguration();
 
 };
