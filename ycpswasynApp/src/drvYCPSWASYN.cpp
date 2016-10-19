@@ -393,7 +393,6 @@ int YCPSWASYN::LoadRecord(int regType, const recordParams& rp, const string& dbP
 	dbParamsLocal << ",P=" << recordPrefix_;
 	dbParamsLocal << ",R=" << rp.recName;
 	dbParamsLocal << ",PARAM=" << rp.paramName;
-	//dbParamsLocal << ",DESC=\"" << rp.recDesc.substr(0, DB_DESC_LENGTH_MAX) << "\"";
 	dbParamsLocal << ",DESC=" << rp.recDesc;
 	dbParamsLocal << dbParams;
 	
@@ -686,7 +685,7 @@ void YCPSWASYN::CreateRecord(const Command& reg, const Path& p_)
     pName << string(c->getName()).substr(0, 10) << recordCount;
 	trp.paramName = pName.str();
 	// + record description field
-	trp.recDesc = string(c->getDescription());
+	trp.recDesc = string("\"") + string(c->getDescription()).substr(0, DB_DESC_LENGTH_MAX) + string("\"");
 	// + parameter type
 	trp.paramType = asynParamInt32;
 	// + record template 
@@ -721,7 +720,7 @@ void YCPSWASYN::CreateRecord(const Stream& reg, const Path& p_)
     pName << string(c->getName()).substr(0, 10) << recordCount;
 	trp.paramName = pName.str();
 	// + record description field
-	trp.recDesc = string(c->getDescription());
+	trp.recDesc = string("\"") + string(c->getDescription()).substr(0, DB_DESC_LENGTH_MAX) + string("\"");
 	// + parameter type
 	trp.paramType = asynParamInt32;
 	// + record template 
