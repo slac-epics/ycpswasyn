@@ -3,10 +3,10 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 1391
-y 796
-w 510
-h 350
+x 1393
+y 822
+w 300
+h 290
 font "helvetica-medium-r-18.0"
 ctlFont "helvetica-medium-r-12.0"
 btnFont "helvetica-medium-r-18.0"
@@ -31,7 +31,26 @@ major 4
 minor 1
 release 1
 x 10
-y 10
+y 100
+w 86
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Status"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 50
 w 86
 h 40
 font "helvetica-bold-r-12.0"
@@ -43,17 +62,159 @@ value {
 }
 endObjectProperties
 
-# (Textentry)
+# (Text Entry)
 object TextentryClass
 beginObjectProperties
 major 10
 minor 0
 release 0
-x 90
-y 10
+x 80
+y 50
 w 200
 h 40
 controlPv "$(P):saveConfigFile"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 80
+y 100
+w 124
+h 40
+controlPv "$(P):saveConfigStatus"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 210
+y 100
+w 70
+h 40
+fgColor index 14
+onColor index 7
+offColor index 7
+inconsistentColor index 35
+topShadowColor index 37
+botShadowColor index 44
+controlPv "$(P):saveConfig"
+onLabel "Save"
+offLabel "Save"
+labelType "literal"
+font "helvetica-medium-r-18.0"
+objType "controls"
+controlBitPos 0
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 10
+w 270
+h 40
+font "helvetica-bold-r-18.0"
+fontAlign "center"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Save configuration"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 240
+w 86
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Status"
+}
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 80
+y 240
+w 124
+h 40
+controlPv "$(P):loadConfigStatus"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 210
+y 240
+w 70
+h 40
+fgColor index 14
+onColor index 7
+offColor index 7
+inconsistentColor index 35
+topShadowColor index 37
+botShadowColor index 44
+controlPv "$(P):loadConfig"
+onLabel "Load"
+offLabel "Load"
+labelType "literal"
+font "helvetica-medium-r-18.0"
+objType "controls"
+controlBitPos 0
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 80
+y 190
+w 200
+h 40
+controlPv "$(P):loadConfigFile"
 fgColor index 14
 bgColor index 0
 fill
@@ -67,7 +228,7 @@ major 4
 minor 1
 release 1
 x 10
-y 60
+y 190
 w 86
 h 40
 font "helvetica-bold-r-12.0"
@@ -75,50 +236,27 @@ fgColor index 14
 bgColor index 0
 useDisplayBg
 value {
-  "Status"
+  "File name"
 }
 endObjectProperties
 
-# (Textentry)
-object TextentryClass
-beginObjectProperties
-major 10
-minor 0
-release 0
-x 90
-y 60
-w 200
-h 40
-controlPv "$(P):saveConfigStatus"
-fgColor index 14
-bgColor index 0
-fill
-font "helvetica-medium-r-12.0"
-endObjectProperties
-
-# (Button)
-object activeButtonClass
+# (Static Text)
+object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
-x 14
-y 109
-w 70
+release 1
+x 10
+y 150
+w 270
 h 40
+font "helvetica-bold-r-18.0"
+fontAlign "center"
 fgColor index 14
-onColor index 7
-offColor index 7
-inconsistentColor index 35
-topShadowColor index 37
-botShadowColor index 44
-controlPv "$(P):saveConfig"
-onLabel "Save"
-offLabel "Save"
-labelType "literal"
-3d
-font "helvetica-medium-r-18.0"
-objType "controls"
-controlBitPos 0
+bgColor index 0
+useDisplayBg
+value {
+  "Load configuration"
+}
 endObjectProperties
 
