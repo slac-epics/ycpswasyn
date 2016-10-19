@@ -163,7 +163,7 @@ YCPSWASYN::YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int
 	// Print the counters
 	printf("nRO = %ld\nnRW = %ld\nnCMD = %ld\nnSTM = %ld\nrecordCount = %ld\n", nRO, nRW, nCMD, nSTM, recordCount);
 
-
+	// Create parameters and load records relted to save/load default funcitons
 	createParam(DEV_CONFIG, loadConfigString,		asynParamInt32,			&loadConfigValue_);
 	createParam(DEV_CONFIG, saveConfigString,		asynParamInt32,			&saveConfigValue_);
 	createParam(DEV_CONFIG, loadConfigFileString,	asynParamOctet, 		&loadConfigFileValue_);
@@ -177,7 +177,6 @@ YCPSWASYN::YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int
 	dbParamsLocal << ",ADDR=" << DEV_CONFIG;
 	dbParamsLocal << ",P=" << recordPrefix_;
 	dbLoadRecords("../../db/saveLoadConfig.template", dbParamsLocal.str().c_str());
-
 }
 
 ///////////////////////////////////

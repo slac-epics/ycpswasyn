@@ -17,7 +17,7 @@
 #include <cpsw_yaml.h>
 #include <yaml-cpp/yaml.h>
 
-#define DRIVER_NAME		"YCPSWASYN_v1"
+#define DRIVER_NAME		"YCPSWASYN"
 
 // Key and substitution string to look for when creating the record name from it path
 #define CARRIER_KEY		"CarrierCore"	// Carrier core 
