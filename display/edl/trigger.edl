@@ -3,10 +3,10 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 50
-y 72
+x 648
+y 505
 w 510
-h 450
+h 350
 font "helvetica-medium-r-18.0"
 ctlFont "helvetica-medium-r-12.0"
 btnFont "helvetica-medium-r-18.0"
@@ -19,6 +19,7 @@ ctlBgColor1 index 34
 ctlBgColor2 index 35
 topShadowColor index 37
 botShadowColor index 44
+title "DAQ"
 showGrid
 gridSize 5
 endScreenProperties
@@ -38,11 +39,11 @@ fgColor index 14
 bgColor index 0
 useDisplayBg
 value {
-  "Bay 0, Ch 0"
+  "Bay 0, ChSel"
 }
 endObjectProperties
 
-# (Textentry)
+# (Text Entry)
 object TextentryClass
 beginObjectProperties
 major 10
@@ -52,14 +53,14 @@ x 90
 y 10
 w 200
 h 40
-controlPv "$(P):A:Axi_0:S0ChannelSelect:St"
+controlPv "$(P):A:DM0:InputMuxSel:St"
 fgColor index 14
 bgColor index 0
 fill
 font "helvetica-medium-r-12.0"
 endObjectProperties
 
-# (Textupdate)
+# (Text Update)
 object TextupdateClass
 beginObjectProperties
 major 10
@@ -69,7 +70,7 @@ x 300
 y 10
 w 200
 h 40
-controlPv "$(P):A:Axi_0:S0ChannelSelect:Rd"
+controlPv "$(P):A:DM0:InputMuxSel:Rd"
 fgColor index 14
 fgAlarm
 bgColor index 0
@@ -92,11 +93,11 @@ fgColor index 14
 bgColor index 0
 useDisplayBg
 value {
-  "Bay 0, Ch 1"
+  "Bay 1, ChSel"
 }
 endObjectProperties
 
-# (Textentry)
+# (Text Entry)
 object TextentryClass
 beginObjectProperties
 major 10
@@ -106,14 +107,14 @@ x 90
 y 60
 w 200
 h 40
-controlPv "$(P):A:Axi_0:S1ChannelSelect:St"
+controlPv "$(P):A:DM1:InputMuxSel:St"
 fgColor index 14
 bgColor index 0
 fill
 font "helvetica-medium-r-12.0"
 endObjectProperties
 
-# (Textupdate)
+# (Text Update)
 object TextupdateClass
 beginObjectProperties
 major 10
@@ -123,7 +124,7 @@ x 300
 y 60
 w 200
 h 40
-controlPv "$(P):A:Axi_0:S1ChannelSelect:Rd"
+controlPv "$(P):A:DM1:InputMuxSel:Rd"
 fgColor index 14
 fgAlarm
 bgColor index 0
@@ -146,11 +147,11 @@ fgColor index 14
 bgColor index 0
 useDisplayBg
 value {
-  "Bay 1, Ch 0"
+  "Bay 0, Size"
 }
 endObjectProperties
 
-# (Textentry)
+# (Text Entry)
 object TextentryClass
 beginObjectProperties
 major 10
@@ -160,14 +161,14 @@ x 90
 y 110
 w 200
 h 40
-controlPv "$(P):A:Axi_1:S0ChannelSelect:St"
+controlPv "$(P):A:DM0:DaqSize:St"
 fgColor index 14
 bgColor index 0
 fill
 font "helvetica-medium-r-12.0"
 endObjectProperties
 
-# (Textupdate)
+# (Text Update)
 object TextupdateClass
 beginObjectProperties
 major 10
@@ -177,9 +178,44 @@ x 300
 y 110
 w 200
 h 40
-controlPv "$(P):A:Axi_1:S0ChannelSelect:Rd"
+controlPv "$(P):A:DM0:DataBufferSize:Rd"
 fgColor index 14
 fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Update)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 300
+y 160
+w 200
+h 40
+controlPv "$(P):A:DM1:DataBufferSize:Rd"
+fgColor index 14
+fgAlarm
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Text Entry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 90
+y 160
+w 200
+h 40
+controlPv "$(P):A:DM1:DaqSize:St"
+fgColor index 14
 bgColor index 0
 fill
 font "helvetica-medium-r-12.0"
@@ -200,150 +236,7 @@ fgColor index 14
 bgColor index 0
 useDisplayBg
 value {
-  "Bay 1, Ch 1"
-}
-endObjectProperties
-
-# (Textentry)
-object TextentryClass
-beginObjectProperties
-major 10
-minor 0
-release 0
-x 90
-y 160
-w 200
-h 40
-controlPv "$(P):A:Axi_1:S1ChannelSelect:St"
-fgColor index 14
-bgColor index 0
-fill
-font "helvetica-medium-r-12.0"
-endObjectProperties
-
-# (Textupdate)
-object TextupdateClass
-beginObjectProperties
-major 10
-minor 0
-release 0
-x 300
-y 160
-w 200
-h 40
-controlPv "$(P):A:Axi_1:S1ChannelSelect:Rd"
-fgColor index 14
-fgAlarm
-bgColor index 0
-fill
-font "helvetica-medium-r-12.0"
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 10
-y 210
-w 86
-h 40
-font "helvetica-bold-r-12.0"
-fgColor index 14
-bgColor index 0
-useDisplayBg
-value {
-  "Bay 0, Buffer Size"
-}
-endObjectProperties
-
-# (Textentry)
-object TextentryClass
-beginObjectProperties
-major 10
-minor 0
-release 0
-x 90
-y 210
-w 200
-h 40
-controlPv "$(P):B0:DaqSize"
-fgColor index 14
-bgColor index 0
-fill
-font "helvetica-medium-r-12.0"
-endObjectProperties
-
-# (Textupdate)
-object TextupdateClass
-beginObjectProperties
-major 10
-minor 0
-release 0
-x 300
-y 210
-w 200
-h 40
-controlPv "$(P):A:Axi_0:DaqBufferSize:Rd"
-fgColor index 14
-fgAlarm
-bgColor index 0
-fill
-font "helvetica-medium-r-12.0"
-endObjectProperties
-
-# (Textupdate)
-object TextupdateClass
-beginObjectProperties
-major 10
-minor 0
-release 0
-x 300
-y 260
-w 200
-h 40
-controlPv "$(P):A:Axi_1:DaqBufferSize:Rd"
-fgColor index 14
-fgAlarm
-bgColor index 0
-fill
-font "helvetica-medium-r-12.0"
-endObjectProperties
-
-# (Textentry)
-object TextentryClass
-beginObjectProperties
-major 10
-minor 0
-release 0
-x 90
-y 260
-w 200
-h 40
-controlPv "$(P):B1:DaqSize"
-fgColor index 14
-bgColor index 0
-fill
-font "helvetica-medium-r-12.0"
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 1
-release 1
-x 10
-y 260
-w 86
-h 40
-font "helvetica-bold-r-12.0"
-fgColor index 14
-bgColor index 0
-useDisplayBg
-value {
-  "Bay 1, Buffer Size"
+  "Bay 1, Size"
 }
 endObjectProperties
 
@@ -354,7 +247,7 @@ major 4
 minor 1
 release 0
 x 155
-y 330
+y 230
 w 200
 h 40
 fgColor index 14
@@ -363,11 +256,10 @@ offColor index 7
 inconsistentColor index 35
 topShadowColor index 37
 botShadowColor index 44
-controlPv "$(P):TriggerDaq"
+controlPv "$(P):P:TrigDaq:Ex"
 onLabel "Soft Trigger"
 offLabel "Soft Trigger"
 labelType "literal"
-buttonType "push"
 3d
 font "helvetica-medium-r-18.0"
 objType "controls"
@@ -381,7 +273,7 @@ major 4
 minor 4
 release 0
 x 50
-y 400
+y 300
 w 200
 h 40
 fgColor index 14
@@ -391,24 +283,36 @@ botShadowColor index 12
 font "helvetica-medium-r-12.0"
 buttonLabel "waveforms (as 16-bit data)"
 numPvs 4
-numDsps 4
+numDsps 8
 displayFileName {
   0 "stream.edl"
   1 "stream.edl"
   2 "stream.edl"
   3 "stream.edl"
+  4 "stream.edl"
+  5 "stream.edl"
+  6 "stream.edl"
+  7 "stream.edl"
 }
 menuLabel {
   0 "$(P):Stream0"
   1 "$(P):Stream1"
   2 "$(P):Stream2"
   3 "$(P):Stream3"
+  4 "$(P):Stream4"
+  5 "$(P):Stream5"
+  6 "$(P):Stream6"
+  7 "$(P):Stream7"
 }
 symbols {
   0 "P=$(P),R=Stream0:16"
   1 "P=$(P),R=Stream1:16"
   2 "P=$(P),R=Stream2:16"
   3 "P=$(P),R=Stream3:16"
+  4 "P=$(P),R=Stream4:16"
+  5 "P=$(P),R=Stream5:16"
+  6 "P=$(P),R=Stream6:16"
+  7 "P=$(P),R=Stream7:16"
 }
 icon
 endObjectProperties
@@ -420,7 +324,7 @@ major 4
 minor 4
 release 0
 x 260
-y 400
+y 300
 w 200
 h 40
 fgColor index 14
@@ -430,24 +334,36 @@ botShadowColor index 12
 font "helvetica-medium-r-12.0"
 buttonLabel "waveforms (as 32-bit data)"
 numPvs 4
-numDsps 4
+numDsps 8
 displayFileName {
   0 "stream.edl"
   1 "stream.edl"
   2 "stream.edl"
   3 "stream.edl"
+  4 "stream.edl"
+  5 "stream.edl"
+  6 "stream.edl"
+  7 "stream.edl"
 }
 menuLabel {
   0 "$(P):Stream0"
   1 "$(P):Stream1"
-  2 "$(P):Stream2
+  2 "$(P):Stream2"
   3 "$(P):Stream3"
+  4 "$(P):Stream4"
+  5 "$(P):Stream5"
+  6 "$(P):Stream6"
+  7 "$(P):Stream7"
 }
 symbols {
   0 "P=$(P),R=Stream0:32"
   1 "P=$(P),R=Stream1:32"
   2 "P=$(P),R=Stream2:32"
   3 "P=$(P),R=Stream3:32"
+  4 "P=$(P),R=Stream4:32"
+  5 "P=$(P),R=Stream5:32"
+  6 "P=$(P),R=Stream6:32"
+  7 "P=$(P),R=Stream7:32"
 }
 icon
 endObjectProperties

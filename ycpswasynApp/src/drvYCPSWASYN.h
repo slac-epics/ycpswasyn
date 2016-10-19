@@ -17,7 +17,7 @@
 #include <cpsw_yaml.h>
 #include <yaml-cpp/yaml.h>
 
-#define DRIVER_NAME		"YCPSWASYN_v1"
+#define DRIVER_NAME		"YCPSWASYN"
 
 // Key and substitution string to look for when creating the record name from it path
 #define CARRIER_KEY		"CarrierCore"	// Carrier core 
@@ -45,6 +45,15 @@
 #define MAP_FILE_PATH				"../../yaml/"
 #define MAP_TOP_FILE_NAME			"map_top"
 #define MAP_FILE_NAME				"map"
+
+// These are the drvInfo strings that are used to identify the parameters.
+// They are used by asyn clients, including standard asyn device support
+#define loadConfigString     	"CONFIG_LOAD"
+#define saveConfigString 		"CONFIG_SAVE"
+#define loadConfigFileString	"CONFIG_LOAD_FILE"
+#define saveConfigFileString	"CONFIG_SAVE_FILE"
+#define loadConfigStatusString	"CONFIG_LOAD_STATUS"
+#define saveConfigStatusString	"CONFIG_SAVE_STATUS"
 
 // MBBx record menu value names
 char const *mbbxValParam[]
@@ -95,11 +104,22 @@ enum registerTypeList
 	DEV_REG_RW,
 	DEV_CMD,
 	DEV_STM,
-	SIZE
+	DEV_CONFIG,
+	DEV_SIZE
+};
+
+#define PROCESS_CONFIG_MASK		0x03
+enum processConfigurationStates
+{
+	CONFIG_STAT_IDLE,
+	CONFIG_STAT_PROCESSING,
+	CONFIG_STAT_SUCCESS,
+	CONFIG_STAT_ERROR,
+	CONFIGF_STAT_SIZE
 };
 
 // record template list
-const char *templateList[SIZE][4] = 
+const char *templateList[DEV_SIZE][4] = 
 {
 	{"../../db/ai.template", "../../db/mbbi.template", "../../db/waveform_in.template", "../../db/waveform_8_in.template"},		//DEV_REG_RO
 	{"../../db/ao.template", "../../db/mbbo.template", "../../db/waveform_out.template", "../../db/waveform_8_out.template"},	//DEV_REG_RW
@@ -108,12 +128,13 @@ const char *templateList[SIZE][4] =
 };
 
 // record name sufix list (must be form by DB_NAME_SUFIX_LENGHT chars only)
-const char *recordSufix[SIZE] = 
+const char *recordSufix[DEV_SIZE] = 
 {
 	":Rd", 	// DEV_REG_RO
 	":St",	// DEV_REG_RW
 	":Ex",	// DEV_CMD
-	""	// DEV_STM
+	""		// DEV_STM
+	""		// DEV_CONFIG
 };
 
 // Argument list passed to the stream handling thread
@@ -135,7 +156,7 @@ struct recordParams
 	asynParamType paramType;
 };
 
-#define MAX_SIGNALS			((int)registerTypeList(SIZE))	// Max number of parameter list (size of register type list)
+#define MAX_SIGNALS			((int)DEV_SIZE)					// Max number of parameter list (size of register type list)
 #define	NUM_SCALVALS		5000							// Max number of ScalVals
 #define NUM_CMD				500								// Max number of commands
 #define NUM_PARAMS			(NUM_SCALVALS + NUM_CMD)		// Max number of paramters
@@ -166,7 +187,8 @@ class YCPSWASYN : public asynPortDriver {
 
 		// Initialization routine
 		static int YCPSWASYNInit(const char *yaml_doc, Path *p, const char *ipAddr);
-			
+		
+
 	private:
 		const char 			*driverName_;				// Name of the driver (passed from st.cmd)
 		Path 				p_;							// Path on root
@@ -182,6 +204,14 @@ class YCPSWASYN : public asynPortDriver {
 		std::ofstream		regDumpFile;				// File with the list of registers
 		std::ofstream 		keysNotFoundFile;			// File with the name of elements not found on the substitution map
 		std::map<std::string, std::string> mapTop, map;	// Substitution maps
+		int 				loadConfigValue_;			// Load configuration parameter index
+		int 				saveConfigValue_;			// Save configuration parameter index
+		int 				loadConfigFileValue_;		// Save configuration file name parameter index
+		int 				saveConfigFileValue_;		// Load configuration file name parameter index
+		int 				loadConfigStatusValue_;		// Load configuration status parameter index
+		int 				saveConfigStatusValue_;		// Save configuration status parameter index
+		std::string 		saveConfigFileName;			// Save configuration file name
+		std::string 		loadConfigFileName;			// Load configuration file name
 
 		// Write list of register to file
 		void dumpRegisterMap(const Path& p);
@@ -215,7 +245,14 @@ class YCPSWASYN : public asynPortDriver {
 		// Extract record parameters related to MBBx records
 		std::string extractMbbxDbParams(const Enum& isEnum);
 
+		// Load configuration from YAML
+		void loadConfiguration();
+
+		// Save configuration to YAML
+		void saveConfiguration();
+
 };
 
 // Stream handling function caller
 void streamTaskC(ThreadArgs *arglist);
+

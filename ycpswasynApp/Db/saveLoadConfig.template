@@ -1,0 +1,69 @@
+record(ao, "$(P):loadConfig") {
+  field(DESC, "Load configuration from YAML")
+  field(DTYP, "asynInt32")
+  field(SCAN, "Passive")
+  field(OUT, "@asyn($(PORT),$(ADDR))CONFIG_LOAD")
+  info(asyn:READBACK, "1")
+}
+
+record(ao, "$(P):saveConfig") {
+  field(DESC, "Save configuration on YAML")
+  field(DTYP, "asynInt32")
+  field(SCAN, "Passive")
+  field(OUT, "@asyn($(PORT),$(ADDR))CONFIG_SAVE")
+  info(asyn:READBACK, "1")
+}
+
+record(stringout, "$(P):saveConfigFile") {
+  field(DESC, "Save configuration file name")
+  field(DTYP, "asynOctetWrite")
+  field(SCAN, "Passive")
+  field(OUT, "@asyn($(PORT),$(ADDR))CONFIG_SAVE_FILE")
+  field(VAL, "/tmp/configDump.yaml")
+  field(PINI, "YES")
+}
+
+record(stringout, "$(P):loadConfigFile") {
+  field(DESC, "Load configuration file name")
+  field(DTYP, "asynOctetWrite")
+  field(SCAN, "Passive")
+  field(OUT, "@asyn($(PORT),$(ADDR))CONFIG_LOAD_FILE")
+  field(VAL, "/tmp/configLoad.yaml")
+  field(PINI, "YES")
+}
+
+record(mbbi, "$(P):loadConfigStatus") {
+  field(DESC, "Load configuration status")
+  field(DTYP, "asynUInt32Digital")
+  field(SCAN, "I/O Intr")
+  field(INP, "@asynMask($(PORT),$(ADDR),0x03)CONFIG_LOAD_STATUS")
+  field(NOBT, "2")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(TWVL, "2")
+  field(THVL, "3")
+  field(ZRST, "Idle")
+  field(ONST, "Loading...")
+  field(TWST, "Loaded successfully")
+  field(THST, "Error while loading")
+  field(VAL,  "0")
+  field(PINI, "YES")
+}
+
+record(mbbi, "$(P):saveConfigStatus") {
+  field(DESC, "Load configuration status")
+  field(DTYP, "asynUInt32Digital")
+  field(SCAN, "I/O Intr")
+  field(INP, "@asynMask($(PORT),$(ADDR),0x03)CONFIG_SAVE_STATUS")
+  field(NOBT, "2")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(TWVL, "2")
+  field(THVL, "3")
+  field(ZRST, "Idle")
+  field(ONST, "Saving...")
+  field(TWST, "Saved successfully")
+  field(THST, "Error while saving")
+  field(VAL,  "0")
+  field(PINI, "YES")
+}
