@@ -1,0 +1,124 @@
+4 0 1
+beginScreenProperties
+major 4
+minor 0
+release 1
+x 1391
+y 796
+w 510
+h 350
+font "helvetica-medium-r-18.0"
+ctlFont "helvetica-medium-r-12.0"
+btnFont "helvetica-medium-r-18.0"
+fgColor index 14
+bgColor index 4
+textColor index 14
+ctlFgColor1 index 30
+ctlFgColor2 index 32
+ctlBgColor1 index 34
+ctlBgColor2 index 35
+topShadowColor index 37
+botShadowColor index 44
+title "DAQ"
+showGrid
+gridSize 5
+endScreenProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 10
+w 86
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "File name"
+}
+endObjectProperties
+
+# (Textentry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 90
+y 10
+w 200
+h 40
+controlPv "$(P):saveConfigFile"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 60
+w 86
+h 40
+font "helvetica-bold-r-12.0"
+fgColor index 14
+bgColor index 0
+useDisplayBg
+value {
+  "Status"
+}
+endObjectProperties
+
+# (Textentry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 90
+y 60
+w 200
+h 40
+controlPv "$(P):saveConfigStatus"
+fgColor index 14
+bgColor index 0
+fill
+font "helvetica-medium-r-12.0"
+endObjectProperties
+
+# (Button)
+object activeButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 14
+y 109
+w 70
+h 40
+fgColor index 14
+onColor index 7
+offColor index 7
+inconsistentColor index 35
+topShadowColor index 37
+botShadowColor index 44
+controlPv "$(P):saveConfig"
+onLabel "Save"
+offLabel "Save"
+labelType "literal"
+3d
+font "helvetica-medium-r-18.0"
+objType "controls"
+controlBitPos 0
+endObjectProperties
+

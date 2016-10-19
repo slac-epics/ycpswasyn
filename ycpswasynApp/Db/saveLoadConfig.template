@@ -63,7 +63,7 @@ record(mbbi, "$(P):saveConfigStatus") {
   field(ZRST, "Idle")
   field(ONST, "Saving...")
   field(TWST, "Saved successfully")
-  field(THST, "Error while loading")
+  field(THST, "Error while saving")
   field(VAL,  "0")
   field(PINI, "YES")
 }

@@ -1388,13 +1388,11 @@ asynStatus YCPSWASYN::writeOctet (asynUser *pasynUser, const char *value, size_t
 				if (function == saveConfigFileValue_)
 				{
 					saveConfigFileName = std::string(value);
-					printf("Save configuration file name = %s\n", saveConfigFileName.c_str());
 					*nActual = maxChars;
 				}
 				else if (function == loadConfigFileValue_)
 				{
 					loadConfigFileName = std::string(value);
-					printf("Load configuration file name = %s\n", loadConfigFileName.c_str());
 					*nActual = maxChars;
 				}
 				else
