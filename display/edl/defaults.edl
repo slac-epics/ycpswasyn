@@ -3,9 +3,9 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 1393
-y 822
-w 300
+x 1449
+y 592
+w 400
 h 290
 font "helvetica-medium-r-18.0"
 ctlFont "helvetica-medium-r-12.0"
@@ -19,7 +19,7 @@ ctlBgColor1 index 34
 ctlBgColor2 index 35
 topShadowColor index 37
 botShadowColor index 44
-title "DAQ"
+title "Save/Load Defaults"
 showGrid
 gridSize 5
 endScreenProperties
@@ -62,23 +62,6 @@ value {
 }
 endObjectProperties
 
-# (Text Entry)
-object TextentryClass
-beginObjectProperties
-major 10
-minor 0
-release 0
-x 80
-y 50
-w 200
-h 40
-controlPv "$(P):saveConfigFile"
-fgColor index 14
-bgColor index 0
-fill
-font "helvetica-medium-r-12.0"
-endObjectProperties
-
 # (Text Update)
 object TextupdateClass
 beginObjectProperties
@@ -87,14 +70,13 @@ minor 0
 release 0
 x 80
 y 100
-w 124
+w 200
 h 40
 controlPv "$(P):saveConfigStatus"
 fgColor index 14
 fgAlarm
 bgColor index 0
-fill
-font "helvetica-medium-r-12.0"
+font "courier-bold-r-14.0"
 endObjectProperties
 
 # (Button)
@@ -103,9 +85,9 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 210
+x 300
 y 100
-w 70
+w 80
 h 40
 fgColor index 14
 onColor index 7
@@ -117,7 +99,7 @@ controlPv "$(P):saveConfig"
 onLabel "Save"
 offLabel "Save"
 labelType "literal"
-font "helvetica-medium-r-18.0"
+font "courier-bold-r-18.0"
 objType "controls"
 controlBitPos 0
 endObjectProperties
@@ -130,7 +112,7 @@ minor 1
 release 1
 x 10
 y 10
-w 270
+w 370
 h 40
 font "helvetica-bold-r-18.0"
 fontAlign "center"
@@ -169,14 +151,13 @@ minor 0
 release 0
 x 80
 y 240
-w 124
+w 200
 h 40
 controlPv "$(P):loadConfigStatus"
 fgColor index 14
 fgAlarm
 bgColor index 0
-fill
-font "helvetica-medium-r-12.0"
+font "courier-bold-r-14.0"
 endObjectProperties
 
 # (Button)
@@ -185,9 +166,9 @@ beginObjectProperties
 major 4
 minor 1
 release 0
-x 210
+x 300
 y 240
-w 70
+w 80
 h 40
 fgColor index 14
 onColor index 7
@@ -199,26 +180,9 @@ controlPv "$(P):loadConfig"
 onLabel "Load"
 offLabel "Load"
 labelType "literal"
-font "helvetica-medium-r-18.0"
+font "courier-bold-r-18.0"
 objType "controls"
 controlBitPos 0
-endObjectProperties
-
-# (Text Entry)
-object TextentryClass
-beginObjectProperties
-major 10
-minor 0
-release 0
-x 80
-y 190
-w 200
-h 40
-controlPv "$(P):loadConfigFile"
-fgColor index 14
-bgColor index 0
-fill
-font "helvetica-medium-r-12.0"
 endObjectProperties
 
 # (Static Text)
@@ -248,7 +212,7 @@ minor 1
 release 1
 x 10
 y 150
-w 270
+w 370
 h 40
 font "helvetica-bold-r-18.0"
 fontAlign "center"
@@ -258,5 +222,63 @@ useDisplayBg
 value {
   "Load configuration"
 }
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 80
+y 60
+w 300
+h 18
+controlPv "$(P):saveConfigFile"
+format "string"
+font "courier-medium-r-14.0"
+fgColor index 14
+bgColor index 0
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 32
+changeValOnLoseFocus
+defDir "/"
+useHexPrefix
+fileComponent "nameAndExt"
+newPos
+objType "controls"
+characterMode
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 7
+release 0
+x 80
+y 200
+w 300
+h 18
+controlPv "$(P):loadConfigFile"
+format "string"
+font "courier-medium-r-14.0"
+fgColor index 14
+bgColor index 0
+editable
+autoHeight
+motifWidget
+limitsFromDb
+nullColor index 32
+changeValOnLoseFocus
+defDir "/"
+useHexPrefix
+fileComponent "nameAndExt"
+newPos
+objType "controls"
+characterMode
 endObjectProperties
 
