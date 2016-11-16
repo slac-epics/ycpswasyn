@@ -1,6 +1,0 @@
-record(ao, "$(P):$(R)") {
-  field(DESC, "$(DESC)")
-  field(DTYP, "asynInt32")
-  field(SCAN, "Passive")
-  field(OUT, "@asyn($(PORT),$(ADDR))$(PARAM)")
-}

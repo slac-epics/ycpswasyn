@@ -1,6 +1,0 @@
-record(ai, "$(P):$(R)") {
-  field(DESC, "$(DESC)")
-  field(DTYP, "asynInt32")
-  field(SCAN, "5 second")
-  field(INP, "@asyn($(PORT),$(ADDR))$(PARAM)")
-}
