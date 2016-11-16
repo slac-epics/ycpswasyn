@@ -121,9 +121,9 @@ enum processConfigurationStates
 // record template list
 const char *templateList[DEV_SIZE][4] = 
 {
-	{"../../db/ai.template", "../../db/mbbi.template", "../../db/waveform_in.template", "../../db/waveform_8_in.template"},		//DEV_REG_RO
-	{"../../db/ao.template", "../../db/mbbo.template", "../../db/waveform_out.template", "../../db/waveform_8_out.template"},	//DEV_REG_RW
-	{"../../db/ao.template"},	//DEV_CMD
+	{"../../db/longin.template", "../../db/mbbi.template", "../../db/waveform_in.template", "../../db/waveform_8_in.template"},		//DEV_REG_RO
+	{"../../db/longout.template", "../../db/mbbo.template", "../../db/waveform_out.template", "../../db/waveform_8_out.template"},	//DEV_REG_RW
+	{"../../db/longout.template"},	//DEV_CMD
 	{"../../db/waveform_stream32.template", "../../db/waveform_stream16.template"}	//DEV_STM
 };
 
