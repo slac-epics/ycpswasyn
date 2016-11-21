@@ -43,15 +43,17 @@ using std::string;
 using std::stringstream;
 
 YCPSWASYN::YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int recordNameLenMax)
-	: asynPortDriver(	portName, 
-				MAX_SIGNALS, 
-				NUM_PARAMS, 
-				asynInt32Mask | asynDrvUserMask | asynInt16ArrayMask | asynInt32ArrayMask | asynOctetMask | asynFloat64ArrayMask | asynUInt32DigitalMask ,	// Interface Mask
-				asynInt16ArrayMask | asynInt32ArrayMask | asynInt32Mask | asynUInt32DigitalMask, 	  		// Interrupt Mask
-				ASYN_MULTIDEVICE | ASYN_CANBLOCK, 			// asynFlags
-				1, 							// Autoconnect
-				0, 							// Default priority
-				0),							// Default stack size
+	: asynPortDriver(	
+		portName, 
+		MAX_SIGNALS, 
+		NUM_PARAMS, 
+		asynInt32Mask | asynDrvUserMask | asynInt16ArrayMask | asynInt32ArrayMask | asynOctetMask | \
+		asynFloat64ArrayMask | asynUInt32DigitalMask | asynFloat64Mask,								// Interface Mask
+		asynInt16ArrayMask | asynInt32ArrayMask | asynInt32Mask | asynUInt32DigitalMask, 	  		// Interrupt Mask
+		ASYN_MULTIDEVICE | ASYN_CANBLOCK, 															// asynFlags	
+		1, 																							// Autoconnect
+		0, 																							// Default priority
+		0),																							// Default stack size
 	driverName_(DRIVER_NAME),
 	p_(p),
 	portName_(portName),
@@ -302,37 +304,7 @@ int YCPSWASYN::YCPSWASYNInit(const char *yaml_doc, Path *p, const char *ipAddr)
 
 	return 0;
 }
-/*
-int YCPSWASYN::YCPSWASYNInitV3(const char *yaml_doc, Path *p, const char *ipAddr)
-{
-	unsigned char buf[sizeof(struct in6_addr)];
 
-	printf("Using YAML schema version 3\n");
-	// Read YAML file
-	YAML::Node doc =  YAML::LoadFile( yaml_doc );
-
-	// Check if the IP address was especify. Otherwise use the one defined on the YAML file
-	if (inet_pton(AF_INET, ipAddr, buf))
-	{
-		printf("Using IP address: %s\n", ipAddr);
-		IYamlSetIP setIP(ipAddr);
-		*p = IPath::loadYamlFile( yaml_doc, "NetIODev", NULL, &setIP );
-	}
-	else
-	{
-		printf("Using IP address from YAML file\n");
-        *p = IPath::loadYamlFile( yaml_doc, "NetIODev" );
-	}
-
-	// Create an NetIODev from the YAML file definition
-	//NetIODev  root = doc.as<NetIODev>();
-
-	// Create a Path on the root
-	//*p = IPath::create( root );
-
-	return 0;
-}
-*/
 /////////////////////////////////////////////////////
 // void YCPSWASYN::dumpRegisterMap(const Path& p); //
 //                                                 //
@@ -431,6 +403,18 @@ int YCPSWASYN::getRegType(const ScalVal& reg)
 }
 
 template <>
+int YCPSWASYN::getRegType(const DoubleVal_RO& reg)
+{
+	return DEV_FLOAT_RO;
+}
+
+template <>
+int YCPSWASYN::getRegType(const DoubleVal& reg)
+{
+	return DEV_FLOAT_RW;
+}
+
+template <>
 int YCPSWASYN::getRegType(const Command& reg)
 {
 	return DEV_CMD;
@@ -466,6 +450,20 @@ void YCPSWASYN::pushParameter(const ScalVal& reg, const int& paramIndex)
 {
 	rw[paramIndex] = reg;
 	nRW++;
+}
+
+template <>
+void YCPSWASYN::pushParameter(const DoubleVal_RO& reg, const int& paramIndex)
+{
+	fo[paramIndex] = reg;
+	nFO++;
+}
+
+template <>
+void YCPSWASYN::pushParameter(const DoubleVal& reg, const int& paramIndex)
+{
+	fw[paramIndex] = reg;
+	nFW++;
 }
 
 template <>
@@ -563,9 +561,9 @@ void YCPSWASYN::CreateRecord(const T& reg)
 	{
 		if (nElements == 1)
 		{
-			// Create ax record
+			// Create longx record
 			trp.paramType = asynParamInt32;
-			trp.recTemplate = templateList[regType][0];
+			trp.recTemplate = templateList[regType][REG_SINGLE];
 			paramIndex = LoadRecord(regType, trp, dbParams);
 			pushParameter(reg, paramIndex);
 		}
@@ -581,14 +579,14 @@ void YCPSWASYN::CreateRecord(const T& reg)
 			{
 				// Create waveform_8_x record
 				trp.paramType = asynParamOctet;
-                trp.recTemplate = templateList[regType][3];
+                trp.recTemplate = templateList[regType][REG_ARRAY_8];
 
 			}
 			else
 			{
 				// Create waveform_x record
 				trp.paramType = asynParamInt32Array;
-                trp.recTemplate = templateList[regType][2];
+                trp.recTemplate = templateList[regType][REG_ARRAY];
 
 			}
 			
@@ -605,7 +603,7 @@ void YCPSWASYN::CreateRecord(const T& reg)
 			dbParams += extractMbbxDbParams(isEnum);
 
 			trp.paramType = asynParamUInt32Digital;
-			trp.recTemplate = templateList[regType][1];
+			trp.recTemplate = templateList[regType][REG_ENUM];
 				
 			paramIndex = LoadRecord(regType, trp, dbParams);
 			pushParameter(reg, paramIndex);
@@ -640,7 +638,7 @@ void YCPSWASYN::CreateRecord(const T& reg)
 				dbParams += extractMbbxDbParams(isEnumLocal);
 
 				trp.paramType = asynParamUInt32Digital;
-				trp.recTemplate = templateList[regType][1];
+				trp.recTemplate = templateList[regType][REG_ENUM];
  
 				paramIndex = LoadRecord(regType, trp, dbParams);                   
 				pushParameter(c_reg, paramIndex);
@@ -688,7 +686,7 @@ void YCPSWASYN::CreateRecord(const Command& reg, const Path& p_)
 	// + parameter type
 	trp.paramType = asynParamInt32;
 	// + record template 
-	trp.recTemplate = templateList[regType][0];
+	trp.recTemplate = templateList[regType][REG_SINGLE];
 
 	paramIndex = LoadRecord(regType, trp, dbParams);
 	pushParameter(reg, paramIndex);
@@ -723,7 +721,7 @@ void YCPSWASYN::CreateRecord(const Stream& reg, const Path& p_)
 	// + parameter type
 	trp.paramType = asynParamInt32;
 	// + record template 
-	trp.recTemplate = templateList[regType][0];
+	trp.recTemplate = templateListWaforms[WF_32_BIT];
 
 	p32stmIndex = LoadRecord(regType, trp, dbParams);
 	
@@ -739,7 +737,7 @@ void YCPSWASYN::CreateRecord(const Stream& reg, const Path& p_)
 	// + parameter type
 	trp.paramType = asynParamInt32;
 	// + record template 
-	trp.recTemplate = templateList[regType][1];
+	trp.recTemplate = templateListWaforms[WF_16_BIT];
 
 	p16StmIndex = LoadRecord(regType, trp, dbParams);
 
@@ -768,6 +766,69 @@ void YCPSWASYN::CreateRecord(const Stream& reg, const Path& p_)
 // - template <typename T>                           //
 //   int CreateRecord(const T& reg, const Path& p);  //
 ///////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////
+// + template <typename T>                                 //
+//   int CreateRecordFloat(const T& reg);                  //
+//                                                         //
+// - Create a record from a float register pointer         //
+/////////////////////////////////////////////////////////////
+template <typename T>
+void YCPSWASYN::CreateRecordFloat(const T& reg)
+{
+	string dbParams;
+	stringstream pName;
+	int paramIndex;
+
+	// Get the path to the register
+	Path p = reg->getPath();
+
+	// Get the child at the tail
+	Child c = p->tail();
+
+	// Het the register type
+	int regType = getRegType(reg);
+
+	// Get the register information
+	int nElements = reg->getNelms();
+
+	// Create the argument list used when loading the record
+	recordParams trp;
+	// + record name
+	trp.recName = YCPSWASYN::generateRecordName(p) + recordSufix[regType];
+	// + parameter name
+	pName.str("");
+    pName << string(c->getName()).substr(0, 10) << recordCount;
+	trp.paramName = pName.str();
+	// + record description field
+	trp.recDesc = string("\"") + string(c->getDescription()).substr(0, DB_DESC_LENGTH_MAX) + string("\"");
+
+	// Look trough the register properties and create the appropiate record type
+	if (nElements == 1)
+	{
+		// Create ax record
+		trp.paramType =  asynParamFloat64;
+		trp.recTemplate = templateList[regType][REG_SINGLE];
+	}
+	else
+	{
+		// Create waveform record
+		stringstream dbParamsLocal;
+		dbParamsLocal.str("");
+		dbParamsLocal << ",N=" << reg->getNelms();
+		dbParams += dbParamsLocal.str();
+		trp.paramType = asynParamFloat64Array;
+        trp.recTemplate = templateList[regType][REG_ARRAY];
+	}
+
+	paramIndex = LoadRecord(regType, trp, dbParams);
+	pushParameter(reg, paramIndex);
+
+}
+/////////////////////////////////////////////////////////////
+// - template <typename T>                                 //
+//   int CreateRecordFlorat(const T& reg);                 //
+/////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////
 // void YCPSWASYN::generateDB(const Path& p); //
@@ -851,9 +912,11 @@ void YCPSWASYN::generateDB(const Path& p)
 					// Continue with not-stream registers
 					else
 					{
-						ScalVal		rw_aux;
-						ScalVal_RO 	ro_aux;
-						Command		cmd_aux;
+						ScalVal			rw_aux;
+						ScalVal_RO 		ro_aux;
+						Command			cmd_aux;
+						DoubleVal 		fw_aux;
+						DoubleVal_RO 	fo_aux;
 
 						// Try to attach a ScalVal_RO and ScalVal interface
 						try 
@@ -864,7 +927,19 @@ void YCPSWASYN::generateDB(const Path& p)
 						catch (CPSWError &e)
 						{
 						}
-						
+
+						if ((!ro_aux) && (!rw_aux))
+						{
+							try
+							{
+								fo_aux = IDoubleVal_RO::create(p2);
+								fw_aux = IDoubleVal::create(p2);
+							}
+							catch (CPSWError &e)
+							{
+							}
+						}
+				
 						// Now, try to attach a command interface
 						try 
 						{
@@ -878,8 +953,14 @@ void YCPSWASYN::generateDB(const Path& p)
 						if (rw_aux)
 							YCPSWASYN::CreateRecord(rw_aux);
 
-						if (ro_aux)
+						if (ro_aux)	
 							YCPSWASYN::CreateRecord(ro_aux);
+
+						if (fw_aux)
+							YCPSWASYN::CreateRecordFloat(fw_aux);
+
+						if (fo_aux)
+							YCPSWASYN::CreateRecordFloat(fo_aux);
 
 						if (cmd_aux)
 							YCPSWASYN::CreateRecord(cmd_aux, p2);
@@ -1193,6 +1274,115 @@ asynStatus YCPSWASYN::readInt32(asynUser *pasynUser, epicsInt32 *value)
 	{
 		asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
 					"%s:%s(%d), port %s read %d from parameter %s\n", \
+					driverName_, functionName, function, this->portName, *value, name);
+	}
+	else
+	{
+		asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+					"%s:%s(%d), port %s ERROR reading parameter %s (status = %d)\n", \
+					driverName_, functionName, function, this->portName, name, status);
+	}
+
+	callParamCallbacks(addr);
+     
+  	return (status==0) ? asynSuccess : asynError;
+}
+
+
+asynStatus YCPSWASYN::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
+{
+	int addr;
+	int function = pasynUser->reason;
+	int status=0;
+	const char *name;
+
+	this->getAddress(pasynUser, &addr);
+     
+	static const char *functionName = "writeFloat64";
+     
+	this->getAddress(pasynUser, &addr);
+
+	if (!getParamName(addr, function, &name))
+	{
+
+		try
+		{
+			if (addr == DEV_FLOAT_RW)
+				fw[function]->setVal((double*)&value, 1);
+			else
+				status = asynPortDriver::writeFloat64(pasynUser, value);
+		}
+		catch (CPSWError &e)
+		{
+			asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
+		}
+		
+		if (status == 0)
+		{
+			asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
+						"%s:%s(%d), port %s parameter %s set to %f\n", \
+						driverName_, functionName, function, this->portName, name, value);
+		}
+		else
+		{
+			asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+						"%s:%s(%d), port %s ERROR setting parameter %s to %f (status = %d)\n", \
+						driverName_, functionName, function, this->portName, name, value, status);				
+		}
+
+	}
+   	else
+		status = asynPortDriver::writeFloat64(pasynUser, value);
+    
+	callParamCallbacks(addr);
+ 
+	return (status==0) ? asynSuccess : asynError;
+}
+
+asynStatus YCPSWASYN::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
+{
+	int addr;
+	int function = pasynUser->reason;
+	int status=0;
+	double val;
+	const char *name;
+
+	this->getAddress(pasynUser, &addr);
+     
+	static const char *functionName = "readFloat64";
+
+	if (!getParamName(addr, function, &name))
+	{
+		try
+		{
+			if (addr == DEV_FLOAT_RO)
+			{
+				fo[function]->getVal(&val, 1);
+				*value = (epicsFloat64)val;
+				setDoubleParam(addr, function, val);
+			}
+			else if (addr == DEV_FLOAT_RW)
+			{
+				fw[function]->getVal(&val, 1);
+				*value = (epicsFloat64)val;
+				setDoubleParam(addr, function, val);;
+			}
+			else
+				status = asynPortDriver::readFloat64(pasynUser, value);
+		}
+		catch (CPSWError &e)
+		{
+			status = -1;
+			asynPrint(pasynUser, ASYN_TRACE_ERROR, "CPSW Error (during %s, parameter: %s): %s\n", functionName, name, e.getInfo().c_str());
+		}
+	}
+	else
+		status = asynPortDriver::readFloat64(pasynUser, value);
+    
+    if (status == 0)
+	{
+		asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, \
+					"%s:%s(%d), port %s read %f from parameter %s\n", \
 					driverName_, functionName, function, this->portName, *value, name);
 	}
 	else
@@ -1534,7 +1724,7 @@ asynStatus YCPSWASYN::writeFloat64Array(asynUser *pasynUser, epicsFloat64 *value
   	return (status==0) ? asynSuccess : asynError;
 }
 
-asynStatus YCPSWASYN::writeUInt32Digital (asynUser *pasynUser, epicsUInt32 value, epicsUInt32 mask)
+asynStatus YCPSWASYN::writeUInt32Digital(asynUser *pasynUser, epicsUInt32 value, epicsUInt32 mask)
 {
 	int addr;
 	int function = pasynUser->reason;
@@ -1587,7 +1777,7 @@ asynStatus YCPSWASYN::writeUInt32Digital (asynUser *pasynUser, epicsUInt32 value
 	return (status==0) ? asynSuccess : asynError;
 }
 
-asynStatus YCPSWASYN::readUInt32Digital (asynUser *pasynUser, epicsUInt32 *value, epicsUInt32 mask)
+asynStatus YCPSWASYN::readUInt32Digital(asynUser *pasynUser, epicsUInt32 *value, epicsUInt32 mask)
 {
 	int addr;
 	int function = pasynUser->reason;
@@ -1678,7 +1868,7 @@ void YCPSWASYN::report(FILE *fp, int details)
 // - Methods overrided from asynPortDriver //
 /////////////////////////////////////////////
 
-extern "C" int YCPSWASYNConfig(const char *portName, const char *yaml_doc, const char *ipAddr, const char *recordPrefix, int recordNameLenMax)
+extern "C" int YCPSWASYNConfig(const char *portName, const char *yaml_doc, const char *ipAddr, const char *recordPrefix, unsigned int recordNameLenMax)
 {
 	int status; 
 	Path p;

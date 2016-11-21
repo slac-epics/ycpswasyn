@@ -97,15 +97,65 @@ char const *mbbxNameParams[]
 	"FFST"
 };
 
-// Types of registers
-enum registerTypeList 
+// Types of register interfaces
+enum registerInterfaceTypeList 
 {
 	DEV_REG_RO,
 	DEV_REG_RW,
+	DEV_FLOAT_RO,
+	DEV_FLOAT_RW,
 	DEV_CMD,
 	DEV_STM,
 	DEV_CONFIG,
 	DEV_SIZE
+};
+
+// Type of registers
+enum regTypeList
+{
+	REG_SINGLE,		// Single value register
+	REG_ENUM,		// Enum register
+	REG_ARRAY,		// Array registers
+	REG_ARRAY_8,	// 8-bit array register
+	REG_SIZE
+};
+
+// Type of interfaces
+enum waveformTypeList
+{
+	WF_32_BIT,		// 32-bit data
+	WF_16_BIT,		// 16-bit data
+	WF_SIZE
+};
+
+// record template list (all interfaces but streams)
+const char *templateList[DEV_SIZE - 1][REG_SIZE] = 
+{
+	 // DEV_SINGLE,							// REG_ENUM								// REG_ARRAY 							// REG_ARRAY_8
+	{"../../db/longin.template", 			"../../db/mbbi.template", 				"../../db/waveform_in.template", 		"../../db/waveform_8_in.template"},		//DEV_REG_RO
+	{"../../db/longout.template", 			"../../db/mbbo.template", 				"../../db/waveform_out.template", 		"../../db/waveform_8_out.template"},	//DEV_REG_RW
+	{"../../db/ai.template", 				"", 									"../../db/waveform_in_float.template", 	""},									//DEV_FLOAT_RO
+	{"../../db/ao.template", 				"", 									"../../db/waveform_out_float.template", ""},									//DEV_FLOAT_RW
+	{"../../db/longout.template",			"",										"",										""},									//DEV_CMD
+};
+
+// Record template list (oly for streans)
+const char * templateListWaforms[WF_SIZE] =
+{
+	"../../db/waveform_stream32.template",	"../../db/waveform_stream16.template"	//DEV_STM
+};
+
+
+// record name sufix list (must be form by DB_NAME_SUFIX_LENGHT chars only)
+const char *recordSufix[DEV_SIZE] = 
+{
+	":Rd", 	// DEV_REG_RO
+	":St",	// DEV_REG_RW
+	":Rd", 	// DEV_FLOAT_RO
+	":St",	// DEV_FLOAT_RW
+	":Ex",	// DEV_CMD
+	""		// DEV_STM
+	""		// DEV_CONFIG
 };
 
 #define PROCESS_CONFIG_MASK		0x03
@@ -116,25 +166,6 @@ enum processConfigurationStates
 	CONFIG_STAT_SUCCESS,
 	CONFIG_STAT_ERROR,
 	CONFIGF_STAT_SIZE
-};
-
-// record template list
-const char *templateList[DEV_SIZE][4] = 
-{
-	{"../../db/longin.template", "../../db/mbbi.template", "../../db/waveform_in.template", "../../db/waveform_8_in.template"},		//DEV_REG_RO
-	{"../../db/longout.template", "../../db/mbbo.template", "../../db/waveform_out.template", "../../db/waveform_8_out.template"},	//DEV_REG_RW
-	{"../../db/longout.template"},	//DEV_CMD
-	{"../../db/waveform_stream32.template", "../../db/waveform_stream16.template"}	//DEV_STM
-};
-
-// record name sufix list (must be form by DB_NAME_SUFIX_LENGHT chars only)
-const char *recordSufix[DEV_SIZE] = 
-{
-	":Rd", 	// DEV_REG_RO
-	":St",	// DEV_REG_RW
-	":Ex",	// DEV_CMD
-	""		// DEV_STM
-	""		// DEV_CONFIG
 };
 
 // Argument list passed to the stream handling thread
@@ -158,6 +189,7 @@ struct recordParams
 
 #define MAX_SIGNALS			((int)DEV_SIZE)					// Max number of parameter list (size of register type list)
 #define	NUM_SCALVALS		5000							// Max number of ScalVals
+#define NUM_DOUBLEVALS		100								// Max number of DoubleVals
 #define NUM_CMD				500								// Max number of commands
 #define NUM_PARAMS			(NUM_SCALVALS + NUM_CMD)		// Max number of paramters
 #define STREAM_MAX_SIZE 	200UL*1024ULL*1024ULL			// Size of the stream buffers
@@ -168,18 +200,20 @@ class YCPSWASYN : public asynPortDriver {
 		YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int recordNameLenMax);
 		
 		// Methods that we override from asynPortDriver
-		virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
-		virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
-		virtual asynStatus readInt32Array(asynUser *pasynUser, epicsInt32 *value, size_t nElements, size_t *nIn);
-		virtual asynStatus writeInt32Array(asynUser *pasynUser, epicsInt32 *value, size_t nElements);
-		virtual asynStatus readOctet(asynUser *pasynUser, char *value, size_t maxChars, size_t *nActual, int *eomReason);
-		virtual asynStatus writeOctet (asynUser *pasynUser, const char *value, size_t maxChars, size_t *nActual);
-		virtual asynStatus readFloat64Array(asynUser *pasynUser, epicsFloat64 *value, size_t nElements, size_t *nIn);
-		virtual asynStatus writeFloat64Array(asynUser *pasynUser, epicsFloat64 *value, size_t nElements);
-		virtual asynStatus writeUInt32Digital (asynUser *pasynUser, epicsUInt32 value, epicsUInt32 mask);
-		virtual asynStatus readUInt32Digital (asynUser *pasynUser, epicsUInt32 *value, epicsUInt32 mask);
-		virtual asynStatus getBounds(asynUser *pasynUser, epicsInt32 *low, epicsInt32 *high);
-		virtual void report(FILE *fp, int details);
+		virtual asynStatus readInt32 			(asynUser *pasynUser, epicsInt32 *value);
+		virtual asynStatus writeInt32 			(asynUser *pasynUser, epicsInt32 value);
+		virtual asynStatus readFloat64 			(asynUser *pasynUser, epicsFloat64 *value);
+		virtual asynStatus writeFloat64 		(asynUser *pasynUser, epicsFloat64 value);
+		virtual asynStatus readInt32Array		(asynUser *pasynUser, epicsInt32 *value, size_t nElements, size_t *nIn);
+		virtual asynStatus writeInt32Array		(asynUser *pasynUser, epicsInt32 *value, size_t nElements);
+		virtual asynStatus readOctet 			(asynUser *pasynUser, char *value, size_t maxChars, size_t *nActual, int *eomReason);
+		virtual asynStatus writeOctet 			(asynUser *pasynUser, const char *value, size_t maxChars, size_t *nActual);
+		virtual asynStatus readFloat64Array 	(asynUser *pasynUser, epicsFloat64 *value, size_t nElements, size_t *nIn);
+		virtual asynStatus writeFloat64Array 	(asynUser *pasynUser, epicsFloat64 *value, size_t nElements);
+		virtual asynStatus writeUInt32Digital 	(asynUser *pasynUser, epicsUInt32 value, epicsUInt32 mask);
+		virtual asynStatus readUInt32Digital 	(asynUser *pasynUser, epicsUInt32 *value, epicsUInt32 mask);
+		virtual asynStatus getBounds 			(asynUser *pasynUser, epicsInt32 *low, epicsInt32 *high);
+		virtual void report 					(FILE *fp, int details);
 		
 		// New Methods for this class
 		// Streamn hanlding function
@@ -190,28 +224,31 @@ class YCPSWASYN : public asynPortDriver {
 		
 
 	private:
-		const char 			*driverName_;				// Name of the driver (passed from st.cmd)
-		Path 				p_;							// Path on root
-		const char 			*portName_;					// Name of the port (passed from st.cmd)
-		const char 			*recordPrefix_;				// Record name prefix defined by the user (passed from st.cmd)
-		const int 			recordNameLenMax_;			// Max lenght of the record name (passed from st.cmd)
-		long 				nRO, nRW, nCMD, nSTM;		// Counter for RO/RW register, command and Stremas found on the YAML file
-		long 				recordCount;				//Counter for the total number of register loaded 
-		ScalVal				rw[NUM_SCALVALS];			// Array of ScalVals (RW)
-		ScalVal_RO 			ro[NUM_SCALVALS];			// Array of ScalVals (RO)
-		Command				cmd[NUM_CMD];				// Array of Commands
-		std::ofstream 		pvDumpFile;					// File with the list of Pvs
-		std::ofstream		regDumpFile;				// File with the list of registers
-		std::ofstream 		keysNotFoundFile;			// File with the name of elements not found on the substitution map
-		std::map<std::string, std::string> mapTop, map;	// Substitution maps
-		int 				loadConfigValue_;			// Load configuration parameter index
-		int 				saveConfigValue_;			// Save configuration parameter index
-		int 				loadConfigFileValue_;		// Save configuration file name parameter index
-		int 				saveConfigFileValue_;		// Load configuration file name parameter index
-		int 				loadConfigStatusValue_;		// Load configuration status parameter index
-		int 				saveConfigStatusValue_;		// Save configuration status parameter index
-		std::string 		saveConfigFileName;			// Save configuration file name
-		std::string 		loadConfigFileName;			// Load configuration file name
+		const char 							*driverName_;				// Name of the driver (passed from st.cmd)
+		Path 								p_;							// Path on root
+		const char 							*portName_;					// Name of the port (passed from st.cmd)
+		const char 							*recordPrefix_;				// Record name prefix defined by the user (passed from st.cmd)
+		const int 							recordNameLenMax_;			// Max lenght of the record name (passed from st.cmd)
+		long 								nRO, nRW, nCMD, nSTM;		// Counter for RO/RW register, command and Stremas found on the YAML file
+		long 								nFO, nFW;					// Counter for Floating point RO/RW registers
+		long 								recordCount;				//Counter for the total number of register loaded 
+		ScalVal								rw[NUM_SCALVALS];			// Array of ScalVals (RW)
+		ScalVal_RO 							ro[NUM_SCALVALS];			// Array of ScalVals (RO)
+		DoubleVal 							fw[NUM_DOUBLEVALS];			// Array of DoubleVals (RW)
+		DoubleVal_RO 						fo[NUM_DOUBLEVALS];			// Array of DoubleVals (RO)
+		Command								cmd[NUM_CMD];				// Array of Commands
+		std::ofstream 						pvDumpFile;					// File with the list of Pvs
+		std::ofstream						regDumpFile;				// File with the list of registers
+		std::ofstream 						keysNotFoundFile;			// File with the name of elements not found on the substitution map
+		std::map<std::string, std::string> 	mapTop, map;				// Substitution maps
+		int 								loadConfigValue_;			// Load configuration parameter index
+		int 								saveConfigValue_;			// Save configuration parameter index
+		int 								loadConfigFileValue_;		// Save configuration file name parameter index
+		int 								saveConfigFileValue_;		// Load configuration file name parameter index
+		int 								loadConfigStatusValue_;		// Load configuration status parameter index
+		int 								saveConfigStatusValue_;		// Save configuration status parameter index
+		std::string 						saveConfigFileName;			// Save configuration file name
+		std::string 						loadConfigFileName;			// Load configuration file name
 
 		// Write list of register to file
 		void dumpRegisterMap(const Path& p);
@@ -231,6 +268,10 @@ class YCPSWASYN : public asynPortDriver {
 		template <typename T>
 		void CreateRecord(const T& reg, const Path& p);
 		
+		// Create a record from a float register pointer 
+		template <typename T>
+		void CreateRecordFloat(const T& reg);
+
 		// Load a EPICS record with the provided infomation
 		int LoadRecord(int regType, const recordParams& rp, const std::string& dbParams);
 		

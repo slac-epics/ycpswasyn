@@ -10,12 +10,16 @@ include $(TOP)/configure/CONFIG
 #----------------------------------------------------
 # Create and install (or just install)
 # databases, templates, substitutions like this
+DB+= ai.template
+DB+= ao.template
 DB+= longin.template
 DB+= longout.template
 DB+= waveform_in.template
 DB+= waveform_out.template
 DB+= waveform_8_in.template
 DB+= waveform_8_out.template
+DB+= waveform_in_float.template
+DB+= waveform_out_float.template
 DB += mbbi.template
 DB += mbbo.template
 DB += waveform_stream16.template
