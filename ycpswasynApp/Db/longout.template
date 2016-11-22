@@ -1,4 +1,4 @@
-record(longout, "$(P):$(R)") {
+record(longout, "$(P):$(R):St") {
   field(DESC, "$(DESC)")
   field(DTYP, "asynInt32")
   field(SCAN, "Passive")

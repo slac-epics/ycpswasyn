@@ -1,4 +1,4 @@
-record(longin, "$(P):$(R)") {
+record(longin, "$(P):$(R):Rd") {
   field(DESC, "$(DESC)")
   field(DTYP, "asynInt32")
   field(SCAN, "5 second")

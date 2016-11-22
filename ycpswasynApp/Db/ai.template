@@ -1,4 +1,4 @@
-record(ai, "$(P):$(R)") {
+record(ai, "$(P):$(R):Rd") {
   field(DESC, "$(DESC)")
   field(DTYP, "asynFloat64")
   field(SCAN, "5 second")

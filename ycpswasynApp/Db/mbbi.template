@@ -1,4 +1,4 @@
-record(mbbi, "$(P):$(R)") {
+record(mbbi, "$(P):$(R):Rd") {
   field(DESC, "$(DESC)")
   field(DTYP, "asynUInt32Digital")
   field(SCAN, "5 second")

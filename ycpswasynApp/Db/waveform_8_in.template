@@ -1,4 +1,4 @@
-record(waveform, "$(P):$(R)") {
+record(waveform, "$(P):$(R):Rd") {
   field(DESC, "$(DESC)")
   field(DTYP,	"asynOctetRead")
   field(NELM,	"$(N)")

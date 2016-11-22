@@ -548,7 +548,7 @@ void YCPSWASYN::CreateRecord(const T& reg)
 	// Create the argument list used when loading the record
 	recordParams trp;
 	// + record name
-	trp.recName = YCPSWASYN::generateRecordName(p) + recordSufix[regType];
+	trp.recName = YCPSWASYN::generateRecordName(p);
 	// + parameter name
 	pName.str("");
     pName << string(c->getName()).substr(0, 10) << recordCount;
@@ -627,7 +627,7 @@ void YCPSWASYN::CreateRecord(const T& reg)
 				Path c_path = pClone->findByName(c_name.c_str());
 				T c_reg = IScalVal::create(c_path);
 
-        		trp.recName = YCPSWASYN::generateRecordName(c_path) + recordSufix[regType];
+        		trp.recName = YCPSWASYN::generateRecordName(c_path);
 
         		pName.str("");
     			pName << string(c->getName()).substr(0, 10) << recordCount;
@@ -676,7 +676,7 @@ void YCPSWASYN::CreateRecord(const Command& reg, const Path& p_)
 	// Create the argument list used when loading the record
 	recordParams trp;
 	// + record name
-	trp.recName = YCPSWASYN::generateRecordName(p) + recordSufix[regType];
+	trp.recName = YCPSWASYN::generateRecordName(p);
 	// + parameter name
 	pName.str("");
     pName << string(c->getName()).substr(0, 10) << recordCount;
@@ -716,7 +716,7 @@ void YCPSWASYN::CreateRecord(const Stream& reg, const Path& p_)
 	// Create the argument list used when loading the record
 	recordParams trp;
 	// + record name
-	trp.recName = YCPSWASYN::generateRecordName(p) + ":32";
+	trp.recName = YCPSWASYN::generateRecordName(p);
 	// + parameter name
 	pName.str("");
     pName << string(c->getName()).substr(0, 10) << recordCount;
@@ -734,7 +734,7 @@ void YCPSWASYN::CreateRecord(const Stream& reg, const Path& p_)
 	// Create PVs for 16-bit stream data
 	dbParams.clear();
 	// + record name
-	trp.recName = YCPSWASYN::generateRecordName(p) + ":16";
+	trp.recName = YCPSWASYN::generateRecordName(p);
 	// + parameter name
 	pName.str("");
     pName << string(c->getName()).substr(0, 10) << recordCount;
@@ -800,7 +800,7 @@ void YCPSWASYN::CreateRecordFloat(const T& reg)
 	// Create the argument list used when loading the record
 	recordParams trp;
 	// + record name
-	trp.recName = YCPSWASYN::generateRecordName(p) + recordSufix[regType];
+	trp.recName = YCPSWASYN::generateRecordName(p);
 	// + parameter name
 	pName.str("");
     pName << string(c->getName()).substr(0, 10) << recordCount;

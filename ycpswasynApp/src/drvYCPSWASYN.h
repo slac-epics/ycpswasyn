@@ -145,19 +145,6 @@ const char * templateListWaforms[WF_SIZE] =
 	"../../db/waveform_stream32.template",	"../../db/waveform_stream16.template"	//DEV_STM
 };
 
-
-// record name sufix list (must be form by DB_NAME_SUFIX_LENGHT chars only)
-const char *recordSufix[DEV_SIZE] = 
-{
-	":Rd", 	// DEV_REG_RO
-	":St",	// DEV_REG_RW
-	":Rd", 	// DEV_FLOAT_RO
-	":St",	// DEV_FLOAT_RW
-	":Ex",	// DEV_CMD
-	""		// DEV_STM
-	""		// DEV_CONFIG
-};
-
 #define PROCESS_CONFIG_MASK		0x03
 enum processConfigurationStates
 {
