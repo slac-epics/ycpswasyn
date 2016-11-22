@@ -1,4 +1,4 @@
-record(waveform, "$(P):$(R)") {
+record(waveform, "$(P):$(R):16") {
   field(DESC,	"$(DESC)")
   field(DTYP,	"asynInt16ArrayIn")
   field(NELM,	"10000000")

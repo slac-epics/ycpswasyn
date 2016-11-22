@@ -544,17 +544,22 @@ void YCPSWASYN::CreateRecord(const T& reg)
 	long nBits = reg->getSizeBits();
 	Enum isEnum	= reg->getEnum();
 	int nElements = reg->getNelms();
+	double scan = reg->getPollSecs();
 
 	// Create the argument list used when loading the record
 	recordParams trp;
 	// + record name
-	trp.recName = YCPSWASYN::generateRecordName(p) + recordSufix[regType];
+	trp.recName = YCPSWASYN::generateRecordName(p);
 	// + parameter name
 	pName.str("");
     pName << string(c->getName()).substr(0, 10) << recordCount;
 	trp.paramName = pName.str();
 	// + record description field
 	trp.recDesc = string("\"") + string(c->getDescription()).substr(0, DB_DESC_LENGTH_MAX) + string("\"");
+
+	// Add the SCAN parameter base on the YAML pollSecs parameter to input registers
+	if (regType == DEV_REG_RO)
+		dbParams += getEpicsScan(scan);
 
 	// Look trough the register properties and create the appropiate record type
 	if ((!isEnum) || (isEnum->getNelms() > DB_MBBX_NELEM_MAX))
@@ -627,7 +632,7 @@ void YCPSWASYN::CreateRecord(const T& reg)
 				Path c_path = pClone->findByName(c_name.c_str());
 				T c_reg = IScalVal::create(c_path);
 
-        		trp.recName = YCPSWASYN::generateRecordName(c_path) + recordSufix[regType];
+        		trp.recName = YCPSWASYN::generateRecordName(c_path);
 
         		pName.str("");
     			pName << string(c->getName()).substr(0, 10) << recordCount;
@@ -676,7 +681,7 @@ void YCPSWASYN::CreateRecord(const Command& reg, const Path& p_)
 	// Create the argument list used when loading the record
 	recordParams trp;
 	// + record name
-	trp.recName = YCPSWASYN::generateRecordName(p) + recordSufix[regType];
+	trp.recName = YCPSWASYN::generateRecordName(p);
 	// + parameter name
 	pName.str("");
     pName << string(c->getName()).substr(0, 10) << recordCount;
@@ -684,9 +689,15 @@ void YCPSWASYN::CreateRecord(const Command& reg, const Path& p_)
 	// + record description field
 	trp.recDesc = string("\"") + string(c->getDescription()).substr(0, DB_DESC_LENGTH_MAX) + string("\"");
 	// + parameter type
-	trp.paramType = asynParamInt32;
+	trp.paramType = asynParamUInt32Digital;
 	// + record template 
 	trp.recTemplate = templateList[regType][REG_SINGLE];
+
+	// BO record fields
+	dbParams.clear();
+	dbParams  = std::string(",MASK=1");
+	dbParams += std::string(",ONAM=\"Run\"");
+	dbParams += std::string(",ZNAM=\"Run\"");
 
 	paramIndex = LoadRecord(regType, trp, dbParams);
 	pushParameter(reg, paramIndex);
@@ -711,7 +722,7 @@ void YCPSWASYN::CreateRecord(const Stream& reg, const Path& p_)
 	// Create the argument list used when loading the record
 	recordParams trp;
 	// + record name
-	trp.recName = YCPSWASYN::generateRecordName(p) + ":32";
+	trp.recName = YCPSWASYN::generateRecordName(p);
 	// + parameter name
 	pName.str("");
     pName << string(c->getName()).substr(0, 10) << recordCount;
@@ -729,7 +740,7 @@ void YCPSWASYN::CreateRecord(const Stream& reg, const Path& p_)
 	// Create PVs for 16-bit stream data
 	dbParams.clear();
 	// + record name
-	trp.recName = YCPSWASYN::generateRecordName(p) + ":16";
+	trp.recName = YCPSWASYN::generateRecordName(p);
 	// + parameter name
 	pName.str("");
     pName << string(c->getName()).substr(0, 10) << recordCount;
@@ -791,17 +802,22 @@ void YCPSWASYN::CreateRecordFloat(const T& reg)
 
 	// Get the register information
 	int nElements = reg->getNelms();
+	double scan = reg->getPollSecs();
 
 	// Create the argument list used when loading the record
 	recordParams trp;
 	// + record name
-	trp.recName = YCPSWASYN::generateRecordName(p) + recordSufix[regType];
+	trp.recName = YCPSWASYN::generateRecordName(p);
 	// + parameter name
 	pName.str("");
     pName << string(c->getName()).substr(0, 10) << recordCount;
 	trp.paramName = pName.str();
 	// + record description field
 	trp.recDesc = string("\"") + string(c->getDescription()).substr(0, DB_DESC_LENGTH_MAX) + string("\"");
+
+	// Add the SCAN parameter base on the YAML pollSecs parameter to input registers
+	if (regType == DEV_FLOAT_RO)
+		dbParams += getEpicsScan(scan);
 
 	// Look trough the register properties and create the appropiate record type
 	if (nElements == 1)
@@ -1158,6 +1174,40 @@ void YCPSWASYN::saveConfiguration()
 	setUIntDigitalParam(DEV_CONFIG, saveConfigStatusValue_, CONFIG_STAT_SUCCESS, PROCESS_CONFIG_MASK);
 }
 
+////////////////////////////////////////////////////////
+// std::string YCPSWYAML::getEpicsScan(double scan)   //
+//                                                    //
+//  - Calculate the closest SCAN value for the EPICS  //
+//    record from the YAML pollSecs value             //
+////////////////////////////////////////////////////////
+std::string YCPSWASYN::getEpicsScan(double scan)
+{
+	std::string scanStr;
+	scanStr = std::string(",SCAN=");
+
+	if (scan == 0.0)
+		// For now, until pollSecs is implemented on the YAML files,
+		// lets use as default a scan value of 5 seconds. 
+		//scanStr += std::string("Passive");
+		scanStr += std::string("5 second");
+	else if (scan <= 0.1)
+		scanStr += std::string(".1 second");
+	else if (scan <= 0.2)
+		scanStr += std::string(".2 second");
+	else if (scan <= 0.5)
+		scanStr += std::string(".5 second");
+	else if (scan <= 1.0)
+		scanStr += std::string("1 second");
+	else if (scan <= 2.0)
+		scanStr += std::string("2 second");
+	else if (scan <= 5.0)
+		scanStr += std::string("5 second");
+	else
+		scanStr += std::string("10 second");
+
+	return scanStr;
+}
+
 /////////////////////////////////////////////
 // + Methods overrided from asynPortDriver //
 /////////////////////////////////////////////
@@ -1181,8 +1231,6 @@ asynStatus YCPSWASYN::writeInt32(asynUser *pasynUser, epicsInt32 value)
 		{
 			if (addr == DEV_REG_RW)
 				rw[function]->setVal((uint32_t*)&value, 1);
-			else if (addr == DEV_CMD)
-				cmd[function]->execute();
 			else if (addr == DEV_CONFIG)
 			{
 				if (function == saveConfigValue_)
@@ -1249,12 +1297,6 @@ asynStatus YCPSWASYN::readInt32(asynUser *pasynUser, epicsInt32 *value)
 			else if (addr == DEV_REG_RW)
 			{
 				rw[function]->getVal(&u32, 1);
-				*value = (epicsInt32)u32;
-				setIntegerParam(addr, function, (int)u32);
-			}
-			else if (addr == DEV_CMD)
-			{
-				u32 = 0;
 				*value = (epicsInt32)u32;
 				setIntegerParam(addr, function, (int)u32);
 			}
@@ -1748,6 +1790,10 @@ asynStatus YCPSWASYN::writeUInt32Digital(asynUser *pasynUser, epicsUInt32 value,
 				val |= value;
 				rw[function]->setVal((uint32_t*)&val, 1);
 			}
+			if(addr == DEV_CMD)
+			{
+				cmd[function]->execute();
+			}
 			else
 				status = asynPortDriver::writeUInt32Digital(pasynUser, value, mask);
 		}
@@ -1804,6 +1850,12 @@ asynStatus YCPSWASYN::readUInt32Digital(asynUser *pasynUser, epicsUInt32 *value,
 			{
 				rw[function]->getVal(&u32, 1);
 				u32 &= mask;
+				*value = (epicsInt32)u32;
+				setUIntDigitalParam(addr, function, (epicsUInt32)u32, mask);
+			}
+			else if (addr == DEV_CMD)
+			{
+				u32 = 0;
 				*value = (epicsInt32)u32;
 				setUIntDigitalParam(addr, function, (epicsUInt32)u32, mask);
 			}

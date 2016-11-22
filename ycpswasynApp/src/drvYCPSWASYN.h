@@ -136,26 +136,13 @@ const char *templateList[DEV_SIZE - 1][REG_SIZE] =
 	{"../../db/longout.template", 			"../../db/mbbo.template", 				"../../db/waveform_out.template", 		"../../db/waveform_8_out.template"},	//DEV_REG_RW
 	{"../../db/ai.template", 				"", 									"../../db/waveform_in_float.template", 	""},									//DEV_FLOAT_RO
 	{"../../db/ao.template", 				"", 									"../../db/waveform_out_float.template", ""},									//DEV_FLOAT_RW
-	{"../../db/longout.template",			"",										"",										""},									//DEV_CMD
+	{"../../db/bo.template",				"",										"",										""},									//DEV_CMD
 };
 
 // Record template list (oly for streans)
 const char * templateListWaforms[WF_SIZE] =
 {
 	"../../db/waveform_stream32.template",	"../../db/waveform_stream16.template"	//DEV_STM
-};
-
-
-// record name sufix list (must be form by DB_NAME_SUFIX_LENGHT chars only)
-const char *recordSufix[DEV_SIZE] = 
-{
-	":Rd", 	// DEV_REG_RO
-	":St",	// DEV_REG_RW
-	":Rd", 	// DEV_FLOAT_RO
-	":St",	// DEV_FLOAT_RW
-	":Ex",	// DEV_CMD
-	""		// DEV_STM
-	""		// DEV_CONFIG
 };
 
 #define PROCESS_CONFIG_MASK		0x03
@@ -200,20 +187,20 @@ class YCPSWASYN : public asynPortDriver {
 		YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int recordNameLenMax);
 		
 		// Methods that we override from asynPortDriver
-		virtual asynStatus readInt32 			(asynUser *pasynUser, epicsInt32 *value);
-		virtual asynStatus writeInt32 			(asynUser *pasynUser, epicsInt32 value);
-		virtual asynStatus readFloat64 			(asynUser *pasynUser, epicsFloat64 *value);
-		virtual asynStatus writeFloat64 		(asynUser *pasynUser, epicsFloat64 value);
-		virtual asynStatus readInt32Array		(asynUser *pasynUser, epicsInt32 *value, size_t nElements, size_t *nIn);
-		virtual asynStatus writeInt32Array		(asynUser *pasynUser, epicsInt32 *value, size_t nElements);
-		virtual asynStatus readOctet 			(asynUser *pasynUser, char *value, size_t maxChars, size_t *nActual, int *eomReason);
-		virtual asynStatus writeOctet 			(asynUser *pasynUser, const char *value, size_t maxChars, size_t *nActual);
-		virtual asynStatus readFloat64Array 	(asynUser *pasynUser, epicsFloat64 *value, size_t nElements, size_t *nIn);
-		virtual asynStatus writeFloat64Array 	(asynUser *pasynUser, epicsFloat64 *value, size_t nElements);
-		virtual asynStatus writeUInt32Digital 	(asynUser *pasynUser, epicsUInt32 value, epicsUInt32 mask);
-		virtual asynStatus readUInt32Digital 	(asynUser *pasynUser, epicsUInt32 *value, epicsUInt32 mask);
-		virtual asynStatus getBounds 			(asynUser *pasynUser, epicsInt32 *low, epicsInt32 *high);
-		virtual void report 					(FILE *fp, int details);
+		virtual asynStatus 	readInt32 			(asynUser *pasynUser, epicsInt32 *value);
+		virtual asynStatus 	writeInt32 			(asynUser *pasynUser, epicsInt32 value);
+		virtual asynStatus 	readFloat64 		(asynUser *pasynUser, epicsFloat64 *value);
+		virtual asynStatus 	writeFloat64 		(asynUser *pasynUser, epicsFloat64 value);
+		virtual asynStatus 	readInt32Array		(asynUser *pasynUser, epicsInt32 *value, size_t nElements, size_t *nIn);
+		virtual asynStatus 	writeInt32Array		(asynUser *pasynUser, epicsInt32 *value, size_t nElements);
+		virtual asynStatus 	readOctet 			(asynUser *pasynUser, char *value, size_t maxChars, size_t *nActual, int *eomReason);
+		virtual asynStatus 	writeOctet 			(asynUser *pasynUser, const char *value, size_t maxChars, size_t *nActual);
+		virtual asynStatus 	readFloat64Array 	(asynUser *pasynUser, epicsFloat64 *value, size_t nElements, size_t *nIn);
+		virtual asynStatus 	writeFloat64Array 	(asynUser *pasynUser, epicsFloat64 *value, size_t nElements);
+		virtual asynStatus 	writeUInt32Digital 	(asynUser *pasynUser, epicsUInt32 value, epicsUInt32 mask);
+		virtual asynStatus 	readUInt32Digital 	(asynUser *pasynUser, epicsUInt32 *value, epicsUInt32 mask);
+		virtual asynStatus 	getBounds 			(asynUser *pasynUser, epicsInt32 *low, epicsInt32 *high);
+		virtual void 		report 				(FILE *fp, int details);
 		
 		// New Methods for this class
 		// Streamn hanlding function
@@ -221,7 +208,6 @@ class YCPSWASYN : public asynPortDriver {
 
 		// Initialization routine
 		static int YCPSWASYNInit(const char *yaml_doc, Path *p, const char *ipAddr);
-		
 
 	private:
 		const char 							*driverName_;				// Name of the driver (passed from st.cmd)
@@ -292,6 +278,8 @@ class YCPSWASYN : public asynPortDriver {
 		// Save configuration to YAML
 		void saveConfiguration();
 
+		// Calculate the closest SCAN value for the EPICS record from the YAML pollSecs value 
+		std::string getEpicsScan(double scan);
 };
 
 // Stream handling function caller

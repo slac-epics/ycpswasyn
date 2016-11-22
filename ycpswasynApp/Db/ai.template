@@ -1,6 +1,7 @@
-record(ai, "$(P):$(R)") {
-  field(DESC, "$(DESC)")
-  field(DTYP, "asynFloat64")
-  field(SCAN, "5 second")
-  field(INP, "@asyn($(PORT),$(ADDR))$(PARAM)")
+record(ai, 		"$(P):$(R):Rd") {
+  field(PINI,	"YES")
+  field(DESC, 	"$(DESC)")
+  field(DTYP, 	"asynFloat64")
+  field(SCAN, 	"$(SCAN)")
+  field(INP, 	"@asyn($(PORT),$(ADDR))$(PARAM)")
 }
