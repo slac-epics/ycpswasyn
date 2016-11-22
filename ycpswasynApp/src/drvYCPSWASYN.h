@@ -136,7 +136,8 @@ const char *templateList[DEV_SIZE - 1][REG_SIZE] =
 	{"../../db/longout.template", 			"../../db/mbbo.template", 				"../../db/waveform_out.template", 		"../../db/waveform_8_out.template"},	//DEV_REG_RW
 	{"../../db/ai.template", 				"", 									"../../db/waveform_in_float.template", 	""},									//DEV_FLOAT_RO
 	{"../../db/ao.template", 				"", 									"../../db/waveform_out_float.template", ""},									//DEV_FLOAT_RW
-	{"../../db/longout.template",			"",										"",										""},									//DEV_CMD
+	//{"../../db/longout.template",			"",										"",										""},									//DEV_CMD
+	{"../../db/bo.template",				"",										"",										""},									//DEV_CMD
 };
 
 // Record template list (oly for streans)

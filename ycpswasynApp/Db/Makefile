@@ -22,6 +22,7 @@ DB+= waveform_in_float.template
 DB+= waveform_out_float.template
 DB += mbbi.template
 DB += mbbo.template
+DB += bo.template
 DB += waveform_stream16.template
 DB += waveform_stream32.template
 DB += saveLoadConfig.template

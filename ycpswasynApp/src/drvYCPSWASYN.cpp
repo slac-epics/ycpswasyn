@@ -684,10 +684,15 @@ void YCPSWASYN::CreateRecord(const Command& reg, const Path& p_)
 	// + record description field
 	trp.recDesc = string("\"") + string(c->getDescription()).substr(0, DB_DESC_LENGTH_MAX) + string("\"");
 	// + parameter type
-	trp.paramType = asynParamInt32;
+	trp.paramType = asynParamUInt32Digital;
 	// + record template 
 	trp.recTemplate = templateList[regType][REG_SINGLE];
 
+	// BO additional record fields
+	dbParams.clear();
+	dbParams = ",MASK=1";
+	dbParams += ",ONAM=\"Run\"";
+	dbParams += ",ZNAM=\"Run\"";
 	paramIndex = LoadRecord(regType, trp, dbParams);
 	pushParameter(reg, paramIndex);
 
@@ -1181,8 +1186,6 @@ asynStatus YCPSWASYN::writeInt32(asynUser *pasynUser, epicsInt32 value)
 		{
 			if (addr == DEV_REG_RW)
 				rw[function]->setVal((uint32_t*)&value, 1);
-			else if (addr == DEV_CMD)
-				cmd[function]->execute();
 			else if (addr == DEV_CONFIG)
 			{
 				if (function == saveConfigValue_)
@@ -1249,12 +1252,6 @@ asynStatus YCPSWASYN::readInt32(asynUser *pasynUser, epicsInt32 *value)
 			else if (addr == DEV_REG_RW)
 			{
 				rw[function]->getVal(&u32, 1);
-				*value = (epicsInt32)u32;
-				setIntegerParam(addr, function, (int)u32);
-			}
-			else if (addr == DEV_CMD)
-			{
-				u32 = 0;
 				*value = (epicsInt32)u32;
 				setIntegerParam(addr, function, (int)u32);
 			}
@@ -1748,6 +1745,10 @@ asynStatus YCPSWASYN::writeUInt32Digital(asynUser *pasynUser, epicsUInt32 value,
 				val |= value;
 				rw[function]->setVal((uint32_t*)&val, 1);
 			}
+			if(addr == DEV_CMD)
+			{
+				cmd[function]->execute();
+			}
 			else
 				status = asynPortDriver::writeUInt32Digital(pasynUser, value, mask);
 		}
@@ -1804,6 +1805,12 @@ asynStatus YCPSWASYN::readUInt32Digital(asynUser *pasynUser, epicsUInt32 *value,
 			{
 				rw[function]->getVal(&u32, 1);
 				u32 &= mask;
+				*value = (epicsInt32)u32;
+				setUIntDigitalParam(addr, function, (epicsUInt32)u32, mask);
+			}
+			else if (addr == DEV_CMD)
+			{
+				u32 = 0;
 				*value = (epicsInt32)u32;
 				setUIntDigitalParam(addr, function, (epicsUInt32)u32, mask);
 			}
