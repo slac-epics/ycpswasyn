@@ -1,6 +1,13 @@
-record(longout, "$(P):$(R):St") {
-  field(DESC, "$(DESC)")
-  field(DTYP, "asynInt32")
-  field(SCAN, "Passive")
-  field(OUT, "@asyn($(PORT),$(ADDR))$(PARAM)")
+record(longout,	"$(P):$(R):St") {
+  field(DESC,	"$(DESC)")
+  field(DTYP,	"asynInt32")
+  field(SCAN,	"Passive")
+  field(OUT,	"@asyn($(PORT),$(ADDR))$(PARAM)")
+  field(FLNK,	"$(P):$(R)-FL")
+}
+
+record(bo, "$(P):$(R)-FL") {
+	field(SCAN,	"Passive")
+	field(VAL,	"1")
+	field(OUT,	"$(P):$(R):Rd.PROC")
 }
