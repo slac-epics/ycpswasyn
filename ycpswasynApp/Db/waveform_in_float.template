@@ -1,9 +1,10 @@
-record(waveform, "$(P):$(R):Rd") {
-  field(DESC, "$(DESC)")
-  field(DTYP,	"asynFloat64ArrayIn")
-  field(NELM,	"$(N)")
-  field(FTVL,	"LONG")
-  field(SCAN,	"5 second")
-  field(PHAS,	"1")
-  field(INP,	"@asyn($(PORT),$(ADDR))$(PARAM)")
+record(waveform,	"$(P):$(R):Rd") {
+  field(PINI,		"YES")
+  field(DESC, 		"$(DESC)")
+  field(DTYP,		"asynFloat64ArrayIn")
+  field(NELM,		"$(N)")
+  field(FTVL,		"LONG")
+  field(SCAN,		"$(SCAN)")
+  field(PHAS,		"1")
+  field(INP,		"@asyn($(PORT),$(ADDR))$(PARAM)")
 }

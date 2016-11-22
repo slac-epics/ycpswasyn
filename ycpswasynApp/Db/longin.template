@@ -1,6 +1,7 @@
-record(longin, "$(P):$(R):Rd") {
-  field(DESC, "$(DESC)")
-  field(DTYP, "asynInt32")
-  field(SCAN, "5 second")
-  field(INP, "@asyn($(PORT),$(ADDR))$(PARAM)")
+record(longin,	"$(P):$(R):Rd") {
+  field(PINI,	"YES")
+  field(DESC, 	"$(DESC)")
+  field(DTYP, 	"asynInt32")
+  field(SCAN, 	"$(SCAN)")
+  field(INP, 	"@asyn($(PORT),$(ADDR))$(PARAM)")
 }

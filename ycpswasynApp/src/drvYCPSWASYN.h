@@ -187,20 +187,20 @@ class YCPSWASYN : public asynPortDriver {
 		YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int recordNameLenMax);
 		
 		// Methods that we override from asynPortDriver
-		virtual asynStatus readInt32 			(asynUser *pasynUser, epicsInt32 *value);
-		virtual asynStatus writeInt32 			(asynUser *pasynUser, epicsInt32 value);
-		virtual asynStatus readFloat64 			(asynUser *pasynUser, epicsFloat64 *value);
-		virtual asynStatus writeFloat64 		(asynUser *pasynUser, epicsFloat64 value);
-		virtual asynStatus readInt32Array		(asynUser *pasynUser, epicsInt32 *value, size_t nElements, size_t *nIn);
-		virtual asynStatus writeInt32Array		(asynUser *pasynUser, epicsInt32 *value, size_t nElements);
-		virtual asynStatus readOctet 			(asynUser *pasynUser, char *value, size_t maxChars, size_t *nActual, int *eomReason);
-		virtual asynStatus writeOctet 			(asynUser *pasynUser, const char *value, size_t maxChars, size_t *nActual);
-		virtual asynStatus readFloat64Array 	(asynUser *pasynUser, epicsFloat64 *value, size_t nElements, size_t *nIn);
-		virtual asynStatus writeFloat64Array 	(asynUser *pasynUser, epicsFloat64 *value, size_t nElements);
-		virtual asynStatus writeUInt32Digital 	(asynUser *pasynUser, epicsUInt32 value, epicsUInt32 mask);
-		virtual asynStatus readUInt32Digital 	(asynUser *pasynUser, epicsUInt32 *value, epicsUInt32 mask);
-		virtual asynStatus getBounds 			(asynUser *pasynUser, epicsInt32 *low, epicsInt32 *high);
-		virtual void report 					(FILE *fp, int details);
+		virtual asynStatus 	readInt32 			(asynUser *pasynUser, epicsInt32 *value);
+		virtual asynStatus 	writeInt32 			(asynUser *pasynUser, epicsInt32 value);
+		virtual asynStatus 	readFloat64 		(asynUser *pasynUser, epicsFloat64 *value);
+		virtual asynStatus 	writeFloat64 		(asynUser *pasynUser, epicsFloat64 value);
+		virtual asynStatus 	readInt32Array		(asynUser *pasynUser, epicsInt32 *value, size_t nElements, size_t *nIn);
+		virtual asynStatus 	writeInt32Array		(asynUser *pasynUser, epicsInt32 *value, size_t nElements);
+		virtual asynStatus 	readOctet 			(asynUser *pasynUser, char *value, size_t maxChars, size_t *nActual, int *eomReason);
+		virtual asynStatus 	writeOctet 			(asynUser *pasynUser, const char *value, size_t maxChars, size_t *nActual);
+		virtual asynStatus 	readFloat64Array 	(asynUser *pasynUser, epicsFloat64 *value, size_t nElements, size_t *nIn);
+		virtual asynStatus 	writeFloat64Array 	(asynUser *pasynUser, epicsFloat64 *value, size_t nElements);
+		virtual asynStatus 	writeUInt32Digital 	(asynUser *pasynUser, epicsUInt32 value, epicsUInt32 mask);
+		virtual asynStatus 	readUInt32Digital 	(asynUser *pasynUser, epicsUInt32 *value, epicsUInt32 mask);
+		virtual asynStatus 	getBounds 			(asynUser *pasynUser, epicsInt32 *low, epicsInt32 *high);
+		virtual void 		report 				(FILE *fp, int details);
 		
 		// New Methods for this class
 		// Streamn hanlding function
@@ -208,7 +208,6 @@ class YCPSWASYN : public asynPortDriver {
 
 		// Initialization routine
 		static int YCPSWASYNInit(const char *yaml_doc, Path *p, const char *ipAddr);
-		
 
 	private:
 		const char 							*driverName_;				// Name of the driver (passed from st.cmd)
@@ -279,6 +278,8 @@ class YCPSWASYN : public asynPortDriver {
 		// Save configuration to YAML
 		void saveConfiguration();
 
+		// Calculate the closest SCAN value for the EPICS record from the YAML pollSecs value 
+		std::string getEpicsScan(double scan);
 };
 
 // Stream handling function caller

@@ -39,7 +39,7 @@ record(mbbo,  "$(P):$(R):St") {
   field(FLNK, "$(P):$(R)-FL")
 }
 
-record(bo, "$(P):$(R)-FL") {
+record(bo,    "$(P):$(R)-FL") {
   field(SCAN, "Passive")
   field(VAL,  "1")
   field(OUT,  "$(P):$(R):Rd.PROC")

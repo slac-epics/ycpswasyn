@@ -1,8 +1,9 @@
-record(mbbi, "$(P):$(R):Rd") {
+record(mbbi,  "$(P):$(R):Rd") {
+  field(PINI, "YES")
   field(DESC, "$(DESC)")
   field(DTYP, "asynUInt32Digital")
-  field(SCAN, "5 second")
-  field(INP, "@asynMask($(PORT),$(ADDR),$(MASK))$(PARAM)")
+  field(SCAN, "$(SCAN)")
+  field(INP,  "@asynMask($(PORT),$(ADDR),$(MASK))$(PARAM)")
   field(NOBT, "$(NOBT)")
   field(ZRVL, "$(ZRVL)")
   field(ONVL, "$(ONVL)")
