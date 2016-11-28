@@ -207,7 +207,7 @@ class YCPSWASYN : public asynPortDriver {
 		void streamTask(Stream stm, int param16index, int param32index);
 
 		// Initialization routine
-		static int YCPSWASYNInit(const char *yaml_doc, Path *p, const char *ipAddr);
+		static int YCPSWASYNInit(const char *yaml_doc, const char* rootPath, Path *p, const char *ipAddr);
 
 	private:
 		const char 							*driverName_;				// Name of the driver (passed from st.cmd)
