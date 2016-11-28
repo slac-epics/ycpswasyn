@@ -268,22 +268,26 @@ void YCPSWASYN::streamTask(Stream stm, int param16index, int param32index)
 // - Initialization routine                                                        //
 //                                                                                 //
 /////////////////////////////////////////////////////////////////////////////////////
-class IYamlSetIP : public IYamlFixup {
-public:
+class IYamlSetIP : public IYamlFixup 
+{
+	public:
         IYamlSetIP( const char* ip_addr ) : ip_addr_(ip_addr) {}
-        virtual void operator()(YAML::Node &node)
+
+        void operator()(YAML::Node &node)
         {
-          node["ipAddr"] = ip_addr_;
+            node["ipAddr"] = ip_addr_;
         }
 
-        virtual ~IYamlSetIP() {}
-private:
+        ~IYamlSetIP() {}
+
+	private:
         std::string ip_addr_;
 };
 
-int YCPSWASYN::YCPSWASYNInit(const char *yaml_doc, Path *p, const char *ipAddr)
+int YCPSWASYN::YCPSWASYNInit(const char *yaml_doc, const char* rootPath, Path *p, const char *ipAddr)
 {
 	unsigned char buf[sizeof(struct in6_addr)];
+	Path root, subPath;
 
 	// Check if the IP address was especify. Otherwise use the one defined on the YAML file
 	if (inet_pton(AF_INET, ipAddr, buf))
@@ -292,14 +296,42 @@ int YCPSWASYN::YCPSWASYNInit(const char *yaml_doc, Path *p, const char *ipAddr)
 		IYamlSetIP setIP(ipAddr);
 
 		// Read YAML file
-		*p = IPath::loadYamlFile( yaml_doc, "NetIODev", NULL, &setIP );
+		root = IPath::loadYamlFile( yaml_doc, "NetIODev", NULL, &setIP );
 	}
 	else
 	{
 		printf("Using IP address from YAML file\n");
 
 		// Read YAML file
-        *p = IPath::loadYamlFile( yaml_doc, "NetIODev" );
+        root = IPath::loadYamlFile( yaml_doc, "NetIODev" );
+	}
+
+	*p = root;
+
+	if (rootPath[0] == '\0') 
+	{
+		printf("Stating at root\n");
+	}
+	else
+	{
+		try 
+		{
+			subPath = root->findByName(rootPath);
+		}
+		catch (CPSWError &e)
+		{
+			printf("CPSW error: %s\n", e.getInfo().c_str());
+		}
+
+		if (subPath)
+		{
+			printf("Starting at path: %s\n", subPath->toString().c_str());
+			*p = subPath;
+		}
+		else
+		{
+			printf("Path not found! Starting at root\n");
+		}
 	}
 
 	return 0;
@@ -1920,7 +1952,7 @@ void YCPSWASYN::report(FILE *fp, int details)
 // - Methods overrided from asynPortDriver //
 /////////////////////////////////////////////
 
-extern "C" int YCPSWASYNConfig(const char *portName, const char *yaml_doc, const char *ipAddr, const char *recordPrefix, unsigned int recordNameLenMax)
+extern "C" int YCPSWASYNConfig(const char *portName, const char *yaml_doc, const char *rootPath, const char *ipAddr, const char *recordPrefix, unsigned int recordNameLenMax)
 {
 	int status; 
 	Path p;
@@ -1931,7 +1963,7 @@ extern "C" int YCPSWASYNConfig(const char *portName, const char *yaml_doc, const
 		return asynError;
 	}
 
-	status = YCPSWASYN::YCPSWASYNInit(yaml_doc, &p, ipAddr);
+	status = YCPSWASYN::YCPSWASYNInit(yaml_doc, rootPath, &p, ipAddr);
   
 	YCPSWASYN *pYCPSWASYN = new YCPSWASYN(portName, p, recordPrefix, recordNameLenMax);
 	pYCPSWASYN = NULL;
@@ -1941,23 +1973,25 @@ extern "C" int YCPSWASYNConfig(const char *portName, const char *yaml_doc, const
 
 static const iocshArg confArg0 =	{ "portName",			iocshArgString};
 static const iocshArg confArg1 =	{ "yamlDoc",			iocshArgString};
-static const iocshArg confArg2 =	{ "ipAddr",				iocshArgString};
-static const iocshArg confArg3 =	{ "recordPrefix",		iocshArgString};
-static const iocshArg confArg4 =	{ "recordNameLenMax",	iocshArgInt};
+static const iocshArg confArg2 =	{ "rootPath",			iocshArgString};
+static const iocshArg confArg3 =	{ "ipAddr",				iocshArgString};
+static const iocshArg confArg4 =	{ "recordPrefix",		iocshArgString};
+static const iocshArg confArg5 =	{ "recordNameLenMax",	iocshArgInt};
 
 static const iocshArg * const confArgs[] = {
 	&confArg0,
 	&confArg1,
 	&confArg2,
 	&confArg3,
-	&confArg4
+	&confArg4,
+	&confArg5
 };
                                             
-static const iocshFuncDef configFuncDef = {"YCPSWASYNConfig",5,confArgs};
+static const iocshFuncDef configFuncDef = {"YCPSWASYNConfig",6,confArgs};
 
 static void configCallFunc(const iocshArgBuf *args)
 {
-	YCPSWASYNConfig(args[0].sval, args[1].sval, args[2].sval, args[3].sval, args[4].ival);
+	YCPSWASYNConfig(args[0].sval, args[1].sval, args[2].sval, args[3].sval, args[4].sval, args[5].ival);
 }
 
 void drvYCPSWASYNRegister(void)
