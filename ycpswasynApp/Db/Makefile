@@ -26,6 +26,7 @@ DB += bo.template
 DB += waveform_stream16.template
 DB += waveform_stream32.template
 DB += saveLoadConfig.template
+DB += verifyDefaults.db
 
 #----------------------------------------------------
 # If <anyname>.db template is not named <anyname>*.template add

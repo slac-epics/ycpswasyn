@@ -28,7 +28,7 @@ record(stringout, "$(P):loadConfigFile") {
   field(DTYP, "asynOctetWrite")
   field(SCAN, "Passive")
   field(OUT, "@asyn($(PORT),$(ADDR))CONFIG_LOAD_FILE")
-  field(VAL, "/tmp/configLoad.yaml")
+  field(VAL, "../../config/defaults.yaml")
   field(PINI, "YES")
 }
 
