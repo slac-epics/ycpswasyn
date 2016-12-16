@@ -242,7 +242,9 @@ void YCPSWASYN::streamTask(Stream stm, int param16index, int param32index)
 		       
 		        nFrame = (buf[1]<<4) | (buf[0] >> 4);
 
-		        printf("got = %zu bytes (%zu 32-bit words, %zu 16-bit words). Fame # %d\n", nBytes, nWords32, nWords16, nFrame);
+		        asynPrint(pasynUserSelf, ASYN_TRACEIO_FILTER, \
+		        	      "got = %zu bytes (%zu 32-bit words, %zu 16-bit words). Fame # %d\n", nBytes, nWords32, nWords16, nFrame \
+		        	      );
 	
 				doCallbacksInt16Array((epicsInt16*)(buf+8), nWords16, param16index, DEV_STM); 	
 				doCallbacksInt32Array((epicsInt32*)(buf+8), nWords32, param32index, DEV_STM); 	
