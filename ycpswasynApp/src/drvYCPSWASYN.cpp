@@ -236,6 +236,7 @@ void YCPSWASYN::streamTask(Stream stm, int param16index, int param32index)
         	}
         	else
         	{
+        		lock();
         		nBytes = (got - 9); // header = 8 bytes, footer = 1 byte, data = 32bit words.
         		nWords16 = nBytes / 2;
         		nWords32 = nWords16 / 2; 
@@ -250,7 +251,7 @@ void YCPSWASYN::streamTask(Stream stm, int param16index, int param32index)
 				doCallbacksInt32Array((epicsInt32*)(buf+8), nWords32, param32index, DEV_STM); 	
 
         		memset(buf, 0, STREAM_MAX_SIZE*sizeof(uint8_t));
-
+        		unlock();
             }
         }
 	} catch( IntrError e )
@@ -1258,6 +1259,7 @@ asynStatus YCPSWASYN::writeInt32(asynUser *pasynUser, epicsInt32 value)
      
 	this->getAddress(pasynUser, &addr);
 
+	lock();
 	if (!getParamName(addr, function, &name))
 	{
 
@@ -1302,7 +1304,8 @@ asynStatus YCPSWASYN::writeInt32(asynUser *pasynUser, epicsInt32 value)
 		status = asynPortDriver::writeInt32(pasynUser, value);
     
 	callParamCallbacks(addr);
- 
+ 	unlock();
+
 	return (status==0) ? asynSuccess : asynError;
 }
 
@@ -1318,6 +1321,7 @@ asynStatus YCPSWASYN::readInt32(asynUser *pasynUser, epicsInt32 *value)
      
 	static const char *functionName = "readInt32";
 
+	lock();
 	if (!getParamName(addr, function, &name))
 	{
 		try
@@ -1360,7 +1364,8 @@ asynStatus YCPSWASYN::readInt32(asynUser *pasynUser, epicsInt32 *value)
 	}
 
 	callParamCallbacks(addr);
-     
+	unlock();     
+
   	return (status==0) ? asynSuccess : asynError;
 }
 
@@ -1377,7 +1382,8 @@ asynStatus YCPSWASYN::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 	static const char *functionName = "writeFloat64";
      
 	this->getAddress(pasynUser, &addr);
-
+	
+	lock();
 	if (!getParamName(addr, function, &name))
 	{
 
@@ -1411,7 +1417,8 @@ asynStatus YCPSWASYN::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 		status = asynPortDriver::writeFloat64(pasynUser, value);
     
 	callParamCallbacks(addr);
- 
+	unlock();
+
 	return (status==0) ? asynSuccess : asynError;
 }
 
@@ -1427,6 +1434,7 @@ asynStatus YCPSWASYN::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
      
 	static const char *functionName = "readFloat64";
 
+	lock();
 	if (!getParamName(addr, function, &name))
 	{
 		try
@@ -1469,7 +1477,8 @@ asynStatus YCPSWASYN::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
 	}
 
 	callParamCallbacks(addr);
-     
+    unlock();
+
   	return (status==0) ? asynSuccess : asynError;
 }
 
@@ -1485,6 +1494,7 @@ asynStatus YCPSWASYN::writeInt32Array(asynUser *pasynUser, epicsInt32 *value, si
 
 	this->getAddress(pasynUser, &addr);
 
+	lock();
 	if (!getParamName(addr, function, &name))
 	{
 		try
@@ -1516,6 +1526,8 @@ asynStatus YCPSWASYN::writeInt32Array(asynUser *pasynUser, epicsInt32 *value, si
 					driverName_, functionName, function, this->portName, name, nElements, status);				
 	}
 
+	callParamCallbacks(addr);
+	unlock();
 
 	return (status==0) ? asynSuccess : asynError;
 
@@ -1531,6 +1543,7 @@ asynStatus YCPSWASYN::readInt32Array(asynUser *pasynUser, epicsInt32 *value, siz
 	this->getAddress(pasynUser, &addr);
 	uint64_t *buffer = new uint64_t[nElements];
 
+	lock();
 	if (!getParamName(addr, function, &name))
 	{
 		try
@@ -1571,6 +1584,9 @@ asynStatus YCPSWASYN::readInt32Array(asynUser *pasynUser, epicsInt32 *value, siz
 					"%s:%s(%d), port %s ERROR getting  parameter %s. Requested = %zu (status = %d)\n", \
 					driverName_, functionName, function, this->portName, name, nElements, status);
 	}
+
+	callParamCallbacks(addr);
+	unlock();
   
 	return (status==0) ? asynSuccess : asynError;
 }
@@ -1585,6 +1601,7 @@ asynStatus YCPSWASYN::readOctet(asynUser *pasynUser, char *value, size_t maxChar
     uint8_t *buffer = new uint8_t[maxChars];
     this->getAddress(pasynUser, &addr);
 
+    lock();
     if (!getParamName(addr, function, &name))
 	{
 		try
@@ -1626,6 +1643,9 @@ asynStatus YCPSWASYN::readOctet(asynUser *pasynUser, char *value, size_t maxChar
 					driverName_, functionName, function, this->portName, name, maxChars, status);
 	}
 
+	callParamCallbacks(addr);
+	unlock();
+
     return (status==0) ? asynSuccess : asynError;
 }
 
@@ -1638,7 +1658,8 @@ asynStatus YCPSWASYN::writeOctet (asynUser *pasynUser, const char *value, size_t
     static const char *functionName = "writeOctet";
     this->getAddress(pasynUser, &addr);
     IndexRange range(0, maxChars-1);
-        
+
+    lock();    
     if (!getParamName(addr, function, &name))
 	{
 		try
@@ -1689,6 +1710,9 @@ asynStatus YCPSWASYN::writeOctet (asynUser *pasynUser, const char *value, size_t
 					driverName_, functionName, function, this->portName, name, maxChars, status);
 	}
 
+	callParamCallbacks(addr);
+	unlock();
+
 	return (status==0) ? asynSuccess : asynError;
 }
 
@@ -1704,6 +1728,7 @@ asynStatus YCPSWASYN::readFloat64Array(asynUser *pasynUser, epicsFloat64 *value,
      
 	static const char *functionName = "readFloat64Array";
 
+	lock();
 	if (!getParamName(addr, function, &name))
 	{
 		try
@@ -1746,6 +1771,7 @@ asynStatus YCPSWASYN::readFloat64Array(asynUser *pasynUser, epicsFloat64 *value,
 	}
      
 	callParamCallbacks();
+	unlock();
      
   	return (status==0) ? asynSuccess : asynError;
 
@@ -1761,9 +1787,9 @@ asynStatus YCPSWASYN::writeFloat64Array(asynUser *pasynUser, epicsFloat64 *value
 	const char *name;
 	IndexRange range(0, nElements-1);
 
-     
 	static const char *functionName = "writeFloat64Array";
 
+	lock();
 	if (!getParamName(addr, function, &name))
 	{
 		try
@@ -1796,6 +1822,7 @@ asynStatus YCPSWASYN::writeFloat64Array(asynUser *pasynUser, epicsFloat64 *value
 	}
      
 	callParamCallbacks();
+	unlock();
      
   	return (status==0) ? asynSuccess : asynError;
 }
@@ -1814,6 +1841,7 @@ asynStatus YCPSWASYN::writeUInt32Digital(asynUser *pasynUser, epicsUInt32 value,
      
 	this->getAddress(pasynUser, &addr);
 
+	lock();
 	if (!getParamName(addr, function, &name))
 	{
 		try
@@ -1853,7 +1881,8 @@ asynStatus YCPSWASYN::writeUInt32Digital(asynUser *pasynUser, epicsUInt32 value,
 	}
     
 	callParamCallbacks(addr);
- 
+ 	unlock();
+
 	return (status==0) ? asynSuccess : asynError;
 }
 
@@ -1869,6 +1898,7 @@ asynStatus YCPSWASYN::readUInt32Digital(asynUser *pasynUser, epicsUInt32 *value,
      
 	static const char *functionName = "readUInt32Digital";
 
+	lock();
 	if (!getParamName(addr, function, &name))
 	{
 		try
@@ -1919,6 +1949,7 @@ asynStatus YCPSWASYN::readUInt32Digital(asynUser *pasynUser, epicsUInt32 *value,
 	}
      
 	callParamCallbacks(addr);
+	unlock();
      
   	return (status==0) ? asynSuccess : asynError;
 }
