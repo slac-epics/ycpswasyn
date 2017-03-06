@@ -80,13 +80,6 @@ YCPSWASYN::YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int
 	createParam(DEV_CONFIG, saveConfigFileString,	asynParamOctet, 		&saveConfigFileValue_);
 	createParam(DEV_CONFIG,	loadConfigStatusString,	asynParamUInt32Digital, &loadConfigStatusValue_);
 	createParam(DEV_CONFIG,	saveConfigStatusString,	asynParamUInt32Digital, &saveConfigStatusValue_);
-
-	stringstream dbParamsLocal;
-	dbParamsLocal.str("");
-	dbParamsLocal << "PORT=" << portName_;
-	dbParamsLocal << ",ADDR=" << DEV_CONFIG;
-	dbParamsLocal << ",P=" << recordPrefix_;
-	dbLoadRecords("../../db/saveLoadConfig.template", dbParamsLocal.str().c_str());
 }
 
 

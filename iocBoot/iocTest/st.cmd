@@ -67,9 +67,16 @@ YCPSWASYNConfig("${PORT}", "${YAML_FILE}", "", "${FPGA_IP}", "${PREFIX}", 40, "$
 # ======================================
 
 ## Load record instances
-dbLoadRecords("../../db/verifyDefaults.db", "P=${PREFIX}, KEY=3")
 # Exmaple of manually create records
 dbLoadTemplate("../../db/example.substitutions", "P=${PREFIX}, PORT=${PORT}")
+
+# Save/Load configuration related records
+dbLoadRecords("../../db/saveLoadConfig.template", "P=${PREFIX}, PORT=${PORT}, SAVE_FILE=/tmp/configDump.yaml, LOAD_FILE=../../config/defaults.yaml")
+
+# Verify Configuration related records
+dbLoadRecords("../../db/verifyDefaults.db", "P=${PREFIX}, KEY=3")
+
+
 
 asynSetTraceMask(${PORT},, -1, 9)
 asynSetTraceIOMask(${PORT},, -1, 2)
