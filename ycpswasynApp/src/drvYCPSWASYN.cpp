@@ -1130,10 +1130,8 @@ std::string YCPSWASYN::getEpicsScan(double scan)
 	scanStr = std::string(",SCAN=");
 
 	if (scan == 0.0)
-		// For now, until pollSecs is implemented on the YAML files,
-		// lets use as default a scan value of 5 seconds. 
-		//scanStr += std::string("Passive");
-		scanStr += std::string("5 second");
+		// Let's use s default a Passive scan value
+		scanStr += std::string("Passive");
 	else if (scan <= 0.1)
 		scanStr += std::string(".1 second");
 	else if (scan <= 0.2)
