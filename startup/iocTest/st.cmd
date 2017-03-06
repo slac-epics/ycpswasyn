@@ -60,7 +60,6 @@ epicsEnvSet("DICT_FILE", "example.dict")
 #    Record name Length Max,    # Record name maximum length (must be greater than lenght of prefix + 4)
 #    Use DB Autogeneration,     # Set to 1 for autogeneration of records from the YAML definition. Set to 0 to disable it
 #    Load dictionary,           # Dictionary file path with registers to load. An empty string will disable this function
-#YCPSWASYNConfig("${PORT}", "../../yaml/AmcCarrierSsrlEth2x_project.yaml/000TopLevel.yaml", "", "10.0.1.102", "${PREFIX}", 40, 0, "dict.test")
 YCPSWASYNConfig("${PORT}", "${YAML_FILE}", "", "${FPGA_IP}", "${PREFIX}", 40, "${AUTO_GEN}", "${DICT_FILE}")
 # ======================================
 # End of YCPSWASYN Configuration

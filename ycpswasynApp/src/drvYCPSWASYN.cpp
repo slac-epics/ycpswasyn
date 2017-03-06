@@ -1318,8 +1318,6 @@ void YCPSWASYN::createRegisterParameter(const Stream& reg, const std::string& pa
 /////////////////////////////////////////////////////////////////////////////////////
 int YCPSWASYN::loadDBFromFile(const char* dictionary)
 {
-	printf("Called from YCPSWASYN::loadDBFromFile with file name = %s\n", dictionary);
-
 	if (dictionary[0] != '\0')
 	{
 		printf("Opening dictionary \"%s\"... ", dictionary);
@@ -1340,17 +1338,16 @@ int YCPSWASYN::loadDBFromFile(const char* dictionary)
 
 		    	iss >> regPath >> paramName;
 
+		    	// Omit lines without both path and parameter name
 				if (regPath.empty() || paramName.empty())
 				{
 					printf("Invalid line %d\n", lineNumber);
 					continue;
 				}
 
+				// Omit comment lines, which start with '#'
 				if (regPath[0] == '#')
-				{
-					printf("Line %d is a comment. Ommiting...\n", lineNumber);
 					continue;
-				}
 
 				// Check first if it is a stream
 				size_t found_key = regPath.find(STREAM_KEY);
@@ -1475,14 +1472,10 @@ asynStatus YCPSWASYN::writeInt32(asynUser *pasynUser, epicsInt32 value)
 	lock();
 	if (!getParamName(addr, function, &name))
 	{
-		printf(" >> writeInt32: Paramater name: >%s<\n", name);
 		try
 		{
 			if (addr == DEV_REG_RW)
-			{
 				rw[function]->setVal((uint32_t*)&value, 1);
-				printf("   ::: Wrote %d to rw[%d]\n", value, function);
-			}
 			else if (addr == DEV_CONFIG)
 			{
 				if (function == saveConfigValue_)
@@ -1540,7 +1533,6 @@ asynStatus YCPSWASYN::readInt32(asynUser *pasynUser, epicsInt32 *value)
 	lock();
 	if (!getParamName(addr, function, &name))
 	{
-		printf(" >> readInt32: Paramater name: >%s<\n", name);
 		try
 		{
 			if (addr == DEV_REG_RO)
@@ -1603,7 +1595,6 @@ asynStatus YCPSWASYN::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 	lock();
 	if (!getParamName(addr, function, &name))
 	{
-
 		try
 		{
 			if (addr == DEV_FLOAT_RW)
