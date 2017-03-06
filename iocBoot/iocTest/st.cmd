@@ -67,7 +67,7 @@ YCPSWASYNConfig("${PORT}", "${YAML_FILE}", "", "${FPGA_IP}", "${PREFIX}", 40, "$
 
 ## Load record instances
 # Exmaple of manually create records
-dbLoadTemplate("../../db/example.substitutions", "P=${PREFIX}, PORT=${PORT}")
+dbLoadTemplate("../../db/example.substitutions")
 
 # Save/Load configuration related records
 dbLoadRecords("../../db/saveLoadConfig.template", "P=${PREFIX}, PORT=${PORT}, SAVE_FILE=/tmp/configDump.yaml, LOAD_FILE=../../config/defaults.yaml")
