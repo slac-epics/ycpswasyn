@@ -1,0 +1,36 @@
+############################################################################################################
+# Example substitution file showing how to manually load records.                
+# P,R: The PV name as $(P):$(R)
+# DESC, PINI, SCAN, NELM, etc.: The same fields on the records
+# PORT: The asyn port name. It must match the port name given when calling "YCPSWASYNConfig" on st.cmd 
+# PARAM: The asyn paramter name. It must be defined in the dictionary file and assigned to a register 
+# ADDR: Addrres based on the type of register interface:
+#       0: For ScalVal_RO interfaces (read-only registers)
+#       1: For ScalVal interfaces (read/write register)
+#       2: For DoubleVal_RO interfaces (read-only double precision registers)
+#       3: For DoubleVal interfaces (read/write double precision registers)
+#       4: For Command interfaces (command registers)
+#       5: For Stream interfaces (streaming ports)
+############################################################################################################
+
+file "../../db/RegisterIn.template" { pattern
+{ P,        R,              DESC,                           PINI,   SCAN,       PORT,   ADDR,   PARAM       }
+{ yamlIOC1, DeviceDna,      "Xilinx Device DNA",            "YES",  "Passive",  Atca2,  0,      DEVICE_DNA  }
+{ yamlIOC1, FpgaVersion,    "FPGA Firmware Version Number"  "YES",  "Passive",  Atca2,  0,      FPGA_VERS   }
+{ yamlIOC1, UpTimeCnt,      "Seconds since last reset"      "YES",  "1 second", Atca2,  0,      UP_TIME_CNT }
+}
+
+file "../../db/RegisterOut.template" { pattern
+{ P,        R,              DESC,                           PINI,   SCAN,       PORT,   ADDR,   PARAM       }
+{ yamlIOC1, ScratchPad,     "Register to test R/W"          "NO",   "Passive",  Atca2,  1,      SCRATCH_PAD }
+}
+
+file "../../db/RegisterArrayChar.template" { pattern
+{ P,        R,              DESC,                           NELM,   PINI,   SCAN,       PORT,   ADDR,   PARAM       }
+{ yamlIOC1, BuildStamp,     "Firmware Build String",        64,     "YES",  "Passive",  Atca2,  0,      BUILD_STAMP }   
+}
+
+file "../../db/Stream.template" {pattern
+{ P,            R,          DESC,               CH,     NELM,       PINI,   PORT,   ADDR,   PARAM       }
+{ yamlIOC1,     Stream0,    "Stream channel 0", 0,      5000000,    "NO",   Atca2,  5,      STREAM_CH0  }
+}

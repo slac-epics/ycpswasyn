@@ -1,0 +1,13 @@
+##############################################################################
+# Register path						Asyn parameter name ##
+##############################################################################
+
+# Stream interfaces
+/Stream0						STREAM_CH0
+
+# Axi Version related registers
+/mmio/DigFpga/AmcCarrierCore/AxiVersion/BuildStamp	BUILD_STAMP
+/mmio/DigFpga/AmcCarrierCore/AxiVersion/FpgaVersion	FPGA_VERS
+/mmio/DigFpga/AmcCarrierCore/AxiVersion/DeviceDna	DEVICE_DNA
+/mmio/DigFpga/AmcCarrierCore/AxiVersion/ScratchPad	SCRATCH_PAD
+/mmio/DigFpga/AmcCarrierCore/AxiVersion/UpTimeCnt	UP_TIME_CNT

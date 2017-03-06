@@ -1,0 +1,8 @@
+record(longin, "$(P):$(R)") {
+  field(PINI,  "$(PINI)")
+  field(SCAN,  "$(SCAN)")
+  field(DESC,  "$(DESC)")
+  field(DTYP,  "asynInt32")
+  field(INP,   "@asyn($(PORT),$(ADDR))$(PARAM)")
+
+}
