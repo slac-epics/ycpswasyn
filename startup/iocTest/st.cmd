@@ -17,17 +17,39 @@
 # Uncomment and set appropriate size for your application:
 epicsEnvSet("EPICS_CA_MAX_ARRAY_BYTES", "21000000")
 
-# PV prefix
-epicsEnvSet("PREFIX","yamlIOC1")
-epicsEnvSet("PORT","Atca2")
-
 ## Register all support components
 dbLoadDatabase("../../dbd/ycpswasyn.dbd",0,0)
 ycpswasyn_registerRecordDeviceDriver(pdbbase) 
 
-## Load record instances
-dbLoadRecords("../../db/verifyDefaults.db", "P=${PREFIX}, KEY=3")
+# ======================================
+# YCPSWASYN Configuration parameters
+# ======================================
+# Port name
+epicsEnvSet("PORT","Atca2")
 
+# Yaml File 
+epicsEnvSet("YAML_FILE", "../../yaml/AmcCarrierSsrlEth2x_project.yaml/000TopLevel.yaml")
+
+# FPGA IP address
+epicsEnvSet("FPGA_IP", "10.0.1.102")
+
+# Use Automatic generation of records from the YAML definition
+# 0 = No, 1 = Yes
+epicsEnvSet("AUTO_GEN", 0)
+
+# Automatically generated record prefix
+epicsEnvSet("PREFIX","yamlIOC1")
+
+# Dictionary file for manual (empty string if none)
+epicsEnvSet("DICT_FILE", "example.dict")
+
+# ======================================
+# End of YCPSWASYN Configuration parameters
+# ======================================
+
+# ======================================
+# YCPSWASYN Configuration
+# ======================================
 ## Configure asyn port driver
 # YCPSWASYNConfig(
 #    Port Name,                 # the name given to this port driver
@@ -36,11 +58,22 @@ dbLoadRecords("../../db/verifyDefaults.db", "P=${PREFIX}, KEY=3")
 #    IP Address,                # OPTIONAL: Target FPGA IP Address. If not given it is taken from the YAML file
 #    Record name Prefix,        # Record name prefix
 #    Record name Length Max,    # Record name maximum length (must be greater than lenght of prefix + 4)
-YCPSWASYNConfig("${PORT}", "../../yaml/AmcCarrierSsrlEth2x_project.yaml/000TopLevel.yaml", "", "10.0.0.102", "${PREFIX}", 40)
+#    Use DB Autogeneration,     # Set to 1 for autogeneration of records from the YAML definition. Set to 0 to disable it
+#    Load dictionary,           # Dictionary file path with registers to load. An empty string will disable this function
+#YCPSWASYNConfig("${PORT}", "../../yaml/AmcCarrierSsrlEth2x_project.yaml/000TopLevel.yaml", "", "10.0.1.102", "${PREFIX}", 40, 0, "dict.test")
+YCPSWASYNConfig("${PORT}", "${YAML_FILE}", "", "${FPGA_IP}", "${PREFIX}", 40, "${AUTO_GEN}", "${DICT_FILE}")
+# ======================================
+# End of YCPSWASYN Configuration
+# ======================================
 
-#asynSetTraceMask(${PORT},, -1, 9)
-#asynSetTraceIOMask(${PORT},, -1, 2)
-asynSetTraceMask(${PORT},, -1, 0)
+## Load record instances
+dbLoadRecords("../../db/verifyDefaults.db", "P=${PREFIX}, KEY=3")
+# Exmaple of manually create records
+dbLoadTemplate("../../db/example.substitutions", "P=${PREFIX}, PORT=${PORT}")
+
+asynSetTraceMask(${PORT},, -1, 9)
+asynSetTraceIOMask(${PORT},, -1, 2)
+#asynSetTraceMask(${PORT},, -1, 0)
 
 iocInit()
 

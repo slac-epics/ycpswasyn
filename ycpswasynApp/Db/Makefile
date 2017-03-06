@@ -27,6 +27,12 @@ DB += waveform_stream16.template
 DB += waveform_stream32.template
 DB += saveLoadConfig.template
 DB += verifyDefaults.db
+# Example manually create records
+DB += RegisterIn.template
+DB += RegisterOut.template
+DB += RegisterArrayChar.template
+DB += Stream.template
+DB += example.substitutions
 
 #----------------------------------------------------
 # If <anyname>.db template is not named <anyname>*.template add
