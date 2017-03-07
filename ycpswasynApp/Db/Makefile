@@ -31,7 +31,11 @@ DB += verifyDefaults.db
 DB += RegisterIn.template
 DB += RegisterOut.template
 DB += RegisterArrayChar.template
-DB += Stream.template
+DB += RegisterArrayIn.template
+DB += RegisterDoubleIn.template
+DB += RegisterDoubleOut.template
+DB += RegisterCommand.template
+DB += RegisterStream.template
 DB += example.substitutions
 
 #----------------------------------------------------

@@ -1,19 +1,20 @@
 #==================================================================
-# Record example for a register with an ScalVal
-# interface. The type is longout, with type asynInt32.
-# The OUT field has the form @asyn(PORT,ADDR)PARAM where:
+# Record example for a register with an DoubleVal_RO
+# interface. The type is ai, with type asynFloat64.
+# The INP field has the form @asyn(PORT,ADDR)PARAM where:
 #  - PORT  : The asyn port name. It must match the port name given 
 #            when calling "YCPSWASYNConfig" on st.cmd
 #  - ADDR  : The asyn paramter name. It must be defined in the 
 #            dictionary file and assigned to a register 
 #  - PARAM : Addrres based on the type of register interface. 
-#            For ScalVal it is 1
+#            For DoubleVal_RO it is 2
 #==================================================================
 
-record(longout, "$(P):$(R)") {
-    field(DTYP, "asynInt32")
+record(ai,      "$(P):$(R)") {
+    field(DTYP, "asynFloat64")
     field(DESC, "$(DESC)")
     field(PINI, "$(PINI)")
     field(SCAN, "$(SCAN)")
-    field(OUT,  "@asyn($(PORT),1)$(PARAM)")
+    field(EGU,  "$(EGU)")
+    field(INP,  "@asyn($(PORT),2)$(PARAM)")
 }
