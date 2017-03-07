@@ -69,3 +69,13 @@ file "db/RegisterStream.template" {pattern
 { P,            R,          DESC,               NELM,       PORT,   PARAM       }
 { yamlIOC1,     Stream0,    "Stream channel 0", 5000000,    Atca2,  STREAM_CH0  }
 }
+
+# For Stream interfaces, an additional parameter is automatically created
+# and the name is generated adding ":16" to the original parameter name
+# This gives access to the same stream data, but as 16-bit words which
+# is the case for ADC samples for example. Note that the NELM is 2x
+
+file "db/RegisterStream16.template" {pattern
+{ P,            R,          DESC,               			NELM,       PORT,   PARAM       	}
+{ yamlIOC1,     Stream0_16, "Stream channel 0 (16-bit)", 	10000000,    Atca2,  STREAM_CH0:16  }
+}

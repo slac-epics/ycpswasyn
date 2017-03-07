@@ -1,6 +1,6 @@
 #==================================================================
 # Record example for an array of 8-bit registers with an ScalVal_RO
-# interface. The type is longin, with type asynOctetRead.
+# interface. It is a longin record with type asynOctetRead.
 # The INP field has the form @asyn(PORT,ADDR)PARAM where:
 #  - PORT  : The asyn port name. It must match the port name given 
 #            when calling "YCPSWASYNConfig" on st.cmd

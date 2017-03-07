@@ -1,6 +1,6 @@
 #==================================================================
 # Record example for a register with an DoubleVal_RO
-# interface. The type is ai, with type asynFloat64.
+# interface. It is a ai record with type asynFloat64.
 # The INP field has the form @asyn(PORT,ADDR)PARAM where:
 #  - PORT  : The asyn port name. It must match the port name given 
 #            when calling "YCPSWASYNConfig" on st.cmd

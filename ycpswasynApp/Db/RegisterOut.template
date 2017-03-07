@@ -1,6 +1,6 @@
 #==================================================================
 # Record example for a register with an ScalVal
-# interface. The type is longout, with type asynInt32.
+# interface. It is a longout record with type asynInt32.
 # The OUT field has the form @asyn(PORT,ADDR)PARAM where:
 #  - PORT  : The asyn port name. It must match the port name given 
 #            when calling "YCPSWASYNConfig" on st.cmd

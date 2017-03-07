@@ -1,6 +1,6 @@
 #==================================================================
 # Record example for a register with an Stream
-# interface. The type is waveform, with type asynInt32ArrayIn. 
+# interface. It is a waveform record with type asynInt32ArrayIn. 
 # SCAN must be "I/O Intr" for streaming interfaces.
 # The INP field has the form @asyn(PORT,ADDR)PARAM where:
 #  - PORT  : The asyn port name. It must match the port name given 

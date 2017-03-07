@@ -1265,6 +1265,35 @@ void YCPSWASYN::addParameter(const T& reg, const std::string& paramName, const a
 	pushParameter(reg, paramIndex);
 }
 
+template <>
+void YCPSWASYN::addParameter(const Stream& reg, const std::string& paramName, const asynParamType& paramType)
+{
+	int paramIndex32, paramIndex16;
+	std::string paramName16 = paramName + string(":16");
+
+	createParam(DEV_STM, paramName.c_str(), paramType, &paramIndex32);
+	createParam(DEV_STM, paramName16.c_str(), paramType, &paramIndex16);
+
+	// Crteate Acquisition Thread 
+	asynStatus status;
+	ThreadArgs arglist;
+	arglist.pPvt = this;
+	arglist.stm = reg;
+	arglist.param16index = paramIndex16;
+	arglist.param32index = paramIndex32;
+
+	status = (asynStatus)(epicsThreadCreate("Stream", epicsThreadPriorityLow, 
+	        epicsThreadGetStackSize(epicsThreadStackMedium), (EPICSTHREADFUNC)::streamTaskC, &arglist) == NULL);
+	 
+	if (status) 
+	{
+	    printf("epicsThreadCreate failure for parameter %s\n", paramName.c_str());
+	    return;
+	}
+	else
+		printf("epicsThreadCreate successfully for parameters %s and %s\n", paramName.c_str(), paramName16.c_str());
+
+}
 /////////////////////////////////////////////////////////////////////////////////////////
 // void YCPSWASYN::createRegisterParameter(const T& reg, const std::string& paramName) //
 // - Creates a asyn paramter for the given register                                    //

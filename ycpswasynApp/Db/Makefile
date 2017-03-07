@@ -36,6 +36,7 @@ DB += RegisterDoubleIn.template
 DB += RegisterDoubleOut.template
 DB += RegisterCommand.template
 DB += RegisterStream.template
+DB += RegisterStream16.template
 DB += example.substitutions
 
 #----------------------------------------------------
