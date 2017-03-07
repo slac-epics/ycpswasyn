@@ -42,7 +42,7 @@ epicsEnvSet("AUTO_GEN", 0)
 epicsEnvSet("PREFIX","yamlIOC1")
 
 # Dictionary file for manual (empty string if none)
-epicsEnvSet("DICT_FILE", "example.dict")
+epicsEnvSet("DICT_FILE", "yaml/example.dict")
 
 # ======================================
 # End of YCPSWASYN Configuration parameters
