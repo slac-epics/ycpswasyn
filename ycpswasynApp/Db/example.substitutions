@@ -13,24 +13,24 @@
 #       5: For Stream interfaces (streaming ports)
 ############################################################################################################
 
-file "../../db/RegisterIn.template" { pattern
+file "db/RegisterIn.template" { pattern
 { P,        R,              DESC,                           PINI,   SCAN,       PORT,   ADDR,   PARAM       }
 { yamlIOC1, DeviceDna,      "Xilinx Device DNA",            "YES",  "Passive",  Atca2,  0,      DEVICE_DNA  }
 { yamlIOC1, FpgaVersion,    "FPGA Firmware Version Number"  "YES",  "Passive",  Atca2,  0,      FPGA_VERS   }
 { yamlIOC1, UpTimeCnt,      "Seconds since last reset"      "YES",  "1 second", Atca2,  0,      UP_TIME_CNT }
 }
 
-file "../../db/RegisterOut.template" { pattern
+file "db/RegisterOut.template" { pattern
 { P,        R,              DESC,                           PINI,   SCAN,       PORT,   ADDR,   PARAM       }
 { yamlIOC1, ScratchPad,     "Register to test R/W"          "NO",   "Passive",  Atca2,  1,      SCRATCH_PAD }
 }
 
-file "../../db/RegisterArrayChar.template" { pattern
+file "db/RegisterArrayChar.template" { pattern
 { P,        R,              DESC,                           NELM,   PINI,   SCAN,       PORT,   ADDR,   PARAM       }
 { yamlIOC1, BuildStamp,     "Firmware Build String",        64,     "YES",  "Passive",  Atca2,  0,      BUILD_STAMP }   
 }
 
-file "../../db/Stream.template" {pattern
+file "db/Stream.template" {pattern
 { P,            R,          DESC,               CH,     NELM,       PINI,   PORT,   ADDR,   PARAM       }
 { yamlIOC1,     Stream0,    "Stream channel 0", 0,      5000000,    "NO",   Atca2,  5,      STREAM_CH0  }
 }

@@ -3,7 +3,8 @@
 ## You may have to change ycpswasyn to something else
 ## everywhere it appears in this file
 
-#< envPaths
+< envPaths
+cd $(TOP)
 
 # ========================================================
 # Support Large Arrays/Waveforms; Number in Bytes
@@ -18,7 +19,7 @@
 epicsEnvSet("EPICS_CA_MAX_ARRAY_BYTES", "21000000")
 
 ## Register all support components
-dbLoadDatabase("../../dbd/ycpswasyn.dbd",0,0)
+dbLoadDatabase("dbd/ycpswasyn.dbd",0,0)
 ycpswasyn_registerRecordDeviceDriver(pdbbase) 
 
 # ======================================
@@ -28,7 +29,7 @@ ycpswasyn_registerRecordDeviceDriver(pdbbase)
 epicsEnvSet("PORT","Atca2")
 
 # Yaml File 
-epicsEnvSet("YAML_FILE", "../../yaml/AmcCarrierSsrlEth2x_project.yaml/000TopLevel.yaml")
+epicsEnvSet("YAML_FILE", "yaml/AmcCarrierSsrlEth2x_project.yaml/000TopLevel.yaml")
 
 # FPGA IP address
 epicsEnvSet("FPGA_IP", "10.0.1.102")
@@ -41,7 +42,7 @@ epicsEnvSet("AUTO_GEN", 0)
 epicsEnvSet("PREFIX","yamlIOC1")
 
 # Dictionary file for manual (empty string if none)
-epicsEnvSet("DICT_FILE", "example.dict")
+epicsEnvSet("DICT_FILE", "yaml/example.dict")
 
 # ======================================
 # End of YCPSWASYN Configuration parameters
@@ -67,15 +68,13 @@ YCPSWASYNConfig("${PORT}", "${YAML_FILE}", "", "${FPGA_IP}", "${PREFIX}", 40, "$
 
 ## Load record instances
 # Exmaple of manually create records
-dbLoadTemplate("../../db/example.substitutions")
+dbLoadTemplate("db/example.substitutions")
 
 # Save/Load configuration related records
-dbLoadRecords("../../db/saveLoadConfig.template", "P=${PREFIX}, PORT=${PORT}, SAVE_FILE=/tmp/configDump.yaml, LOAD_FILE=../../config/defaults.yaml")
+dbLoadRecords("db/saveLoadConfig.template", "P=${PREFIX}, PORT=${PORT}, SAVE_FILE=/tmp/configDump.yaml, LOAD_FILE=config/defaults.yaml")
 
 # Verify Configuration related records
-dbLoadRecords("../../db/verifyDefaults.db", "P=${PREFIX}, KEY=3")
-
-
+dbLoadRecords("db/verifyDefaults.db", "P=${PREFIX}, KEY=3")
 
 asynSetTraceMask(${PORT},, -1, 9)
 asynSetTraceIOMask(${PORT},, -1, 2)

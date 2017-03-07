@@ -42,7 +42,7 @@
 #define REG_DUMP_FILE_NAME			"regMap.txt"
 #define PV_DUMP_FILE_NAME			"pvList.txt"
 #define KEYS_NOT_FOUND_FILE_NAME	"keysNotFound.txt"
-#define MAP_FILE_PATH				"../../yaml/"
+#define MAP_FILE_PATH				"yaml/"
 #define MAP_TOP_FILE_NAME			"map_top"
 #define MAP_FILE_NAME				"map"
 
@@ -132,17 +132,17 @@ enum waveformTypeList
 const char *templateList[DEV_SIZE - 1][REG_SIZE] = 
 {
 	 // DEV_SINGLE,							// REG_ENUM								// REG_ARRAY 							// REG_ARRAY_8
-	{"../../db/longin.template", 			"../../db/mbbi.template", 				"../../db/waveform_in.template", 		"../../db/waveform_8_in.template"},		//DEV_REG_RO
-	{"../../db/longout.template", 			"../../db/mbbo.template", 				"../../db/waveform_out.template", 		"../../db/waveform_8_out.template"},	//DEV_REG_RW
-	{"../../db/ai.template", 				"", 									"../../db/waveform_in_float.template", 	""},									//DEV_FLOAT_RO
-	{"../../db/ao.template", 				"", 									"../../db/waveform_out_float.template", ""},									//DEV_FLOAT_RW
-	{"../../db/bo.template",				"",										"",										""},									//DEV_CMD
+	{"db/longin.template", 			"db/mbbi.template", 				"db/waveform_in.template", 		"db/waveform_8_in.template"},		//DEV_REG_RO
+	{"db/longout.template", 			"db/mbbo.template", 				"db/waveform_out.template", 		"db/waveform_8_out.template"},	//DEV_REG_RW
+	{"db/ai.template", 				"", 									"db/waveform_in_float.template", 	""},									//DEV_FLOAT_RO
+	{"db/ao.template", 				"", 									"db/waveform_out_float.template", ""},									//DEV_FLOAT_RW
+	{"db/bo.template",				"",										"",										""},									//DEV_CMD
 };
 
 // Record template list (oly for streans)
 const char * templateListWaforms[WF_SIZE] =
 {
-	"../../db/waveform_stream32.template",	"../../db/waveform_stream16.template"	//DEV_STM
+	"db/waveform_stream32.template",	"db/waveform_stream16.template"	//DEV_STM
 };
 
 #define PROCESS_CONFIG_MASK		0x03
