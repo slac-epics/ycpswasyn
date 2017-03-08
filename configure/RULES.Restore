@@ -50,10 +50,6 @@ endif # T_A defined
 build : $(COMMON_RESTORES) \
 	$(INSTALL_RESTORES)
 
-clean:: 
-#	@$(RM) $(COMMONS)
-
-realclean:: clean
 
 ##################################################### Substitution files
 
