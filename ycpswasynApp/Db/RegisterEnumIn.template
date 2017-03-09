@@ -4,10 +4,10 @@
 # The INP field has the form @asynMask(PORT,ADDR,MASK)PARAM where:
 #  - PORT  : The asyn port name. It must match the port name given 
 #            when calling "YCPSWASYNConfig" on st.cmd
-#  - ADDR  : The asyn paramter name. It must be defined in the 
+#  - PARAM : The asyn paramter name. It must be defined in the 
 #            dictionary file and assigned to a register 
 #  - MASK  : It is 1 for 1-bit register.
-#  - PARAM : Addrres based on the type of register interface. 
+#  - ADDR  : Addrres based on the type of register interface. 
 #            For ScalVal_RO it is 0
 #==================================================================
 

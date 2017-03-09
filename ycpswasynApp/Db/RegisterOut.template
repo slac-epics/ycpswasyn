@@ -4,9 +4,9 @@
 # The OUT field has the form @asyn(PORT,ADDR)PARAM where:
 #  - PORT  : The asyn port name. It must match the port name given 
 #            when calling "YCPSWASYNConfig" on st.cmd
-#  - ADDR  : The asyn paramter name. It must be defined in the 
+#  - PARAM : The asyn paramter name. It must be defined in the 
 #            dictionary file and assigned to a register 
-#  - PARAM : Addrres based on the type of register interface. 
+#  - ADDR  : Addrres based on the type of register interface. 
 #            For ScalVal it is 1
 #==================================================================
 
