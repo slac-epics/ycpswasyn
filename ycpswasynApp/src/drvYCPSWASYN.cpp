@@ -1357,7 +1357,7 @@ int YCPSWASYN::loadDBFromFile(const char* dictionary)
             printf("Done.\n");
             asynParamType paramType;
             std::string line;
-            unsigned int lineNumber;
+            unsigned int lineNumber=0;
 
             while (std::getline(dictFile, line))
             {
