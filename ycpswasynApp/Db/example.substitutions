@@ -67,7 +67,7 @@ file "db/RegisterDoubleOutRBV.template" { pattern
 #======================================
 # Register with Command interfaces
 #======================================
-file "db/RegisteCommand.template" { pattern
+file "db/RegisterCommand.template" { pattern
 { P,        R,              DESC,                           PINI,   SCAN,       PORT,   PARAM       }
 }
 
