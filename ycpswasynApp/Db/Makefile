@@ -30,6 +30,7 @@ DB += verifyDefaults.db
 # Example manually create records
 DB += RegisterIn.template
 DB += RegisterOut.template
+DB += RegisterOutRBV.template
 DB += RegisterArrayChar.template
 DB += RegisterArrayIn.template
 DB += RegisterDoubleIn.template
