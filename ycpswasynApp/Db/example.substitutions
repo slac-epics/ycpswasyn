@@ -59,6 +59,11 @@ file "db/RegisterDoubleOut.template" { pattern
 { P,        R,              DESC,                           PINI,   SCAN,       PORT,   EGU,    PARAM   }
 }
 
+# Readback PVs
+file "db/RegisterDoubleOutRBV.template" { pattern
+{ P,        R,              DESC,                           PINI,   SCAN,       PORT,   EGU,    PARAM   }
+}
+
 #======================================
 # Register with Command interfaces
 #======================================

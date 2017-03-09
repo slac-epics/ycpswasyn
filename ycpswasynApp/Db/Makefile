@@ -35,6 +35,7 @@ DB += RegisterArrayChar.template
 DB += RegisterArrayIn.template
 DB += RegisterDoubleIn.template
 DB += RegisterDoubleOut.template
+DB += RegisterDoubleOutRBV.template
 DB += RegisterCommand.template
 DB += RegisterStream.template
 DB += RegisterStream16.template
