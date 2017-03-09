@@ -1431,7 +1431,7 @@ int YCPSWASYN::loadDBFromFile(const char* dictionary)
                     {
                         try
                         {
-                            fo_aux = IDoubleVal::create(p_->findByName(regPath.c_str()));
+                            fo_aux = IDoubleVal_RO::create(p_->findByName(regPath.c_str()));
                             fw_aux = IDoubleVal::create(p_->findByName(regPath.c_str()));
                         }
                         catch (CPSWError &e) {}
