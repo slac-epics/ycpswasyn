@@ -3,3 +3,6 @@ lib/
 include/
 db/
 O.*/
+dbd/
+startup/
+cfg/
