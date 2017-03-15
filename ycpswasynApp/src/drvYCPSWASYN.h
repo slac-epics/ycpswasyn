@@ -14,7 +14,6 @@
 
 #include <cpsw_api_builder.h>
 #include <cpsw_api_user.h>
-#include <cpsw_yaml.h>
 #include <yaml-cpp/yaml.h>
 
 #define DRIVER_NAME     "YCPSWASYN"
