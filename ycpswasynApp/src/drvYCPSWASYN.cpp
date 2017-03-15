@@ -35,8 +35,6 @@
 
 #include <cpsw_api_builder.h>
 #include <cpsw_api_user.h>
-#include <cpsw_yaml.h>
-#include <cpsw_preproc.h>
 #include <yaml-cpp/yaml.h>
 
 using std::string;
