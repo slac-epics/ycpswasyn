@@ -1357,11 +1357,9 @@ int YCPSWASYN::loadDBFromFile(const char* dictionary)
             printf("Done.\n");
             asynParamType paramType;
             std::string line;
-            unsigned int lineNumber=0;
 
             while (std::getline(dictFile, line))
             {
-                ++lineNumber;
                 std::istringstream iss(line);
                 std::string regPath, paramName;
 
@@ -1369,10 +1367,7 @@ int YCPSWASYN::loadDBFromFile(const char* dictionary)
 
                 // Omit lines without both path and parameter name
                 if (regPath.empty() || paramName.empty())
-                {
-                    printf("Invalid line %d\n", lineNumber);
                     continue;
-                }
 
                 // Omit comment lines, which start with '#'
                 if (regPath[0] == '#')
