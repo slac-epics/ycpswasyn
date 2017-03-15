@@ -295,6 +295,10 @@ class YCPSWASYN : public asynPortDriver {
         // Creates a asyn paramter for the given register
         template <typename T>
         void createRegisterParameter(const T& reg, const std::string& paramName);
+
+        // Creates a asyn paramter for the given float register
+        template <typename T>
+        void createRegisterParameterFloat(const T& reg, const std::string& paramName);
 };
 
 // Stream handling function caller

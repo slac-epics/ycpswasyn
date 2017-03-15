@@ -28,9 +28,14 @@ file "db/RegisterArrayChar.template" { pattern
 { yamlIOC1, BuildStamp,     "Firmware Build String",        64,     "YES",  "Passive",  Atca2,  BUILD_STAMP }   
 }
 
-# ENUM register
-file "db/RegisterEnumIn.template" { pattern
+# ENUM register (1-bit)
+file "db/RegisterEnumBIn.template" { pattern
 { P,        R,              DESC,                           PINI,   ZNAM,   ONAM,   SCAN,   PORT,   PARAM       }
+}
+
+# ENUM register (multiple bits)
+file "db/RegisterEnumMBBIn.template" { pattern
+{ P,        R,              DESC,                           PINI,   NOBT,	MASK,	ZRVL,   ONVL,   TWVL,	THVL,	ZRST,	ONST,	TWST,	THST,	SCAN,   PORT,   PARAM       }
 }
 
 #======================================
@@ -48,9 +53,24 @@ file "db/RegisterOutRBV.template" { pattern
 { yamlIOC1, ScratchPadRBV,  "Register to test R/W"          "NO",   "1 second", Atca2,  SCRATCH_PAD }
 }
 
-# ENUM register
-file "db/RegisterEnumOut.template" { pattern
+# ENUM register (1-bit)
+file "db/RegisterEnumBOut.template" { pattern
 { P,        R,              DESC,                           PINI,   ZNAM,   ONAM,   SCAN,   PORT,   PARAM       }
+}
+
+# Readback 1-bit ENUM PVs (Note that PARAM has the same name as the RegisterEnumBOut case)
+file "db/RegisterEnumBOutRBV.template" { pattern
+{ P,        R,              DESC,                           PINI,   ZNAM,   ONAM,   SCAN,   PORT,   PARAM       }
+}
+
+# ENUM register (multiple bits)
+file "db/RegisterEnumMBBOut.template" { pattern
+{ P,        R,              DESC,                           PINI,   NOBT,	MASK,	ZRVL,   ONVL,   TWVL,	THVL,	ZRST,	ONST,	TWST,	THST,	SCAN,   PORT,   PARAM       }
+}
+
+# Readback multiple bits ENUM PVs (Note that PARAM has the same name as the /RegisterEnumMBBOut case)
+file "db/RegisterEnumMBBOutRBV.template" { pattern
+{ P,        R,              DESC,                           PINI,   NOBT,	MASK,	ZRVL,   ONVL,   TWVL,	THVL,	ZRST,	ONST,	TWST,	THST,	SCAN,   PORT,   PARAM       }
 }
 
 #======================================

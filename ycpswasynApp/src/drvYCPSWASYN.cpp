@@ -1294,6 +1294,7 @@ void YCPSWASYN::addParameter(const Stream& reg, const std::string& paramName, co
         printf("epicsThreadCreate successfully for parameters %s and %s\n", paramName.c_str(), paramName16.c_str());
 
 }
+
 /////////////////////////////////////////////////////////////////////////////////////////
 // void YCPSWASYN::createRegisterParameter(const T& reg, const std::string& paramName) //
 // - Creates a asyn paramter for the given register                                    //
@@ -1305,24 +1306,19 @@ void YCPSWASYN::createRegisterParameter(const T& reg, const std::string& paramNa
     asynParamType paramType;
 
     // Get the register information
-    int nElements = reg->getNelms();
-    
-    // Get the register type
-    int regType = getRegType(reg);
+    int  nElements = reg->getNelms();
+    Enum isEnum    = reg->getEnum();
 
-    if ((regType == DEV_FLOAT_RW) || regType == DEV_FLOAT_RO)
+    if (nElements == 1)
     {
-        if (nElements == 1)
-            paramType =  asynParamFloat64;
+        if ((isEnum) && (isEnum->getNelms() < DB_MBBX_NELEM_MAX))
+            paramType = asynParamUInt32Digital;
         else
-            paramType = asynParamFloat64Array;
+            paramType =  asynParamInt32;
     }
     else
     {
-        if (nElements == 1)
-            paramType =  asynParamInt32;
-        else
-            paramType = asynParamInt32Array;
+        paramType = asynParamInt32Array;
     }
 
     addParameter(reg, paramName, paramType);
@@ -1338,6 +1334,27 @@ template<>
 void YCPSWASYN::createRegisterParameter(const Stream& reg, const std::string& paramName)
 {
     addParameter(reg, paramName, asynParamInt32);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+// void YCPSWASYN::createRegisterParameterFloat(const T& reg, const std::string& paramName) //
+// - Creates a asyn paramter for the given float register                                   //
+//                                                                                          //
+//////////////////////////////////////////////////////////////////////////////////////////////
+template <typename T>
+void YCPSWASYN::createRegisterParameterFloat(const T& reg, const std::string& paramName)
+{
+    asynParamType paramType;
+
+    // Get the register information
+    int nElements = reg->getNelms();
+
+    if (nElements == 1)
+        paramType =  asynParamFloat64;
+    else
+        paramType = asynParamFloat64Array;
+
+    addParameter(reg, paramName, paramType);    
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -1434,13 +1451,13 @@ int YCPSWASYN::loadDBFromFile(const char* dictionary)
                         if (fw_aux)
                         {
                             printf("DoubleVal interface created for %s\n", regPath.c_str());
-                            createRegisterParameter(fw_aux, paramName);
+                            createRegisterParameterFloat(fw_aux, paramName);
 
                         }
                         else if (fo_aux)
                         {
                             printf("DoubleVal_RO interface created for %s\n", regPath.c_str());
-                            createRegisterParameter(fo_aux, paramName);
+                            createRegisterParameterFloat(fo_aux, paramName);
                         }
                         else
                         {
