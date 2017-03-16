@@ -41,16 +41,21 @@ file "db/RegisterEnumMBBIn.template" { pattern
 #======================================
 # IntField, RW, no encoding Registers
 #======================================
-
+# Single register
 file "db/RegisterOut.template" { pattern
 { P,        R,              DESC,                           PINI,   SCAN,       PORT,   PARAM       }
 { yamlIOC1, ScratchPad,     "Register to test R/W"          "NO",   "Passive",  Atca2,  SCRATCH_PAD }
 }
 
-# Readback PVs (Note that PARAM has the same name as the RegisterOut case)
+# Single register readback PVs (Note that PARAM has the same name as the RegisterOut case)
 file "db/RegisterOutRBV.template" { pattern
 { P,        R,              DESC,                           PINI,   SCAN,       PORT,   PARAM       }
 { yamlIOC1, ScratchPadRBV,  "Register to test R/W"          "NO",   "1 second", Atca2,  SCRATCH_PAD }
+}
+
+# Array of registers
+file "db/RegisterArrayOut.template" { pattern
+{ P,        R,              DESC,                           NELM,   PINI,   SCAN,       PORT,   PARAM       }
 }
 
 # ENUM register (1-bit)

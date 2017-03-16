@@ -33,6 +33,7 @@ DB += RegisterOut.template
 DB += RegisterOutRBV.template
 DB += RegisterArrayChar.template
 DB += RegisterArrayIn.template
+DB += RegisterArrayOut.template
 DB += RegisterEnumBIn.template
 DB += RegisterEnumMBBIn.template 
 DB += RegisterEnumBOut.template
