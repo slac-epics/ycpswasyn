@@ -7,7 +7,7 @@
 #=========================================================================================================
 
 #======================================
-# Registers with ScalVal_RO interfaces
+# IntField, RO, no encoding Registers
 #======================================
 # Single register
 file "db/RegisterIn.template" { pattern
@@ -39,7 +39,7 @@ file "db/RegisterEnumMBBIn.template" { pattern
 }
 
 #======================================
-# Register with ScalVal interfaces
+# IntField, RW, no encoding Registers
 #======================================
 
 file "db/RegisterOut.template" { pattern
@@ -74,7 +74,7 @@ file "db/RegisterEnumMBBOutRBV.template" { pattern
 }
 
 #======================================
-# Register with DoubleVal_RO interfaces
+# IntField, RO, IEEE_754 encoding Registers
 #======================================
 
 file "db/RegisterDoubleIn.template" { pattern
@@ -82,7 +82,7 @@ file "db/RegisterDoubleIn.template" { pattern
 }
 
 #======================================
-# Register with DoubleVal interfaces
+# IntField, RW, IEEE_754 encoding Registers
 #======================================
 
 file "db/RegisterDoubleOut.template" { pattern
@@ -95,7 +95,7 @@ file "db/RegisterDoubleOutRBV.template" { pattern
 }
 
 #======================================
-# Register with Command interfaces
+# Command Registers
 #======================================
 file "db/RegisterCommand.template" { pattern
 { P,        R,              DESC,                           PINI,   SCAN,       PORT,   PARAM       }
@@ -103,7 +103,7 @@ file "db/RegisterCommand.template" { pattern
 
 
 #======================================
-# Register with Stream interfaces
+# Stream port Registers
 #======================================
 
 file "db/RegisterStream.template" {pattern
