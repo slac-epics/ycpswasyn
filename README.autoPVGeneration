@@ -1,0 +1,69 @@
+# How does the automatic generation of PV works?
+
+## Overview
+
+YCPSWASYN uses CPSW for the communication with FPGA and AsynPortDriver for its integration into EPICS.
+
+This document describes how the automatic generation of PVs works. 
+
+## Background
+
+You should be familiar with CPSW and how hierarchies are defined in YAML. 
+
+Go to the CPSW and YAML go to the official [confluence page about CPSW](https://confluence.slac.stanford.edu/display/ppareg/CPSW%3A+HowTo+User+Guide), or take a look at the README files in the CPSW framework package area.
+
+## PV Naming
+
+PVs are automatically generated for all registers defined on the YAML files. The PV names are calculated based on the register path, following the mapping defined in this 2 files, located on the <TOP>/yaml folder:
+- map
+- map_top
+
+Each device name, from right to left, in the path is substitute by its map on the “map” or “map_top” file. The difference is that if it finds the name on “map_top” the substitution ends and the PV name is completed. 
+
+If the device is not found on the maps, the device name is truncated to 3 chars. 
+
+The register name at the tip of the path is left unmodified.
+
+A post-fix is added to the PV name based on the type of register:
+- ":Rd" for RO registers
+- ":St" for RW registers
+- ":Ex" for Command registers
+
+**Note:** RW register must be written using its *:St PV and read back using its *:Rd PV
+
+
+For example, the PV for the register
+
+        /mmio/DigFpga/AmcCarrierCore/AxiVersion/BuildStamp
+
+is 
+
+        ${P}:C:AV:BuildStamp:Rd
+
+**Note:** the macro ${P} is defined on st.cmd
+
+### Debug information
+
+when the IOC runs, it creates 3 files on the /tmp directory:
+- ${P}_regMap.txt with all the register that it found on the yaml file
+- ${P}_pvList.txt with all the names of the PVs that it created
+- ${P}_keysNotFound.txt   with the name of devies that it didn’t find in the maps
+
+## Record types and fields
+
+The driver will automatically create an appropriate record type for the type of register it find. Also, it will take information for the YAML description files and copied it into the appropriate record fields.
+
+The driver will load the records from templates located on the <TOP>/db folder, according to the following table
+
+| Register class         | nelms  | Encoding   | Enum  | Register mode   | template
+|:-----------------------|:-------|:----------:|:-----:|:---------------:|:-------------------------
+| IntField               | 1      |            |       | RO              | longin.template
+| IntField               | >1     |            |       | RO              | waveform_in.template, waveform_8_in.template
+| IntField               | 1      |            |       | RW              | longout.template
+| IntField               | >1     |            |       | RW              | waveform_out.template, waveform_8_out.template
+| IntField               | N/A    |            | Yes   | RO              | bi.template, mbbi.template
+| IntField               | N/A    |            | Yes   | RW              | bo.template, mbbo.template
+| IntField               | N/A    | IEEE_754   |       | RO              | ai.template
+| IntField               | N/A    | IEEE_754   |       | RW              | ao.template
+| SequenceCommand        | N/A    |            |       | N/A             | bo.template
+| IntField (stream port) | N/A    |            |       | N/A             | waveform_stream32.template, waveform_stream16.template

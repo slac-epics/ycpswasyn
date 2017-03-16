@@ -1,0 +1,32 @@
+# How to configure the driver
+
+## Overview
+
+YCPSWASYN uses CPSW for the communication with FPGA and AsynPortDriver for its integration into EPICS.
+
+This document describes how to configure the driver and load it into your IOC.
+
+## YCPSWASYN Configuration
+
+In order to use YCPSWASYN in your application you must call "YCPSWASYNConfig" on your IOC's st.cmd script.
+
+With the following parameters
+
+YCPSWASYNConfig(PORT_NAME, YAML_FILE, ROOT_PATH, FPGA_IP, PREFIX, PV_MAX_LEN, AUTO_GEN, DICT_FILE)
+
+| Parameter                  | Description
+|----------------------------|-----------------------------
+| PORT_NAME                  | The name given to this port driver
+| YAML_FILE                  | Path to the YAML file
+| ROOT_PATH                  | OPTIONAL: Root path to start the generation. If empty, the Yaml root will be used
+| FPGA_IP                    | OPTIONAL: Target FPGA IP Address. If not given it is taken from the YAML file
+| PREFIX                     | Record name prefix
+| PV_MAX_LEN                 | Record name maximum length (must be greater than lenght of prefix + 4)
+| AUTO_GEN                   | Set to 1 for autogeneration of records from the YAML definition. Set to 0 to disable it
+| DICT_FILE                  | Dictionary file path with registers to load. An empty string will disable this function
+
+**Notes:**
+- *PORT_NAME* and *YAML_FILE* are always necessary
+- The auto generation of PVs is enabled setting *AUTO_GEN* to "1". In this case *PREFIX*, *PV_MAN_LEN* are necessary.
+- The auto generation of PVs is disabled setting *AUTO_GEN* to "0".
+- To manually creates PVs for register you just need to set *DICT_FILE* to a dictionary file. Otherwise you can set it to an empty string.

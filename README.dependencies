@@ -1,0 +1,15 @@
+# YCPSWASYN Dependencies
+
+This module depends on the following external packages:
+- CPSW (framework)
+- BOOST
+- YAML-CPP
+
+For each architecture you need to define the their location on:
+
+configure/CONFIG_SITE.Common.<arch>
+
+At the time of writing we have this packages on the SLAC afs are:
+/afs/slac/g/lcls/package/cpsw/framework
+/afs/slac/g/lcls/package/boost
+/afs/slac/g/lcls/package/yaml-cpp
