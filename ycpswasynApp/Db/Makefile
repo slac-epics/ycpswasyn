@@ -25,7 +25,9 @@ DB += mbbo.template
 DB += bo.template
 DB += waveform_stream16.template
 DB += waveform_stream32.template
-DB += saveLoadConfig.template
+
+# Save/Load configuration example
+DB += saveLoadConfig.db
 
 # Monitor FPGA reboots example
 DB += monitorFPGAReboot.db

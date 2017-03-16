@@ -71,7 +71,7 @@ YCPSWASYNConfig("${PORT}", "${YAML_FILE}", "", "${FPGA_IP}", "${PREFIX}", 40, "$
 dbLoadTemplate("db/example.substitutions")
 
 # Save/Load configuration related records
-dbLoadRecords("db/saveLoadConfig.template", "P=${PREFIX}, PORT=${PORT}, SAVE_FILE=/tmp/configDump.yaml, LOAD_FILE=config/defaults.yaml")
+dbLoadRecords("db/saveLoadConfig.db", "P=${PREFIX}, PORT=${PORT}, SAVE_FILE=/tmp/configDump.yaml, LOAD_FILE=config/defaults.yaml")
 
 # Verify Configuration related records
 dbLoadRecords("db/monitorFPGAReboot.db", "P=${PREFIX}, KEY=3")
