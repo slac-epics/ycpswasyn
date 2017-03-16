@@ -18,7 +18,7 @@
 record(waveform,    "$(P):$(R)") {
     field(DTYP,     "asynInt16ArrayIn")
     field(DESC,     "$(DESC)")
-    field(PINI,     "$(PINI)")
+    field(PINI,     "NO")
     field(SCAN,     "I/O Intr")
     field(NELM,     "$(NELM)")
     field(FTVL,     "SHORT")
