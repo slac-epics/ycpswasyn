@@ -2,7 +2,7 @@
 -include $(TOP)/RELEASE_SITE
 
 # For linuxRT_glibc-x86_64
-ARCH         = buildroot-2015.02-x86_64
+ARCH         = buildroot-2016.11.1-x86_64
 
 # Package top area
 PACKAGE_AREA = /afs/slac/g/lcls/package
