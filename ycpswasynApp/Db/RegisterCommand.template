@@ -1,6 +1,6 @@
 #==================================================================
-# Record example for a register with an Command
-# interface. TIt is a bo record with type asynUInt32Digital.
+# Record example for a SequenceCommand register.
+# It is a bo record with type asynUInt32Digital.
 # The OUT field has the form @asynMask(PORT,ADDR,MASK)PARAM where:
 #  - PORT  : The asyn port name. It must match the port name given 
 #            when calling "YCPSWASYNConfig" on st.cmd
@@ -8,7 +8,7 @@
 #            dictionary file and assigned to a register 
 #  - MASK  : It is alwasy 1 (we only have 1-bit commands)
 #  - ADDR  : Addrres based on the type of register interface. 
-#            For DoubleVal it is 4
+#            For SequenceCommand is 4
 #==================================================================
 
 record(bo,      "$(P):$(R)") {

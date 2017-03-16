@@ -1,5 +1,6 @@
 #============================================================================
-# For Stream interfaces, an additional parameter is automatically created
+# Record example for an IntField Stream port.
+# For Stream ports, an additional parameter is automatically created
 # and the name is generated adding ":16" to the original parameter name
 # This gives access to the same stream data, but as 16-bit words which
 # is the case for ADC samples for example.
@@ -9,9 +10,9 @@
 #            when calling "YCPSWASYNConfig" on st.cmd
 #  - PARM  : The asyn paramter name. It must be defined in the 
 #            dictionary file and assigned to a register. In this case it is
-#            the original paramater name with a sufix ":16" 
-#  - ADDR  : Addrres based on the type of register interface. 
-#            For Stream it is 5
+#            the original paramater name with a sufix ":16".
+#  - ADDR  : Addrres based on the type of register.
+#            For an stream it is 5.
 #============================================================================
 
 record(waveform,    "$(P):$(R)") {
