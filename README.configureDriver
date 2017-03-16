@@ -17,7 +17,7 @@ YCPSWASYNConfig(PORT_NAME, YAML_FILE, ROOT_PATH, FPGA_IP, PREFIX, PV_MAX_LEN, AU
 | Parameter                  | Description
 |----------------------------|-----------------------------
 | PORT_NAME                  | The name given to this port driver
-| YAML_FILE                  | Path to the YAML file
+| YAML_FILE                  | Path to the top level YAML file
 | ROOT_PATH                  | OPTIONAL: Root path to start the generation. If empty, the Yaml root will be used
 | FPGA_IP                    | OPTIONAL: Target FPGA IP Address. If not given it is taken from the YAML file
 | PREFIX                     | Record name prefix
