@@ -74,7 +74,7 @@ dbLoadTemplate("db/example.substitutions")
 dbLoadRecords("db/saveLoadConfig.template", "P=${PREFIX}, PORT=${PORT}, SAVE_FILE=/tmp/configDump.yaml, LOAD_FILE=config/defaults.yaml")
 
 # Verify Configuration related records
-dbLoadRecords("db/verifyDefaults.db", "P=${PREFIX}, KEY=3")
+dbLoadRecords("db/monitorFPGAReboot.db", "P=${PREFIX}, KEY=3")
 
 asynSetTraceMask(${PORT},, -1, 9)
 asynSetTraceIOMask(${PORT},, -1, 2)

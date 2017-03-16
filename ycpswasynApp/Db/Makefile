@@ -26,7 +26,10 @@ DB += bo.template
 DB += waveform_stream16.template
 DB += waveform_stream32.template
 DB += saveLoadConfig.template
-DB += verifyDefaults.db
+
+# Monitor FPGA reboots example
+DB += monitorFPGAReboot.db
+
 # Example manually create records
 DB += RegisterIn.template
 DB += RegisterOut.template
