@@ -84,9 +84,3 @@ iocInit()
 
 ## Start any sequence programs
 #seq sncExample,"user=jvasquez"
-
-# This register gives timeout errors when it is read.
-# For now let's not read it until this problem is fixed
-# register path: /mmio/AmcCarrierSsrlRtmEth/AmcCarrierCore/Axi24LC64FT/MemoryArray
-dbpf ${PREFIX}:C:A24LC64FT:MemoryArray:Rd.SCAN "Passive"
-
