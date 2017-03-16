@@ -29,7 +29,7 @@ ycpswasyn_registerRecordDeviceDriver(pdbbase)
 epicsEnvSet("PORT","Atca2")
 
 # Yaml File 
-epicsEnvSet("YAML_FILE", "yaml/AmcCarrierSsrlEth2x_project.yaml/000TopLevel.yaml")
+epicsEnvSet("YAML_FILE", "yaml/project.yaml/000TopLevel.yaml")
 
 # FPGA IP address
 epicsEnvSet("FPGA_IP", "10.0.1.102")
