@@ -158,7 +158,7 @@ void YCPSWASYN::streamTask(Stream stm, int param16index, int param32index)
         }
     } catch( IntrError e )
     {
-
+        delete[] buf;
     }
 
     return;
