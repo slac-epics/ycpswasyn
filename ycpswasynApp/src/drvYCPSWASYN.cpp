@@ -1796,7 +1796,7 @@ asynStatus YCPSWASYN::readInt32Array(asynUser *pasynUser, epicsInt32 *value, siz
     const char *name;
     static const char *functionName = "readInt32Array";
     this->getAddress(pasynUser, &addr);
-    uint64_t *buffer = new uint64_t[nElements];
+    uint64_t buffer[nElements];
 
     lock();
     if (!getParamName(addr, function, &name))
@@ -1853,7 +1853,7 @@ asynStatus YCPSWASYN::readOctet(asynUser *pasynUser, char *value, size_t maxChar
     int status=0; 
     const char *name;
     static const char *functionName = "readOctet";
-    uint8_t *buffer = new uint8_t[maxChars];
+    uint8_t buffer[maxChars];
     this->getAddress(pasynUser, &addr);
 
     lock();
@@ -1977,7 +1977,7 @@ asynStatus YCPSWASYN::readFloat64Array(asynUser *pasynUser, epicsFloat64 *value,
     int addr;
     int function = pasynUser->reason;
     int status=0;
-    uint64_t *buffer = new uint64_t[nElements];
+    uint64_t buffer[nElements];
     this->getAddress(pasynUser, &addr);
     const char *name;
      
