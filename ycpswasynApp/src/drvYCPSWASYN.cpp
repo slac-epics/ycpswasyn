@@ -84,8 +84,10 @@ YCPSWASYN::YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int
 ///////////////////////////////////
 // + Stream acquisition routines //
 ///////////////////////////////////
-static void streamTaskC(ThreadArgs *arglist)
+static void streamTaskC(void *args)
 {
+    ThreadArgs *arglist = static_cast<ThreadArgs*>(args);
+    
     YCPSWASYN *pYCPSWASYN = (YCPSWASYN *)arglist->pPvt;
     pYCPSWASYN->streamTask(arglist->stm, arglist->param16index, arglist->param32index);
 }

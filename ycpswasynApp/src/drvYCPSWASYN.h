@@ -301,4 +301,4 @@ class YCPSWASYN : public asynPortDriver {
 };
 
 // Stream handling function caller
-static void streamTaskC(ThreadArgs *arglist);
+static void streamTaskC(void *args);
