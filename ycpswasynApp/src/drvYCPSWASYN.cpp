@@ -1284,7 +1284,7 @@ void YCPSWASYN::addParameter(const Stream& reg, const std::string& paramName, co
     arglist->param32index = paramIndex32;
 
     status = (asynStatus)(epicsThreadCreate("Stream", epicsThreadPriorityLow, 
-            epicsThreadGetStackSize(epicsThreadStackMedium), (EPICSTHREADFUNC)::streamTaskC, arglist) == NULL);
+            epicsThreadGetStackSize(epicsThreadStackMedium), (EPICSTHREADFUNC)streamTaskC, arglist) == NULL);
      
     if (status) 
     {
