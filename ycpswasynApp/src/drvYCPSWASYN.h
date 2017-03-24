@@ -203,7 +203,7 @@ class YCPSWASYN : public asynPortDriver {
         
         // New Methods for this class
         // Streamn hanlding function
-        void streamTask(Stream stm, int param16index, int param32index);
+        virtual void streamTask(Stream stm, int param16index, int param32index);
 
         // Initialization routine
         static int YCPSWASYNInit(const char *yaml_doc, const char* rootPath, Path *p, const char *ipAddr);
@@ -301,4 +301,4 @@ class YCPSWASYN : public asynPortDriver {
 };
 
 // Stream handling function caller
-void streamTaskC(ThreadArgs *arglist);
+static void streamTaskC(ThreadArgs *arglist);

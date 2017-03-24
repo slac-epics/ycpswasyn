@@ -84,7 +84,7 @@ YCPSWASYN::YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int
 ///////////////////////////////////
 // + Stream acquisition routines //
 ///////////////////////////////////
-void streamTaskC(ThreadArgs *arglist)
+static void streamTaskC(ThreadArgs *arglist)
 {
     YCPSWASYN *pYCPSWASYN = (YCPSWASYN *)arglist->pPvt;
     pYCPSWASYN->streamTask(arglist->stm, arglist->param16index, arglist->param32index);
@@ -689,17 +689,18 @@ void YCPSWASYN::CreateRecord(const Stream& reg, const Path& p_)
 
     // Crteate Acquisition Thread 
     asynStatus status;
-    ThreadArgs arglist;
-    arglist.pPvt = this;
-    arglist.stm = reg;
-    arglist.param16index = p16StmIndex;
-    arglist.param32index = p32stmIndex;
+    ThreadArgs *arglist = new ThreadArgs();
+    arglist->pPvt = this;
+    arglist->stm = reg;
+    arglist->param16index = p16StmIndex;
+    arglist->param32index = p32stmIndex;
     status = (asynStatus)(epicsThreadCreate("Stream", epicsThreadPriorityLow, 
-            epicsThreadGetStackSize(epicsThreadStackMedium), (EPICSTHREADFUNC)::streamTaskC, &arglist) == NULL);
+            epicsThreadGetStackSize(epicsThreadStackMedium), (EPICSTHREADFUNC)streamTaskC, arglist) == NULL);
      
     if (status) 
     {
         printf("epicsThreadCreate failure for stream %s\n", trp.recName.c_str());
+        delete arglist;
         return;
     }
     else
@@ -1274,18 +1275,19 @@ void YCPSWASYN::addParameter(const Stream& reg, const std::string& paramName, co
 
     // Crteate Acquisition Thread 
     asynStatus status;
-    ThreadArgs arglist;
-    arglist.pPvt = this;
-    arglist.stm = reg;
-    arglist.param16index = paramIndex16;
-    arglist.param32index = paramIndex32;
+    ThreadArgs *arglist = new ThreadArgs();
+    arglist->pPvt = this;
+    arglist->stm = reg;
+    arglist->param16index = paramIndex16;
+    arglist->param32index = paramIndex32;
 
     status = (asynStatus)(epicsThreadCreate("Stream", epicsThreadPriorityLow, 
-            epicsThreadGetStackSize(epicsThreadStackMedium), (EPICSTHREADFUNC)::streamTaskC, &arglist) == NULL);
+            epicsThreadGetStackSize(epicsThreadStackMedium), (EPICSTHREADFUNC)::streamTaskC, arglist) == NULL);
      
     if (status) 
     {
         printf("epicsThreadCreate failure for parameter %s\n", paramName.c_str());
+        delete arglist;
         return;
     }
     else
