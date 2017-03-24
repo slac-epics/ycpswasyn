@@ -97,7 +97,7 @@ static void streamTaskC(ThreadArgs *arglist)
 /////////////////////////////////////////////////////////////////////////////////
 void YCPSWASYN::streamTask(Stream stm, int param16index, int param32index)
 {
-    uint64_t got = 0;
+    int64_t got = 0;
     size_t nWords16, nWords32, nBytes;
     int nFrame;
     uint8_t *buf = new uint8_t[STREAM_MAX_SIZE];
@@ -131,10 +131,8 @@ void YCPSWASYN::streamTask(Stream stm, int param16index, int param32index)
         while(1)
         {
             got = stm->read( buf, STREAM_MAX_SIZE, CTimeout(-1));
-            if( !got )
-            {
-            }
-            else
+
+            if(got > 8)
             {
                 lock();
                 nBytes = (got - 9); // header = 8 bytes, footer = 1 byte, data = 32bit words.
@@ -152,6 +150,10 @@ void YCPSWASYN::streamTask(Stream stm, int param16index, int param32index)
 
                 memset(buf, 0, STREAM_MAX_SIZE*sizeof(uint8_t));
                 unlock();
+            }
+            else
+            {
+                 asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, "%s: Received frame too small\n", driverName_);
             }
         }
     } catch( IntrError e )
