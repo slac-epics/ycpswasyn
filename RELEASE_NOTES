@@ -16,3 +16,9 @@ R1.1.1: 2017-03-16 J. Vasquez
     * First stable tag for EPICS base 3.15.
     * This version includes the autogeneraton of PVs as well as the
       possibility to manually generate PVs for selected registers.
+
+R1.1.2: 2017-03-29 J. Vasquez
+    * Bug fixed on stream thread handler that was causing random
+      segmentation faults.
+    * Fixed some memory leaks.
+    * Minor improvements to code.
