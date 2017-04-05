@@ -49,18 +49,33 @@ epicsEnvSet("DICT_FILE", "yaml/example.dict")
 # ======================================
 
 # ======================================
+# Yaml Loader Configuration
+# ======================================
+## Configure the Yaml Loader Driver
+# cpswLoadYamlFile(
+#    Yaml Doc,                  # Path to the YAML hierarchy descrtiptio file
+#    Root Device,               # Root Device Name (optional; default = 'root')
+#    YAML Path,                 #directory where YAML includes can be found (optional)
+#    IP Address,                # OPTIONAL: Target FPGA IP Address. If not given it is taken from the YAML file
+cpswLoadYamlFile("${YAML_FILE}", "NetIODev", "", "${FPGA_IP}")
+# ======================================
+# End of Yaml Loader Configuration
+# ======================================
+
+# ======================================
 # YCPSWASYN Configuration
 # ======================================
 ## Configure asyn port driver
 # YCPSWASYNConfig(
-#    Port Name,                 # the name given to this port driver
-#    Yaml Doc,                  # Path to the YAML file
-#    Root Path                  # OPTIONAL: Root path to start the generation. If empty, the Yaml root will be used
-#    IP Address,                # OPTIONAL: Target FPGA IP Address. If not given it is taken from the YAML file
-#    Record name Prefix,        # Record name prefix
-#    Record name Length Max,    # Record name maximum length (must be greater than lenght of prefix + 4)
-#    Use DB Autogeneration,     # Set to 1 for autogeneration of records from the YAML definition. Set to 0 to disable it
-#    Load dictionary,           # Dictionary file path with registers to load. An empty string will disable this function
+#    Port Name,                 # the name given to this port driver.
+#    Yaml Doc,                  # Path to the YAML file. Ignored if cpswLoadYamlFile has been already called.
+#    Root Path                  # OPTIONAL: Root path to start the generation. If empty, the Yaml root will be used.
+#    IP Address,                # OPTIONAL: Target FPGA IP Address. If not given it is taken from the YAML file.
+#                               # Ignored if cpswLoadYamlFile has been already called.
+#    Record name Prefix,        # Record name prefix.
+#    Record name Length Max,    # Record name maximum length (must be greater than lenght of prefix + 4).
+#    Use DB Autogeneration,     # Set to 1 for autogeneration of records from the YAML definition. Set to 0 to disable it.
+#    Load dictionary,           # Dictionary file path with registers to load. An empty string will disable this function.
 YCPSWASYNConfig("${PORT}", "${YAML_FILE}", "", "${FPGA_IP}", "${PREFIX}", 40, "${AUTO_GEN}", "${DICT_FILE}")
 # ======================================
 # End of YCPSWASYN Configuration
