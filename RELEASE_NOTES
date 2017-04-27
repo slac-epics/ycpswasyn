@@ -9,6 +9,9 @@
 #  Rev:  16-Mar-2017, Reviewer's Name    (Jesus Vasquez)
 #--------------------------------------------------------------
 
+R1.1.5: 2017-04-27 J. Vasquez 
+    * Fix lookup function for stream interfaces
+
 R1.1.4: 2017-04-05 J. Vasquez
     * Added support for using the yamlLoader module
 
