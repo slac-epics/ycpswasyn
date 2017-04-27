@@ -871,7 +871,9 @@ void YCPSWASYN::generateDB(const Path& p)
                 try 
                 {
                     // If found, try to attached an stream interface and create a record
-                    if ((found_key != std::string::npos) && (isdigit(((*c)[i]->getName())[found_key+strlen(STREAM_KEY)])))
+                    // Assume that Stream interfaces are called "Stream" + a digit. 
+                    // The string "Stream" must be at the begining of the name
+                    if ((found_key != std::string::npos) && (found_key == 0) && (isdigit(((*c)[i]->getName())[found_key+strlen(STREAM_KEY)])))
                     {
                         Stream stm_aux;
 
