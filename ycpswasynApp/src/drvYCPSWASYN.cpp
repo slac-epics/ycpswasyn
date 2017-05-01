@@ -281,7 +281,7 @@ void YCPSWASYN::dumpRegisterMap(const Path& p)
     if (c_aux)
         h_aux = c_aux->isHub();
     else
-        h_aux = p->origin();
+        h_aux = p_aux->origin();
 
     
     Children    c = h_aux->getChildren();
@@ -293,13 +293,13 @@ void YCPSWASYN::dumpRegisterMap(const Path& p)
         Hub h2 = (*c)[i]->isHub();
         if (h2)
         {
-            Path p2 = p->findByName((*c)[i]->getName());
+            Path p2 = p_aux->findByName((*c)[i]->getName());
             YCPSWASYN::dumpRegisterMap(p2);
         }
         else
         {
             // When a leave is found, write it path and name to the output file
-            regDumpFile << p->toString() << '/' << (*c)[i]->getName() << std::endl;         
+            regDumpFile << p_aux->toString() << '/' << (*c)[i]->getName() << std::endl;         
         }
     }
 
@@ -823,7 +823,7 @@ void YCPSWASYN::generateDB(const Path& p)
     if (c_aux)
         h_aux = c_aux->isHub();
     else
-        h_aux = p->origin();
+        h_aux = p_aux->origin();
 
     Children        c = h_aux->getChildren();
     int             n = c->size();
@@ -850,20 +850,20 @@ void YCPSWASYN::generateDB(const Path& p)
                     {
                         c_name.str("");
                         c_name << (*c)[i]->getName() << "[" << j << "]";
-                        p2 = p->findByName(c_name.str().c_str());
+                        p2 = p_aux->findByName(c_name.str().c_str());
 
                         YCPSWASYN::generateDB(p2);
                     }
                 }
                 else
                 {
-                    p2 = p->findByName((*c)[i]->getName());
+                    p2 = p_aux->findByName((*c)[i]->getName());
                     YCPSWASYN::generateDB(p2);
                 }
             }
             else
             {           
-                p2 = p->findByName((*c)[i]->getName());
+                p2 = p_aux->findByName((*c)[i]->getName());
 
                 // Look first for stream interfaces (based only on its name)
                 size_t found_key = string((*c)[i]->getName()).find(STREAM_KEY);
