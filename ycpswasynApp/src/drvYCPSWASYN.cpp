@@ -1391,7 +1391,7 @@ void YCPSWASYN::createRegisterParameterFloat(const T& reg, const std::string& pa
 /////////////////////////////////////////////////////////////////////////////////////
 int YCPSWASYN::loadDBFromFile(const char* dictionary)
 {
-    if (dictionary[0] != '\0')
+    if (dictionary && dictionary[0] != '\0')
     {
         printf("Opening dictionary \"%s\"... ", dictionary);
         std::ifstream dictFile;
