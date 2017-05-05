@@ -9,6 +9,10 @@
 #  Rev:  16-Mar-2017, Reviewer's Name    (Jesus Vasquez)
 #--------------------------------------------------------------
 
+R1.1.6: 2017-05-03 J. Vasquez
+    * Update to CPSW framework R3.5.4
+    * Minor bug fixes
+
 R1.1.5: 2017-04-27 J. Vasquez 
     * Fix lookup function for stream interfaces
 
