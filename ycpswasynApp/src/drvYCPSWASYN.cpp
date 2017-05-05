@@ -2276,6 +2276,10 @@ extern "C" int YCPSWASYNConfig(const char *portName, const char *yaml_doc, const
     int status; 
     Path p;
 
+    if ( 0 == recordNameLenMax ) {
+        recordNameLenMax = sizeof( ((dbCommon*)0)->name ) - 1;
+    }
+
     if (recordNameLenMax <= (strlen(recordPrefix) + 4))
     {
         printf("ERROR! Record name length (%d) must be greater lenght of prefix (%zu) + 4\n\n", recordNameLenMax, strlen(recordPrefix));
