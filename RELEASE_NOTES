@@ -9,10 +9,10 @@
 #  Rev:  16-Mar-2017, Reviewer's Name    (Jesus Vasquez)
 #--------------------------------------------------------------
 
-R1.0.0: 2017-03-16 J. Vasquez
-    * First stable release version
-
 R1.0.1: 2017-03-16 J. Vasquez
     * First stable tag for EPICS base 3.14.
     * This version includes the autogeneraton of PVs as well as the
       possibility to manually generate PVs for selected registers.
+
+R1.0.0: 2017-03-16 J. Vasquez
+    * First stable release version
