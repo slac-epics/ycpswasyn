@@ -9,6 +9,18 @@
 #  Rev:  16-Mar-2017, Reviewer's Name    (Jesus Vasquez)
 #--------------------------------------------------------------
 
+R1.0.2: 2017-08-31 J. Vasquez
+    * Update to CPSW framework R3.5.4
+    * Update to yamlLoader R1.0.3
+    * Minor bug fixes
+    * Fix lookup function for stream interfaces
+    * Added support for using the yamlLoader module
+    * Remove Display and Restore sources
+    * Bug fixed on stream thread handler that was causing random
+      segmentation faults.
+    * Fixed some memory leaks.
+    * Minor improvements to code.
+
 R1.0.1: 2017-03-16 J. Vasquez
     * First stable tag for EPICS base 3.14.
     * This version includes the autogeneraton of PVs as well as the
