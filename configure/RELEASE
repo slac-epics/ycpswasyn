@@ -73,7 +73,7 @@ MOTOR_MODULE_VERSION=motorR6-9_RC1
 COUNTER_MODULE_VERSION=apci1710-asyn-R1-0-4
 STREAMDEVICE_MODULE_VERSION=streamdevice-R2-6_1-3
 CAENN1470_MODULE_VERSION=caenN1470-R1-2-1_1-1
-YAMLLOADER_VERSION=R1.0.1
+YAMLLOADER_VERSION=R1.0.3
 # ============================================================
 
 # Let's add in support for the cexpsh()
