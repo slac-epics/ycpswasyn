@@ -37,6 +37,8 @@
 #include <cpsw_api_user.h>
 #include <yaml-cpp/yaml.h>
 
+#include <yamlLoader.h>
+
 using std::string;
 using std::stringstream;
 
@@ -196,21 +198,40 @@ int YCPSWASYN::YCPSWASYNInit(const char *yaml_doc, const char* rootPath, Path *p
     unsigned char buf[sizeof(struct in6_addr)];
     Path root, subPath;
 
-    // Check if the IP address was especify. Otherwise use the one defined on the YAML file
-    if (inet_pton(AF_INET, ipAddr, buf))
+    // Try first to get tge root from the cpswLoadYamlFile module
+    root = cpswGetRoot();
+    
+    if (root)
     {
-        printf("Using IP address: %s\n", ipAddr);
-        IYamlSetIP setIP(ipAddr);
-
-        // Read YAML file
-        root = IPath::loadYamlFile( yaml_doc, "NetIODev", NULL, &setIP );
+        printf("cpswGetRoot() returned a non-empty root. Ignoring YAML file...\n");
     }
     else
     {
-        printf("Using IP address from YAML file\n");
+        printf("cpswGetRoot() returned an empty root. Loading YAML file instead...\n");
+    
+        if (yaml_doc[0] == '\0')
+        {
+            printf("ERROR! No YAML file was defined\n\n");
+            return -1;
+        }
 
-        // Read YAML file
-        root = IPath::loadYamlFile( yaml_doc, "NetIODev" );
+        // Check if the IP address was especify. Otherwise use the one defined on the YAML file
+        if (inet_pton(AF_INET, ipAddr, buf))
+        {
+            printf("Using IP address: %s\n", ipAddr);
+            IYamlSetIP setIP(ipAddr);
+
+            // Read YAML file
+            root = IPath::loadYamlFile( yaml_doc, "NetIODev", NULL, &setIP );
+        }
+        else
+        {
+            printf("Using IP address from YAML file\n");
+
+            // Read YAML file
+            root = IPath::loadYamlFile( yaml_doc, "NetIODev" );
+        }
+    
     }
 
     *p = root;
@@ -2261,6 +2282,12 @@ extern "C" int YCPSWASYNConfig(const char *portName, const char *yaml_doc, const
 
     status = YCPSWASYN::YCPSWASYNInit(yaml_doc, rootPath, &p, ipAddr);
   
+    if (status)
+    {
+        printf("ERROR! YCPSWASYNInit failed with error code: %d\n\n", status);
+        return asynError;
+    } 
+
     YCPSWASYN *pYCPSWASYN = new YCPSWASYN(portName, p, recordPrefix, recordNameLenMax, autogeneration, dictionary);
     pYCPSWASYN = NULL;
     
