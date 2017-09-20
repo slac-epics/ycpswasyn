@@ -11,3 +11,6 @@
 
 R1.0.0: 2017-03-16 J. Vasquez
     * First stable release version
+	
+ycpswasyn-beta-R7-3: 2017-09-20 S. Condamoor
+    * Built with motorR6-9_RC2 for epics R3-14-12-4_1-1 base - needed by SPEAR.
