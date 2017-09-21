@@ -13,7 +13,6 @@ INC += drvYCPSWASYN.h
 LIBRARY_IOC += ycpswasyn
 LIB_SRCS += drvYCPSWASYN.cpp
 LIB_LIBS += asyn
-LIB_LIBS += seq pv
 LIB_LIBS += yamlLoader
 
 # =================================================

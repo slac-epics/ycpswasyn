@@ -48,31 +48,7 @@ BASE_MODULE_VERSION=$(EPICS_BASE_VER)
 # Define the version of modules needed by
 # IOC apps or other Support apps
 # =============================================================
-
-SEQ_MODULE_VERSION=seq-R2-1-6_1-3
-AUTOSAVE_MODULE_VERSION=autosave-R5-5_0-0
-CAPUTLOG_MODULE_VERSION=caPutLog-R3-4_1-0
-IOCADMIN_MODULE_VERSION=iocAdmin-R3-1-14_1-0
-MISCUTILS_MODULE_VERSION=miscUtils-R2-2-2
-EVENT_MODULE_VERSION=event-R4-2-1
-EVRCLIENT_MODULE_VERSION=evrClient-R1-0-p6
-RTEMSUTILS_MODULE_VERSION=rtemsutils-R1-0-0-lcls5
-DEVBUSMAPPED_MODULE_VERSION=devBusMapped-R3-1-0
-DEVLIB2_MODULE_VERSION=devlib2-R3-0-0_1-1
-DRVUIOPCIGEN_MODULE_VERSION=drvUioPciGen-R1-0-1
-PERFMEASURE_MODULE_VERSION=perfMeasure-R1-1-0
-
-
-# ============================================================
-# What we need for EtherCAT, Motor, Encoder, and StreamDevice
-# CAEN N1470 HV Bias Power Supply
-# ============================================================
 ASYN_MODULE_VERSION=asyn-R4-26_0
-ECASYN_MODULE_VERSION=ethercat-R4-3_1-2
-MOTOR_MODULE_VERSION=motorR6-9_RC1
-COUNTER_MODULE_VERSION=apci1710-asyn-R1-0-4
-STREAMDEVICE_MODULE_VERSION=streamdevice-R2-6_1-3
-CAENN1470_MODULE_VERSION=caenN1470-R1-2-1_1-1
 YAMLLOADER_VERSION=R1.0.3
 # ============================================================
 
@@ -85,34 +61,7 @@ CEXP_MODULE_VERSION=cexpsh-R1-0-0
 # ============================================================
 #  Module Location
 # ============================================================
-
-SNCSEQ=$(EPICS_MODULES)/seq/$(SEQ_MODULE_VERSION)
-AUTOSAVE=$(EPICS_MODULES)/autosave/$(AUTOSAVE_MODULE_VERSION)
-CAPUTLOG=$(EPICS_MODULES)/caPutLog/$(CAPUTLOG_MODULE_VERSION)
-IOCADMIN=$(EPICS_MODULES)/iocAdmin/$(IOCADMIN_MODULE_VERSION)
-
-MISCUTILS=$(EPICS_MODULES)/miscUtils/$(MISCUTILS_MODULE_VERSION)
-
-# You can only have one or the other here:
-# EVENT module should be deprecated. Use evrClient now
-# EVENT=$(EPICS_MODULES)/event/$(EVENT_MODULE_VERSION)
-EVRCLIENT=$(EPICS_MODULES)/evrClient/$(EVRCLIENT_MODULE_VERSION)
-RTEMSUTILS=$(EPICS_MODULES)/rtemsutils/$(RTEMSUTILS_MODULE_VERSION)
-DEVBUSMAPPED=$(EPICS_MODULES)/devBusMapped/$(DEVBUSMAPPED_MODULE_VERSION)
-DEVLIB2=$(EPICS_MODULES)/devlib2/$(DEVLIB2_MODULE_VERSION)
-DRVUIOPCIGEN=$(EPICS_MODULES)/drvUioPciGen/$(DRVUIOPCIGEN_MODULE_VERSION)
-PERFMEASURE=$(EPICS_MODULES)/perfMeasure/$(PERFMEASURE_MODULE_VERSION)
-
 ASYN=$(EPICS_MODULES)/asyn/$(ASYN_MODULE_VERSION)
-ECASYN=$(EPICS_MODULES)/ethercat/$(ECASYN_MODULE_VERSION)
-MOTOR=$(EPICS_MODULES)/motor/$(MOTOR_MODULE_VERSION)
-COUNTER=$(EPICS_MODULES)/apci1710-asyn/$(COUNTER_MODULE_VERSION)
-STREAMDEVICE=$(EPICS_MODULES)/streamdevice/$(STREAMDEVICE_MODULE_VERSION)
-CAENN1470=$(EPICS_MODULES)/caenN1470/$(CAENN1470_MODULE_VERSION)
-
-
-CEXP=$(EPICS_MODULES)/cexpsh/$(CEXP_MODULE_VERSION)
-
 YAMLLOADER=$(EPICS_MODULES)/yamlLoader/$(YAMLLOADER_VERSION)
 # =====================================================================
 
