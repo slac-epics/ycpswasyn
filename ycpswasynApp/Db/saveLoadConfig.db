@@ -24,22 +24,22 @@ record(ao, "$(P):saveConfig") {
   info(asyn:READBACK, "1")
 }
 
-record(stringout, "$(P):saveConfigFile") {
+record(waveform, "$(P):saveConfigFile") {
   field(DESC, "Save configuration file name")
   field(DTYP, "asynOctetWrite")
+  field(FTVL, "CHAR")
+  field(NELM, "256")
   field(SCAN, "Passive")
-  field(OUT, "@asyn($(PORT),6)CONFIG_SAVE_FILE")
-  field(VAL, "$(SAVE_FILE)")
-  field(PINI, "YES")
+  field(INP, "@asyn($(PORT),6)CONFIG_SAVE_FILE")
 }
 
-record(stringout, "$(P):loadConfigFile") {
+record(waveform, "$(P):loadConfigFile") {
   field(DESC, "Load configuration file name")
   field(DTYP, "asynOctetWrite")
+  field(FTVL, "CHAR")
+  field(NELM, "256")
   field(SCAN, "Passive")
-  field(OUT, "@asyn($(PORT),6)CONFIG_LOAD_FILE")
-  field(VAL, "$(LOAD_FILE)")
-  field(PINI, "YES")
+  field(INP, "@asyn($(PORT),6)CONFIG_LOAD_FILE")
 }
 
 record(mbbi, "$(P):loadConfigStatus") {

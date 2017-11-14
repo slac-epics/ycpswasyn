@@ -86,7 +86,7 @@ YCPSWASYNConfig("${PORT}", "${YAML_FILE}", "", "${FPGA_IP}", "${PREFIX}", 40, "$
 dbLoadTemplate("db/example.substitutions")
 
 # Save/Load configuration related records
-dbLoadRecords("db/saveLoadConfig.db", "P=${PREFIX}, PORT=${PORT}, SAVE_FILE=/tmp/configDump.yaml, LOAD_FILE=config/defaults.yaml")
+dbLoadRecords("db/saveLoadConfig.db", "P=${PREFIX}, PORT=${PORT}")
 
 # Verify Configuration related records
 dbLoadRecords("db/monitorFPGAReboot.db", "P=${PREFIX}, KEY=3")
@@ -99,3 +99,8 @@ iocInit()
 
 ## Start any sequence programs
 #seq sncExample,"user=jvasquez"
+
+# Example on how to set the save/load defaults file names
+# This could be done with save/restore instead
+dbpf ${PREFIX}:loadConfigFile config/defaults.yaml
+dbpf ${PREFIX}:saveConfigFile /tmp/configDump.yaml
