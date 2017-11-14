@@ -1,8 +1,18 @@
 record(waveform, "$(P):$(R):32") {
-  field(DESC,   "$(DESC)")
-  field(DTYP,	"asynInt32ArrayIn")
-  field(NELM,	"5000000")
-  field(FTVL,	"LONG")
-  field(SCAN,	"I/O Intr")
-  field(INP,	"@asyn($(PORT),$(ADDR))$(PARAM)")
+  field(DESC,    "$(DESC)")
+  field(DTYP,    "asynInt32ArrayIn")
+  field(NELM,    "5000000")
+  field(FTVL,    "LONG")
+  field(SCAN,    "I/O Intr")
+  field(INP,     "@asyn($(PORT),$(ADDR))$(PARAM)")
+  field(FLNK,    "$(P):$(R):SA32 PP")
+}
+
+record(subArray, "$(P):$(R):SA32") {
+  field(DESC,    "$(DESC) Subarray")
+  field(INP,     "$(P):$(R):32")
+  field(FTVL,    "LONG")
+  field(MALM,    "65536")
+  field(NELM,    "4096")
+  field(INDX,    "0")
 }
