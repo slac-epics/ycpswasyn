@@ -1088,7 +1088,7 @@ void YCPSWASYN::loadConfiguration()
     catch (CPSWError &e)
     {
         // If unsuccessfull, send error message, update status and return
-        printf("CPSW Error while loading configuratin: \"%s\" not found\n", e.getInfo().c_str());
+        printf("CPSW Error: Root path for loading configuration \"%s\" not found\n", e.getInfo().c_str());
         setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_ERROR, PROCESS_CONFIG_MASK);
         return;
     }
@@ -1108,14 +1108,25 @@ void YCPSWASYN::loadConfiguration()
     callParamCallbacks(DEV_CONFIG);
     
     // Load configuration
-    YAML::Node conf(YAML::LoadFile(loadConfigFileName.c_str()));
-    configPath->loadConfigFromYaml(conf);
-    
+    try
+    {
+        YAML::Node conf(YAML::LoadFile(loadConfigFileName.c_str()));
+        configPath->loadConfigFromYaml(conf);
+
+        // Update status
+        setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_SUCCESS, PROCESS_CONFIG_MASK);
+    }
+    catch (CPSWError &e)
+    {
+        // If unsuccessfull, send error message
+        printf("CPSW Error writing the configuration: %s\n", e.getInfo().c_str());
+
+        // Update status
+        setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_ERROR, PROCESS_CONFIG_MASK);
+    }
+
     // Close file
     loadFile.close();
-
-    // Update status
-    setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_SUCCESS, PROCESS_CONFIG_MASK);
 }
 
 /////////////////////////////////////////
@@ -1136,8 +1147,8 @@ void YCPSWASYN::saveConfiguration()
     catch (CPSWError &e)
     {
         // If unsuccessfull, send error message, update status and return
-        printf("CPSW Error while saving configuratin: \"%s\" not found\n", e.getInfo().c_str());
-        setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_ERROR, PROCESS_CONFIG_MASK);
+        printf("CPSW Error: Root path for saving configuration \"%s\" not found\n", e.getInfo().c_str());
+        setUIntDigitalParam(DEV_CONFIG, saveConfigStatusValue_, CONFIG_STAT_ERROR, PROCESS_CONFIG_MASK);
         return;
     }
 
@@ -1157,14 +1168,27 @@ void YCPSWASYN::saveConfiguration()
 
     // Save configuration
     YAML::Node n;
-    configPath->dumpConfigToYaml(n);
+    try
+    {
+        configPath->dumpConfigToYaml(n);
+
+        // Update status
+        setUIntDigitalParam(DEV_CONFIG, saveConfigStatusValue_, CONFIG_STAT_SUCCESS, PROCESS_CONFIG_MASK);
+    }
+    catch (CPSWError &e)
+    {
+        // If unsuccessfull, send error message
+        printf("CPSW Error reading the configuration: %s\n", e.getInfo().c_str());
+
+        // Update status
+        setUIntDigitalParam(DEV_CONFIG, saveConfigStatusValue_, CONFIG_STAT_ERROR, PROCESS_CONFIG_MASK);
+    }
+
+    // Write configuration to file
     saveFile << n << std::endl;
 
     // Close file
     saveFile.close();
-
-    // Update status
-    setUIntDigitalParam(DEV_CONFIG, saveConfigStatusValue_, CONFIG_STAT_SUCCESS, PROCESS_CONFIG_MASK);
 }
 
 ////////////////////////////////////////////////////////
