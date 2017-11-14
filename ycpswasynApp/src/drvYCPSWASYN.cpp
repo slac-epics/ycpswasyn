@@ -80,6 +80,8 @@ YCPSWASYN::YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int
     createParam(DEV_CONFIG, saveConfigFileString,   asynParamOctet,         &saveConfigFileValue_);
     createParam(DEV_CONFIG, loadConfigStatusString, asynParamUInt32Digital, &loadConfigStatusValue_);
     createParam(DEV_CONFIG, saveConfigStatusString, asynParamUInt32Digital, &saveConfigStatusValue_);
+    createParam(DEV_CONFIG, loadConfigRootString,   asynParamOctet,         &loadConfigRootValue_);
+    createParam(DEV_CONFIG, saveConfigRootString,   asynParamOctet,         &saveConfigRootValue_);
 }
 
 
@@ -1076,6 +1078,20 @@ std::string YCPSWASYN::generateRecordName(const Path& p)
 void YCPSWASYN::loadConfiguration()
 {
     std::ifstream loadFile; 
+    Path configPath;
+
+    // Find the configuration root path
+    try 
+    {
+        configPath = p_->findByName(loadConfigRootPath.c_str());
+    }
+    catch (CPSWError &e)
+    {
+        // If unsuccessfull, send error message, update status and return
+        printf("CPSW Error while loading configuratin: \"%s\" not found\n", e.getInfo().c_str());
+        setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_ERROR, PROCESS_CONFIG_MASK);
+        return;
+    }
 
     // Try to open file
     loadFile.open(loadConfigFileName.c_str());
@@ -1093,7 +1109,7 @@ void YCPSWASYN::loadConfiguration()
     
     // Load configuration
     YAML::Node conf(YAML::LoadFile(loadConfigFileName.c_str()));
-    p_->loadConfigFromYaml(conf);
+    configPath->loadConfigFromYaml(conf);
     
     // Close file
     loadFile.close();
@@ -1110,6 +1126,20 @@ void YCPSWASYN::loadConfiguration()
 void YCPSWASYN::saveConfiguration()
 {
     std::ofstream saveFile; 
+    Path configPath;
+
+    // Find the configuration root path
+    try 
+    {
+        configPath = p_->findByName(saveConfigRootPath.c_str());
+    }
+    catch (CPSWError &e)
+    {
+        // If unsuccessfull, send error message, update status and return
+        printf("CPSW Error while saving configuratin: \"%s\" not found\n", e.getInfo().c_str());
+        setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_ERROR, PROCESS_CONFIG_MASK);
+        return;
+    }
 
     // Try to open file
     saveFile.open(saveConfigFileName.c_str());
@@ -1127,7 +1157,7 @@ void YCPSWASYN::saveConfiguration()
 
     // Save configuration
     YAML::Node n;
-    p_->dumpConfigToYaml(n);
+    configPath->dumpConfigToYaml(n);
     saveFile << n << std::endl;
 
     // Close file
@@ -1960,6 +1990,16 @@ asynStatus YCPSWASYN::writeOctet (asynUser *pasynUser, const char *value, size_t
                 else if (function == loadConfigFileValue_)
                 {
                     loadConfigFileName = std::string(value);
+                    *nActual = maxChars;
+                }
+                else if (function == loadConfigRootValue_)
+                {
+                    loadConfigRootPath = std::string(value);
+                    *nActual = maxChars;
+                }
+                else if (function == saveConfigRootValue_)
+                {
+                    saveConfigRootPath = std::string(value);
                     *nActual = maxChars;
                 }
                 else

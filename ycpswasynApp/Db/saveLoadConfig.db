@@ -77,3 +77,22 @@ record(mbbi, "$(P):saveConfigStatus") {
   field(VAL,  "0")
   field(PINI, "YES")
 }
+
+record(waveform, "$(P):loadConfigRoot") {
+  field(DESC, "Load configuration CPSW root Path")
+  field(DTYP, "asynOctetWrite")
+  field(FTVL, "CHAR")
+  field(NELM, "256")
+  field(SCAN, "Passive")
+  field(INP, "@asyn($(PORT),6)CONFIG_LOAD_ROOT")
+}
+
+
+record(waveform, "$(P):saveConfigRoot") {
+  field(DESC, "Save configuration CPSW root Path")
+  field(DTYP, "asynOctetWrite")
+  field(FTVL, "CHAR")
+  field(NELM, "256")
+  field(SCAN, "Passive")
+  field(INP, "@asyn($(PORT),6)CONFIG_SAVE_ROOT")
+}

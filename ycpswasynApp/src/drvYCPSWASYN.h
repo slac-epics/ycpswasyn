@@ -53,6 +53,8 @@
 #define saveConfigFileString    "CONFIG_SAVE_FILE"
 #define loadConfigStatusString  "CONFIG_LOAD_STATUS"
 #define saveConfigStatusString  "CONFIG_SAVE_STATUS"
+#define loadConfigRootString    "CONFIG_LOAD_ROOT"
+#define saveConfigRootString    "CONFIG_SAVE_ROOT"
 
 // MBBx record menu value names
 char const *mbbxValParam[]
@@ -232,8 +234,12 @@ class YCPSWASYN : public asynPortDriver {
         int                                 saveConfigFileValue_;       // Load configuration file name parameter index
         int                                 loadConfigStatusValue_;     // Load configuration status parameter index
         int                                 saveConfigStatusValue_;     // Save configuration status parameter index
-        std::string                         saveConfigFileName;         // Save configuration file name
+        int                                 loadConfigRootValue_;       // Load configuration cpsw root parameter index
+        int                                 saveConfigRootValue_;       // Save configuration cpsw root parameter index
         std::string                         loadConfigFileName;         // Load configuration file name
+        std::string                         saveConfigFileName;         // Save configuration file name
+        std::string                         loadConfigRootPath;         // Load configuration cpsw root
+        std::string                         saveConfigRootPath;         // Save configuration cpsw root
 
 
         // Automatic generation of database from YAML definition  routine
