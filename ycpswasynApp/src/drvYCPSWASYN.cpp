@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 #include <getopt.h>
 #include <sstream>
@@ -1079,6 +1080,7 @@ void YCPSWASYN::loadConfiguration()
 {
     std::ifstream loadFile; 
     Path configPath;
+    uint64_t entryCount;
 
     // Find the configuration root path
     try 
@@ -1111,7 +1113,7 @@ void YCPSWASYN::loadConfiguration()
     try
     {
         YAML::Node conf(YAML::LoadFile(loadConfigFileName.c_str()));
-        configPath->loadConfigFromYaml(conf);
+        entryCount = configPath->loadConfigFromYaml(conf);
 
         // Update status
         setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_SUCCESS, PROCESS_CONFIG_MASK);
@@ -1124,6 +1126,9 @@ void YCPSWASYN::loadConfiguration()
         // Update status
         setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_ERROR, PROCESS_CONFIG_MASK);
     }
+
+    // Print number of entries loaded
+    printf("Number of entries loaded: %" PRIu64 "\n", entryCount);
 
     // Close file
     loadFile.close();
@@ -1138,6 +1143,7 @@ void YCPSWASYN::saveConfiguration()
 {
     std::ofstream saveFile; 
     Path configPath;
+    uint64_t entryCount;
 
     // Find the configuration root path
     try 
@@ -1170,7 +1176,7 @@ void YCPSWASYN::saveConfiguration()
     YAML::Node n;
     try
     {
-        configPath->dumpConfigToYaml(n);
+        entryCount = configPath->dumpConfigToYaml(n);
 
         // Update status
         setUIntDigitalParam(DEV_CONFIG, saveConfigStatusValue_, CONFIG_STAT_SUCCESS, PROCESS_CONFIG_MASK);
@@ -1186,6 +1192,9 @@ void YCPSWASYN::saveConfiguration()
 
     // Write configuration to file
     saveFile << n << std::endl;
+
+    // Print number of entries saved
+    printf("Number of entries saved: %" PRIu64 "\n", entryCount);
 
     // Close file
     saveFile.close();
