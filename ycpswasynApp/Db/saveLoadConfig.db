@@ -31,6 +31,7 @@ record(waveform, "$(P):saveConfigFile") {
   field(NELM, "256")
   field(SCAN, "Passive")
   field(INP, "@asyn($(PORT),6)CONFIG_SAVE_FILE")
+  field(PINI, "YES")
 }
 
 record(waveform, "$(P):loadConfigFile") {
@@ -40,6 +41,7 @@ record(waveform, "$(P):loadConfigFile") {
   field(NELM, "256")
   field(SCAN, "Passive")
   field(INP, "@asyn($(PORT),6)CONFIG_LOAD_FILE")
+  field(PINI, "YES")
 }
 
 record(mbbi, "$(P):loadConfigStatus") {
@@ -85,6 +87,7 @@ record(waveform, "$(P):loadConfigRoot") {
   field(NELM, "256")
   field(SCAN, "Passive")
   field(INP, "@asyn($(PORT),6)CONFIG_LOAD_ROOT")
+  field(PINI, "YES")
 }
 
 
@@ -95,4 +98,5 @@ record(waveform, "$(P):saveConfigRoot") {
   field(NELM, "256")
   field(SCAN, "Passive")
   field(INP, "@asyn($(PORT),6)CONFIG_SAVE_ROOT")
+  field(PINI, "YES")
 }
