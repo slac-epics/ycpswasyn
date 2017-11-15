@@ -9,6 +9,18 @@
 #  Rev:  16-Mar-2017, Reviewer's Name    (Jesus Vasquez)
 #--------------------------------------------------------------
 
+R2.0.0: 2017-11-14 J. Vasquez
+    * Change save/load default PV to waveforms so they can
+      hold longer paths respect to string PVs. With this
+      change a defult configuration file can not longer be 
+      defined as a macro in st.cmd.
+    * Add the CPSW root path for save/load configurations.
+    * Add subArrays to the stream waveform PVs for easier 
+      visualization in GUIs.
+    * Handle error when saving/loading configurations and 
+      print number of entries saved/loaded.
+    * Minor code clean up.
+
 R1.1.6: 2017-05-03 J. Vasquez
     * Update to CPSW framework R3.5.4
     * Update to yamlLoader R1.0.3
