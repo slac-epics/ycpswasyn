@@ -1116,7 +1116,11 @@ void YCPSWASYN::loadConfiguration()
         entryCount = configPath->loadConfigFromYaml(conf);
 
         // Update status
-        setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_SUCCESS, PROCESS_CONFIG_MASK);
+        if (entryCount)
+            setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_SUCCESS, PROCESS_CONFIG_MASK);
+        else
+            setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_ERROR, PROCESS_CONFIG_MASK);
+
     }
     catch (CPSWError &e)
     {
@@ -1179,7 +1183,11 @@ void YCPSWASYN::saveConfiguration()
         entryCount = configPath->dumpConfigToYaml(n);
 
         // Update status
-        setUIntDigitalParam(DEV_CONFIG, saveConfigStatusValue_, CONFIG_STAT_SUCCESS, PROCESS_CONFIG_MASK);
+        if (entryCount)
+            setUIntDigitalParam(DEV_CONFIG, saveConfigStatusValue_, CONFIG_STAT_SUCCESS, PROCESS_CONFIG_MASK);
+        else
+            setUIntDigitalParam(DEV_CONFIG, saveConfigStatusValue_, CONFIG_STAT_ERROR, PROCESS_CONFIG_MASK);
+
     }
     catch (CPSWError &e)
     {
