@@ -19,6 +19,7 @@ R2.0.0: 2017-11-14 J. Vasquez
       visualization in GUIs.
     * Handle error when saving/loading configurations and 
       print number of entries saved/loaded.
+    * Verify is entries were actually saved/loaded.
     * Minor code clean up.
 
 R1.1.6: 2017-05-03 J. Vasquez
