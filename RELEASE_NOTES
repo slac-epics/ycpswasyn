@@ -9,6 +9,9 @@
 #  Rev:  16-Mar-2017, Reviewer's Name    (Jesus Vasquez)
 #--------------------------------------------------------------
 
+R2.0.1: 2018-01-22 J. Vasquez
+    * Update ASYN to version R4.31-0.1.0.
+
 R2.0.0: 2017-11-14 J. Vasquez
     * Change save/load default PV to waveforms so they can
       hold longer paths respect to string PVs. With this
