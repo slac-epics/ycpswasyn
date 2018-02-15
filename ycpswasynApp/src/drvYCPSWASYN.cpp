@@ -115,6 +115,7 @@ static void streamTaskC(void *args)
 void YCPSWASYN::streamTask(Stream stm, int param16index, int param32index)
 {
     int64_t got = 0;
+    int64_t lastGot = 0;
     size_t nWords16, nWords32, nBytes;
     int nFrame;
     uint8_t *buf = new uint8_t[STREAM_MAX_SIZE];
@@ -185,7 +186,11 @@ void YCPSWASYN::streamTask(Stream stm, int param16index, int param32index)
                 doCallbacksInt16Array((epicsInt16*)(buf+8), nWords16, param16index, DEV_STM);   
                 doCallbacksInt32Array((epicsInt32*)(buf+8), nWords32, param32index, DEV_STM);   
 
-                memset(buf, 0, STREAM_MAX_SIZE*sizeof(uint8_t));
+                if (lastGot > got)
+                    memset(buf+got, 0, (lastGot-got)*sizeof(uint8_t));
+
+                lastGot = got;
+
                 unlock();
             }
             else
