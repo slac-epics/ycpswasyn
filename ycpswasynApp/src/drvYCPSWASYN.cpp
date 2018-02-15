@@ -18,6 +18,8 @@
 #include <fstream>
 #include <arpa/inet.h>
 #include <math.h>
+#include <sys/mman.h>
+#include <sched.h>
 #include <epicsTypes.h>
 #include <epicsTime.h>
 #include <epicsThread.h>
@@ -39,6 +41,14 @@
 #include <yaml-cpp/yaml.h>
 
 #include <yamlLoader.h>
+
+#define MY_PRIORITY (49) /* we use 49 as the PRREMPT_RT use 50
+                            as the priority of kernel tasklets
+                            and interrupt handler by default */
+
+#define MAX_SAFE_STACK (65536)  /* The maximum stack size which is
+                                   guaranteed safe to access without
+                                   faulting */
 
 using std::string;
 using std::stringstream;
@@ -114,6 +124,25 @@ void YCPSWASYN::streamTask(Stream stm, int param16index, int param32index)
         printf("Error on stream handler\n");
         return;
     }
+
+    // Declare as real time task
+    param.sched_priority = MY_PRIORITY;
+    if(sched_setscheduler(0, SCHED_FIFO, &param) == -1)
+    {
+        perror("sched_setscheduler failed");
+        exit(-1);
+    }
+
+    // Lock memory
+    if(mlockall(MCL_CURRENT|MCL_FUTURE) == -1)
+    {
+        perror("mlockall failed");
+        exit(-2);
+    }
+
+    // Pre-fault our stack
+    unsigned char dummy[MAX_SAFE_STACK];
+    memset(dummy, 0, MAX_SAFE_STACK);
 
 // + Generate fake data //
     /*
