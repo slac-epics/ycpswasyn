@@ -9,6 +9,11 @@
 #  Rev:  16-Mar-2017, Reviewer's Name    (Jesus Vasquez)
 #--------------------------------------------------------------
 
+R2.0.2: 2019-02-15 J. Vasquez
+    * Improve performace of the stream handling setting its thread
+      as a RT task, and erasing only the part of the buffer that was
+      not updated.
+
 R2.0.1: 2018-01-22 J. Vasquez
     * Update ASYN to version R4.31-0.1.0.
 
