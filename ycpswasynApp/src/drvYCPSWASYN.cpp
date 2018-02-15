@@ -118,6 +118,7 @@ void YCPSWASYN::streamTask(Stream stm, int param16index, int param32index)
     size_t nWords16, nWords32, nBytes;
     int nFrame;
     uint8_t *buf = new uint8_t[STREAM_MAX_SIZE];
+    struct sched_param  param;
 
     if (!stm)
     {
