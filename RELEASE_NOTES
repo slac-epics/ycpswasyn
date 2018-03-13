@@ -9,7 +9,7 @@
 #  Rev:  16-Mar-2017, Reviewer's Name    (Jesus Vasquez)
 #--------------------------------------------------------------
 
-R2.0.2: 2019-02-15 J. Vasquez
+R2.0.2: 2018-02-15 J. Vasquez
     * Improve performace of the stream handling setting its thread
       as a RT task, and erasing only the part of the buffer that was
       not updated.
