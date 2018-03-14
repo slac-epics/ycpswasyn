@@ -296,7 +296,7 @@ class YCPSWASYN : public asynPortDriver {
         int CreateRecordFloat(const T& reg);
 
         // Load a EPICS record with the provided infomation
-        int LoadRecord(int regType, const recordParams& rp, const std::string& dbParams);
+        int LoadRecord(int regType, const recordParams& rp, const std::string& dbParams, Path p);
 
         // Get the register type
         template <typename T>
@@ -332,21 +332,31 @@ class YCPSWASYN : public asynPortDriver {
 
 };
 
-class YCPSWASYNRegDumpYamlFile : public IPathVisitor {
+// Sorry, I still like printf formatting better than cout
+class YCPSWASYNRAIIFile {
 private:
 	FILE      *f_;
-	YCPSWASYN *drv_;
-    int        indent_;
-public:
-	YCPSWASYNRegDumpYamlFile(const std::string &name, YCPSWASYN *drv);
 
-	virtual bool visitPre(ConstPath here);
-	virtual void visitPost(ConstPath here);
+public:
+	YCPSWASYNRAIIFile(const std::string &name, const char *mode);
 
 	FILE *f()
 	{
 		return f_;
 	}
+
+	virtual ~YCPSWASYNRAIIFile();
+};
+
+class YCPSWASYNRegDumpYamlFile : public IPathVisitor, public YCPSWASYNRAIIFile {
+private:
+	YCPSWASYN *drv_;
+    int        indent_;
+public:
+	YCPSWASYNRegDumpYamlFile(const std::string &filename, YCPSWASYN *drv);
+
+	virtual bool visitPre(ConstPath here);
+	virtual void visitPost(ConstPath here);
 
 	int
 	indent()
@@ -367,8 +377,6 @@ public:
 		indent_ -= 2;
 		return indent_;
 	}
-
-	virtual ~YCPSWASYNRegDumpYamlFile();
 };
 
 // Stream handling function caller

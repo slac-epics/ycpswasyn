@@ -351,7 +351,7 @@ void YCPSWASYN::dumpRegisterMap(const Path& p)
 // - Load a EPICS record with the provided infomation                                      //
 /////////////////////////////////////////////////////////////////////////////////////////////
 //template <typename T>
-int YCPSWASYN::LoadRecord(int regType, const recordParams& rp, const string& dbParams)
+int YCPSWASYN::LoadRecord(int regType, const recordParams& rp, const string& dbParams, Path p)
 {
     int paramIndex;
     stringstream dbParamsLocal;
@@ -373,8 +373,37 @@ int YCPSWASYN::LoadRecord(int regType, const recordParams& rp, const string& dbP
     dbLoadRecords(rp.recTemplate.c_str(), dbParamsLocal.str().c_str());
 
     // Write the record name to the PV list file
-    if (pvDumpFile.is_open())
-        pvDumpFile << recordPrefix_ << ':' << rp.recName << std::endl;
+    if (pvDumpFile.is_open()) {
+		DBENTRY     dbentry;
+		DBENTRY    *pdbentry = &dbentry;
+		long        status;
+		// We don't know the full record name(s) since the template
+		// ultimately defines it.
+		// Assuming that the template merely appends suffixes we
+		// can 'dbgrep' the database. Since dbgrep does not allow
+		// for redirecting output we copy its functionality here :-(
+
+		std::string pattern = std::string(recordPrefix_) + ':' + rp.recName + '*';
+
+		dbInitEntry(pdbbase, pdbentry);
+		status = dbFirstRecordType( pdbentry );
+		while ( 0 == status ) {
+			status = dbFirstRecord( pdbentry );
+			while ( 0 == status ) {
+				const char *rnam = dbGetRecordName(pdbentry);
+				if ( epicsStrGlobMatch( rnam, pattern.c_str() ) ) {
+					pvDumpFile << std::left;
+                    pvDumpFile.width(42);
+					pvDumpFile << rnam;
+					pvDumpFile << "#" << p->toString() << std::endl;
+				}
+				status = dbNextRecord ( pdbentry );
+			}
+			status = dbNextRecordType( pdbentry );
+		}
+
+		dbFinishEntry( pdbentry );
+	}
 
     // Incrfement the umber of created records
     ++recordCount;
@@ -593,7 +622,7 @@ int YCPSWASYN::CreateRecord(const T& reg)
             }
         }
 		trp.recTemplate = templateList[regType][arrType];
-		paramIndex      = LoadRecord(regType, trp, dbParams);
+		paramIndex      = LoadRecord(regType, trp, dbParams, p);
 		pushParameter(reg, paramIndex);
     }
     else
@@ -607,7 +636,7 @@ int YCPSWASYN::CreateRecord(const T& reg)
             trp.paramType = asynParamUInt32Digital;
             trp.recTemplate = templateList[regType][arrType];
 
-            paramIndex = LoadRecord(regType, trp, dbParams);
+            paramIndex = LoadRecord(regType, trp, dbParams, p);
             pushParameter(reg, paramIndex);
 
         }
@@ -642,7 +671,7 @@ int YCPSWASYN::CreateRecord(const T& reg)
                 trp.paramType = asynParamUInt32Digital;
                 trp.recTemplate = templateList[regType][arrType];
 
-                paramIndex = LoadRecord(regType, trp, dbParams);
+                paramIndex = LoadRecord(regType, trp, dbParams, p);
                 pushParameter(c_reg, paramIndex);
             }
         }
@@ -698,7 +727,7 @@ int YCPSWASYN::CreateRecord(const Command& reg, const Path& p_)
     dbParams += std::string(",ONAM=\"Run\"");
     dbParams += std::string(",ZNAM=\"Run\"");
 
-    paramIndex = LoadRecord(regType, trp, dbParams);
+    paramIndex = LoadRecord(regType, trp, dbParams, p);
     pushParameter(reg, paramIndex);
 
     return (arrType << 8) | regType;
@@ -734,7 +763,7 @@ int YCPSWASYN::CreateRecord(const Stream& reg, const Path& p_)
     // + record template
     trp.recTemplate = templateListWaforms[WF_32_BIT];
 
-    p32stmIndex = LoadRecord(regType, trp, dbParams);
+    p32stmIndex = LoadRecord(regType, trp, dbParams, p);
 
 
     // Create PVs for 16-bit stream data
@@ -750,7 +779,7 @@ int YCPSWASYN::CreateRecord(const Stream& reg, const Path& p_)
     // + record template
     trp.recTemplate = templateListWaforms[WF_16_BIT];
 
-    p16StmIndex = LoadRecord(regType, trp, dbParams);
+    p16StmIndex = LoadRecord(regType, trp, dbParams, p);
 
     // Crteate Acquisition Thread
     asynStatus status;
@@ -840,7 +869,7 @@ int YCPSWASYN::CreateRecordFloat(const T& reg)
         arrType       = REG_ARRAY;
     }
     trp.recTemplate = templateList[regType][arrType];
-    paramIndex = LoadRecord(regType, trp, dbParams);
+    paramIndex = LoadRecord(regType, trp, dbParams, p);
     pushParameter(reg, paramIndex);
 
     return (arrType << 8) | regType;
@@ -2456,20 +2485,24 @@ void YCPSWASYN::report(FILE *fp, int details)
     asynPortDriver::report(fp, details);
 }
 
-YCPSWASYNRegDumpYamlFile::YCPSWASYNRegDumpYamlFile(const std::string &name, YCPSWASYN *drv)
-	: 
-	drv_   ( drv ),
-	indent_( 0   )
+YCPSWASYNRAIIFile::YCPSWASYNRAIIFile(const std::string &name, const char *mode)
 {
-	// Sorry - I still like printf formatting better than '<<'
-	if ( ! (f_ = fopen( name.c_str(), "w" )) ) {
+	if ( ! (f_ = fopen( name.c_str(), mode )) ) {
 		throw CPSWError(std::string("Unable to open file: " + name));
 	}
 }
 
-YCPSWASYNRegDumpYamlFile::~YCPSWASYNRegDumpYamlFile()
+YCPSWASYNRAIIFile::~YCPSWASYNRAIIFile()
 {
 	fclose( f_ );
+}
+
+YCPSWASYNRegDumpYamlFile::YCPSWASYNRegDumpYamlFile(const std::string &name, YCPSWASYN *drv)
+	: 
+	YCPSWASYNRAIIFile( name, "w" ),
+	drv_   ( drv ),
+	indent_( 0   )
+{
 }
 
 bool
@@ -2479,14 +2512,14 @@ std::string rep = p->toString();
 const char *lst = strrchr( rep.c_str(), '/' );
 int         type;
 	lst = lst ? lst + 1 : rep.c_str();
-	fprintf(f_, "%*s%s:", indent(), "", lst);
+	fprintf( f(), "%*s%s:", indent(), "", lst);
 	if ( ! p->tail()->isHub() ) {
 		type = drv_->CreateRecord( p->clone() );
 		enum registerInterfaceTypeList ifType( static_cast<enum registerInterfaceTypeList>(type & 0xff) );
 		enum regTypeList               rgType( static_cast<enum regTypeList>         ((type>>8) & 0xff) );
-        fprintf(f_, " \"%s,%s\"", regInterfaceTypeNames[ifType], regTypeNames[rgType]);
+        fprintf( f(), " \"%s,%s\"", regInterfaceTypeNames[ifType], regTypeNames[rgType]);
 	}
-    fprintf(f_, "\n");
+    fprintf( f(), "\n");
 	pushIndent();
 	return true;
 }
