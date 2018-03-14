@@ -368,7 +368,7 @@ int YCPSWASYN::LoadRecord(int regType, const recordParams& rp, const string& dbP
     // Create the asyn paramater
     createParam(regType, rp.paramName.c_str(), rp.paramType, &paramIndex);  //
     
-    // Cretae the record
+    // Create the record
     dbLoadRecords(rp.recTemplate.c_str(), dbParamsLocal.str().c_str());
 
     // Write the record name to the PV list file
@@ -1161,6 +1161,7 @@ void YCPSWASYN::loadConfiguration()
     {
         // If unsuccessfull, send error message
         printf("CPSW Error writing the configuration: %s\n", e.getInfo().c_str());
+		entryCount = 0;
 
         // Update status
         setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_ERROR, PROCESS_CONFIG_MASK);
@@ -1228,6 +1229,7 @@ void YCPSWASYN::saveConfiguration()
     {
         // If unsuccessfull, send error message
         printf("CPSW Error reading the configuration: %s\n", e.getInfo().c_str());
+		entryCount = 0;
 
         // Update status
         setUIntDigitalParam(DEV_CONFIG, saveConfigStatusValue_, CONFIG_STAT_ERROR, PROCESS_CONFIG_MASK);
@@ -1505,7 +1507,6 @@ int YCPSWASYN::loadDBFromFile(const char* dictionary)
         if (dictFile.is_open())
         {
             printf("Done.\n");
-            asynParamType paramType;
             std::string line;
 
             while (std::getline(dictFile, line))
@@ -1873,7 +1874,7 @@ asynStatus YCPSWASYN::writeInt32Array(asynUser *pasynUser, epicsInt32 *value, si
     int addr;
     int function = pasynUser->reason;
     int status=0;
-    size_t n;
+    size_t n = 0;
     const char *name;
     static const char *functionName = "writeInt32Array";
     IndexRange range(0, nElements-1);
@@ -2178,7 +2179,7 @@ asynStatus YCPSWASYN::writeFloat64Array(asynUser *pasynUser, epicsFloat64 *value
     int addr;
     int function = pasynUser->reason;
     int status=0;
-    size_t n;
+    size_t n = 0;
     this->getAddress(pasynUser, &addr);
     const char *name;
     IndexRange range(0, nElements-1);

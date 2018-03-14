@@ -57,7 +57,7 @@
 #define saveConfigRootString    "CONFIG_SAVE_ROOT"
 
 // MBBx record menu value names
-char const *mbbxValParam[]
+char const *mbbxValParam[] =
 {
     "ZRVL",
     "ONVL",
@@ -78,7 +78,7 @@ char const *mbbxValParam[]
 };
 
 // MBBx record menu string names
-char const *mbbxNameParams[]
+char const *mbbxNameParams[] =
 {
     "ZRST",
     "ONST",
@@ -305,6 +305,7 @@ class YCPSWASYN : public asynPortDriver {
         template <typename T>
         void createRegisterParameterFloat(const T& reg, const std::string& paramName);
 };
+
 
 // Stream handling function caller
 static void streamTaskC(void *args);
