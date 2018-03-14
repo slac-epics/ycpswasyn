@@ -28,7 +28,8 @@
 #include <epicsMutex.h>
 #include <epicsEvent.h>
 #include <iocsh.h>
-#include <openssl/sha.h>
+#include <sha1.hpp>
+#include <ctype.h>
 
 #include <dbAccess.h>
 #include <dbStaticLib.h>
@@ -1142,15 +1143,16 @@ std::string YCPSWASYN::generateRecordName(const Path& p)
         }
 
 		if ( (found_key == std::string::npos) && childName == "__hashed__" ) {
-			unsigned char md[SHA_DIGEST_LENGTH];
-			char          mdstr[SHA_DIGEST_LENGTH*2+1];
+			char          mdstr[SHA1_HEX_SIZE];
 			std::string   msg = hashPrefix + p->toString();
 			int           i;
 
-			SHA1( (unsigned char*)msg.c_str(), strlen(msg.c_str()), md );
+			sha1 hasher( msg.c_str() );
 
-			for (i=0; i<SHA_DIGEST_LENGTH; i++ ) {
-				snprintf(mdstr+2*i,sizeof(mdstr)-2*i,"%02X", md[i]);
+			hasher.finalize().print_hex(mdstr);
+
+			for (i=0; i<SHA1_HEX_SIZE; i++ ) {
+				mdstr[i] = ::toupper(mdstr[i]);
 			}
 			resultPrefix = std::string(mdstr);
 		} else {
