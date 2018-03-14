@@ -19,8 +19,8 @@
 #define DRIVER_NAME     "YCPSWASYN"
 
 // Key and substitution string to look for when creating the record name from it path
-#define CARRIER_KEY     "CarrierCore"   // Carrier core 
-#define CARRIER_SUBS    "C" 
+#define CARRIER_KEY     "CarrierCore"   // Carrier core
+#define CARRIER_SUBS    "C"
 #define BAY0_KEY        "Bay0"          // Bay 0
 #define BAY0_SUBS       "B0"
 #define BAY1_KEY        "Bay1"          // Bay 1
@@ -99,7 +99,7 @@ char const *mbbxNameParams[] =
 };
 
 // Types of register interfaces
-enum registerInterfaceTypeList 
+enum registerInterfaceTypeList
 {
     DEV_REG_RO,
     DEV_REG_RW,
@@ -111,6 +111,17 @@ enum registerInterfaceTypeList
     DEV_SIZE
 };
 
+char const *regInterfaceTypeNames[] =
+{
+  "INT,RO",
+  "INT,RW",
+  "FLT,RO",
+  "FLT,RW",
+  "CMD,RW",
+  "STM,RO",
+  "CFG,RW",
+};
+
 // Type of registers
 enum regTypeList
 {
@@ -118,7 +129,17 @@ enum regTypeList
     REG_ENUM,       // Enum register
     REG_ARRAY,      // Array registers
     REG_ARRAY_8,    // 8-bit array register
+    REG_STRING,
     REG_SIZE
+};
+
+char const *regTypeNames[] =
+{
+  "SCL",
+  "ENM",
+  "ARR",
+  "AR8",
+  "STR"
 };
 
 // Type of interfaces
@@ -130,14 +151,14 @@ enum waveformTypeList
 };
 
 // record template list (all interfaces but streams)
-const char *templateList[DEV_SIZE - 1][REG_SIZE] = 
+const char *templateList[DEV_SIZE - 1][REG_SIZE] =
 {
      // DEV_SINGLE,             // REG_ENUM             // REG_ARRAY                        // REG_ARRAY_8
-    {"db/longin.template",      "db/mbbi.template",     "db/waveform_in.template",          "db/waveform_8_in.template"},   //DEV_REG_RO
-    {"db/longout.template",     "db/mbbo.template",     "db/waveform_out.template",         "db/waveform_8_out.template"},  //DEV_REG_RW
-    {"db/ai.template",          "",                     "db/waveform_in_float.template",    ""},                            //DEV_FLOAT_RO
-    {"db/ao.template",          "",                     "db/waveform_out_float.template",   ""},                            //DEV_FLOAT_RW
-    {"db/bo.template",          "",                     "",                                 ""},                            //DEV_CMD
+    {"db/longin.template",      "db/mbbi.template",     "db/waveform_in.template",          "db/waveform_8_in.template", "db/waveform_8_in.template"},   //DEV_REG_RO
+    {"db/longout.template",     "db/mbbo.template",     "db/waveform_out.template",         "db/waveform_8_out.template", "db/waveform_8_out.template"},  //DEV_REG_RW
+    {"db/ai.template",          "",                     "db/waveform_in_float.template",    "",                           ""},                            //DEV_FLOAT_RO
+    {"db/ao.template",          "",                     "db/waveform_out_float.template",   "",                           ""},                            //DEV_FLOAT_RW
+    {"db/bo.template",          "",                     "",                                 "",                           ""},                            //DEV_CMD
 };
 
 // Record template list (oly for streans)
@@ -182,11 +203,11 @@ struct recordParams
 #define NUM_PARAMS          (NUM_SCALVALS + NUM_CMD)        // Max number of paramters
 #define STREAM_MAX_SIZE     200UL*1024ULL*1024ULL           // Size of the stream buffers
 
-class YCPSWASYN : public asynPortDriver {
+class YCPSWASYN : public asynPortDriver, public IPathVisitor {
     public:
         // Constructor
-        YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int recordNameLenMax, bool autogenerate, const char* dictionary);
-        
+        YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int recordNameLenMax, int autogenerate, const char* dictionary);
+
         // Methods that we override from asynPortDriver
         virtual asynStatus  readInt32           (asynUser *pasynUser, epicsInt32 *value);
         virtual asynStatus  writeInt32          (asynUser *pasynUser, epicsInt32 value);
@@ -202,13 +223,16 @@ class YCPSWASYN : public asynPortDriver {
         virtual asynStatus  readUInt32Digital   (asynUser *pasynUser, epicsUInt32 *value, epicsUInt32 mask);
         virtual asynStatus  getBounds           (asynUser *pasynUser, epicsInt32 *low, epicsInt32 *high);
         virtual void        report              (FILE *fp, int details);
-        
+
         // New Methods for this class
         // Streamn hanlding function
         virtual void streamTask(Stream stm, int param16index, int param32index);
 
         // Initialization routine
         static int YCPSWASYNInit(const char *yaml_doc, const char* rootPath, Path *p, const char *ipAddr);
+
+		virtual bool visitPre(ConstPath here);
+		virtual void visitPost(ConstPath here);
 
     private:
         const char                          *driverName_;               // Name of the driver (passed from st.cmd)
@@ -218,7 +242,7 @@ class YCPSWASYN : public asynPortDriver {
         const int                           recordNameLenMax_;          // Max lenght of the record name (passed from st.cmd)
         long                                nRO, nRW, nCMD, nSTM;       // Counter for RO/RW register, command and Stremas found on the YAML file
         long                                nFO, nFW;                   // Counter for Floating point RO/RW registers
-        long                                recordCount;                //Counter for the total number of register loaded 
+        long                                recordCount;                //Counter for the total number of register loaded
         ScalVal                             rw[NUM_SCALVALS];           // Array of ScalVals (RW)
         ScalVal_RO                          ro[NUM_SCALVALS];           // Array of ScalVals (RO)
         DoubleVal                           fw[NUM_DOUBLEVALS];         // Array of DoubleVals (RW)
@@ -240,10 +264,11 @@ class YCPSWASYN : public asynPortDriver {
         std::string                         saveConfigFileName;         // Save configuration file name
         std::string                         loadConfigRootPath;         // Load configuration cpsw root
         std::string                         saveConfigRootPath;         // Save configuration cpsw root
+        int                                 indent_;
 
 
         // Automatic generation of database from YAML definition  routine
-        int autogenerateDatabase(void);
+        int autogenerateDatabase(int);
 
         // Load database from dictionary file routine
         int loadDBFromFile(const char* dictionary);
@@ -251,28 +276,31 @@ class YCPSWASYN : public asynPortDriver {
         // Write list of register to file
         void dumpRegisterMap(const Path& p);
 
-        // Create the record name from its path 
+        // Create the record name from its path
         std::string generateRecordName(const Path& p);
 
-        // Generate the EPICS databse for all the registers on the especified path 
+        // Generate the EPICS databse for all the registers on the especified path
         virtual void generateDB(const Path& p);
-    
-        // Create a record from a register pointer 
-        template <typename T>
-        void CreateRecord(const T& reg);
 
-        // Create a record from a register pointer and its path. 
+		// Create a record from a Path
+		virtual int  CreateRecord(Path p);
+
+        // Create a record from a register pointer
+        template <typename T>
+        int CreateRecord(const T& reg);
+
+        // Create a record from a register pointer and its path.
         // This is for Command and Stream which don't support the getPath() function
         template <typename T>
-        void CreateRecord(const T& reg, const Path& p);
-        
-        // Create a record from a float register pointer 
+        int CreateRecord(const T& reg, const Path& p);
+
+        // Create a record from a float register pointer
         template <typename T>
-        void CreateRecordFloat(const T& reg);
+        int CreateRecordFloat(const T& reg);
 
         // Load a EPICS record with the provided infomation
         int LoadRecord(int regType, const recordParams& rp, const std::string& dbParams);
-        
+
         // Get the register type
         template <typename T>
         int getRegType(const T& reg);
@@ -290,13 +318,13 @@ class YCPSWASYN : public asynPortDriver {
         // Save configuration to YAML
         void saveConfiguration();
 
-        // Calculate the closest SCAN value for the EPICS record from the YAML pollSecs value 
+        // Calculate the closest SCAN value for the EPICS record from the YAML pollSecs value
         std::string getEpicsScan(double scan);
 
         // Creates a parameter for the given register an add its pointer to it list
         template <typename T>
         void addParameter(const T& reg, const std::string& paramName, const asynParamType& paramType);
-        
+
         // Creates a asyn paramter for the given register
         template <typename T>
         void createRegisterParameter(const T& reg, const std::string& paramName);
