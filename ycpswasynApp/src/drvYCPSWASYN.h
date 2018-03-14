@@ -57,6 +57,8 @@
 #define loadConfigRootString    "CONFIG_LOAD_ROOT"
 #define saveConfigRootString    "CONFIG_SAVE_ROOT"
 
+#define hashPrefixVar           "YCPSWASYN_HASH_PREFIX"
+
 // MBBx record menu value names
 char const *mbbxValParam[] =
 {
@@ -265,6 +267,7 @@ class YCPSWASYN : public asynPortDriver {
         std::string                         saveConfigFileName;         // Save configuration file name
         std::string                         loadConfigRootPath;         // Load configuration cpsw root
         std::string                         saveConfigRootPath;         // Save configuration cpsw root
+		std::string                         hashPrefix;
 
 
         // Automatic generation of database from YAML definition  routine
