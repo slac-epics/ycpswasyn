@@ -41,6 +41,7 @@
 #define REG_DUMP_FILE_NAME          "regMap.txt"
 #define PV_DUMP_FILE_NAME           "pvList.txt"
 #define KEYS_NOT_FOUND_FILE_NAME    "keysNotFound.txt"
+#define REG_DUMP_YAML_FILE_NAME     "regMap.yaml"
 #define MAP_FILE_PATH               "yaml/"
 #define MAP_TOP_FILE_NAME           "map_top"
 #define MAP_FILE_NAME               "map"
@@ -203,7 +204,7 @@ struct recordParams
 #define NUM_PARAMS          (NUM_SCALVALS + NUM_CMD)        // Max number of paramters
 #define STREAM_MAX_SIZE     200UL*1024ULL*1024ULL           // Size of the stream buffers
 
-class YCPSWASYN : public asynPortDriver, public IPathVisitor {
+class YCPSWASYN : public asynPortDriver {
     public:
         // Constructor
         YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int recordNameLenMax, int autogenerate, const char* dictionary);
@@ -231,8 +232,8 @@ class YCPSWASYN : public asynPortDriver, public IPathVisitor {
         // Initialization routine
         static int YCPSWASYNInit(const char *yaml_doc, const char* rootPath, Path *p, const char *ipAddr);
 
-		virtual bool visitPre(ConstPath here);
-		virtual void visitPost(ConstPath here);
+		// Create a record from a Path
+		virtual int  CreateRecord(Path p);
 
     private:
         const char                          *driverName_;               // Name of the driver (passed from st.cmd)
@@ -264,7 +265,6 @@ class YCPSWASYN : public asynPortDriver, public IPathVisitor {
         std::string                         saveConfigFileName;         // Save configuration file name
         std::string                         loadConfigRootPath;         // Load configuration cpsw root
         std::string                         saveConfigRootPath;         // Save configuration cpsw root
-        int                                 indent_;
 
 
         // Automatic generation of database from YAML definition  routine
@@ -281,9 +281,6 @@ class YCPSWASYN : public asynPortDriver, public IPathVisitor {
 
         // Generate the EPICS databse for all the registers on the especified path
         virtual void generateDB(const Path& p);
-
-		// Create a record from a Path
-		virtual int  CreateRecord(Path p);
 
         // Create a record from a register pointer
         template <typename T>
@@ -332,8 +329,47 @@ class YCPSWASYN : public asynPortDriver, public IPathVisitor {
         // Creates a asyn paramter for the given float register
         template <typename T>
         void createRegisterParameterFloat(const T& reg, const std::string& paramName);
+
 };
 
+class YCPSWASYNRegDumpYamlFile : public IPathVisitor {
+private:
+	FILE      *f_;
+	YCPSWASYN *drv_;
+    int        indent_;
+public:
+	YCPSWASYNRegDumpYamlFile(const std::string &name, YCPSWASYN *drv);
+
+	virtual bool visitPre(ConstPath here);
+	virtual void visitPost(ConstPath here);
+
+	FILE *f()
+	{
+		return f_;
+	}
+
+	int
+	indent()
+	{
+		return indent_;
+	}
+
+	int
+	pushIndent()
+	{
+		indent_ += 2;
+		return indent_;
+	}
+
+	int
+	popIndent()
+	{
+		indent_ -= 2;
+		return indent_;
+	}
+
+	virtual ~YCPSWASYNRegDumpYamlFile();
+};
 
 // Stream handling function caller
 static void streamTaskC(void *args);
