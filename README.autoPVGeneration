@@ -4,11 +4,11 @@
 
 YCPSWASYN uses CPSW for the communication with FPGA and AsynPortDriver for its integration into EPICS.
 
-This document describes how the automatic generation of PVs works. 
+This document describes how the automatic generation of PVs works.
 
 ## Background
 
-You should be familiar with CPSW and how hierarchies are defined in YAML. 
+You should be familiar with CPSW and how hierarchies are defined in YAML.
 
 Go to the CPSW and YAML go to the official [confluence page about CPSW](https://confluence.slac.stanford.edu/display/ppareg/CPSW%3A+HowTo+User+Guide), or take a look at the README files in the CPSW framework package area.
 
@@ -18,9 +18,9 @@ PVs are automatically generated for all registers defined on the YAML files. The
 - map
 - map_top
 
-Each device name, from right to left, in the path is substitute by its map on the “map” or “map_top” file. The difference is that if it finds the name on “map_top” the substitution ends and the PV name is completed. 
+Each device name, from right to left, in the path is substitute by its map on the “map” or “map_top” file. The difference is that if it finds the name on “map_top” the substitution ends and the PV name is completed.
 
-If the device is not found on the maps, the device name is truncated to 3 chars. 
+If the device is not found on the maps, the device name is truncated to 3 chars.
 
 The register name at the tip of the path is left unmodified.
 
@@ -36,11 +36,55 @@ For example, the PV for the register
 
         /mmio/DigFpga/AmcCarrierCore/AxiVersion/BuildStamp
 
-is 
+is
 
         ${P}:C:AV:BuildStamp:Rd
 
 **Note:** the macro ${P} is defined on st.cmd
+
+### Hashed PV Names
+An entry in “map_top” may contain the special substitution `__hashed__`. This substitution directs
+the driver to compute a SHA1 hash over the complete register path and an optional prefix which
+can be used to differentiate otherwise identical registers on multiple IOCs:
+
+        [PREFIX]REGISTER_PATH
+
+The prefix is fetched from the environment variable `YCPSWASYN_HASH_PREFIX` and used verbatim
+(no prefix is used if this variable does not exist).
+
+The resulting SHA1 hash is converted to a all-uppercase hex-representation (which is 40 characters
+long). The final PV name is obtained by truncating the SHA1 (at the end) to 37 characters minus
+the length of the `${P}:` prefix (so that the `:Rd`, `:St` etc. suffixes may still be appended).
+
+E.g., a prefix `PREFIX` and register path `/mmio/something[2]/reg[0-15]` computes to a SHA1
+sum (over `PREFIX/mmio/something[2]/reg[0-15]`)
+
+         E825A6C99723218F7A95D4C96B58984D730E2C7C
+
+If the record prefix (as given to the `YCPSWASYNConfig` command) is e.g., `H` then
+the final record names would be
+
+         H:E825A6C99723218F7A95D4C96B58984D730:Rd
+         H:E825A6C99723218F7A95D4C96B58984D730:St
+
+etc.
+
+Knowing the full register path, the record and hash prefixes, an application may thus compute
+the hashed record name. Note that the record prefix does not go into the hash but the hash
+prefix does.
+
+### Flattening Modes
+There are two ways for automatically creating PVs of arrays of Hubs, as in
+
+         /mmio/somehub[0-3]/somereg[0-15]
+
+(registers, i.e., 'leaves' are always left as arrays). If the autoconfig `mode` argument to
+`YCPSWASYNConfig` is 1 then the above structure would yield a single (array) record holding
+all 4*16 = 64 values in 'C-style' ordering (right-most index variest fastest).
+
+If the `mode` argument is '2' then all hubs are flattened out. In the above example
+four PVs would be generated (one for each instance of `somehub`), each holding 16 values.
+
 
 ### Debug information
 
