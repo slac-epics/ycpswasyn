@@ -353,13 +353,21 @@ public:
 
 class YCPSWASYNRegDumpYamlFile : public IPathVisitor, public YCPSWASYNRAIIFile {
 private:
-	YCPSWASYN *drv_;
-    int        indent_;
+	YCPSWASYN         *drv_;
+    int                indent_;
+	std::vector<Path>  pathStack_;
+    Path               workingPrefix_;
+	char               idx_[256];
+
+	void dumpWithPrefix_r(unsigned level);
+
 public:
 	YCPSWASYNRegDumpYamlFile(const std::string &filename, YCPSWASYN *drv);
 
 	virtual bool visitPre(ConstPath here);
 	virtual void visitPost(ConstPath here);
+
+	void dump(Path prefix);
 
 	int
 	indent()
