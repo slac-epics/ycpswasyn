@@ -1,6 +1,6 @@
 #=========================================================================================================
 # Example substitution file showing how to manually load records.                
-# P,R: The PV name as $(P):$(R)
+# P,R: The PV name as $(P)$(R)
 # DESC, PINI, SCAN, NELM, etc.: The same fields on the records
 # PORT: The asyn port name. It must match the port name given when calling "YCPSWASYNConfig" on st.cmd 
 # PARAM: The asyn paramter name. It must be defined in the dictionary file and assigned to a register 
@@ -11,31 +11,31 @@
 #======================================
 # Single register
 file "db/RegisterIn.template" { pattern
-{ P,        R,              DESC,                           PINI,   SCAN,       PORT,   PARAM       }
-{ yamlIOC1, DeviceDna,      "Xilinx Device DNA",            "YES",  "Passive",  Atca2,  DEVICE_DNA  }
-{ yamlIOC1, FpgaVersion,    "FPGA Firmware Version Number"  "YES",  "Passive",  Atca2,  FPGA_VERS   }
-{ yamlIOC1, UpTimeCnt,      "Seconds since last reset"      "YES",  "1 second", Atca2,  UP_TIME_CNT }
+{ P,         R,              DESC,                           PINI,   SCAN,       PORT,   PARAM       }
+{ yamlIOC1:, DeviceDna,      "Xilinx Device DNA",            "YES",  "Passive",  Atca2,  DEVICE_DNA  }
+{ yamlIOC1:, FpgaVersion,    "FPGA Firmware Version Number"  "YES",  "Passive",  Atca2,  FPGA_VERS   }
+{ yamlIOC1:, UpTimeCnt,      "Seconds since last reset"      "YES",  "1 second", Atca2,  UP_TIME_CNT }
 }
 
 # Array of register
 file "db/RegisterArrayIn.template" { pattern
-{ P,        R,              DESC,                           NELM,   PINI,   SCAN,       PORT,   PARAM       }
+{ P,         R,              DESC,                           NELM,   PINI,   SCAN,       PORT,   PARAM       }
 }
 
 # Array of 8-bit register as a string 
 file "db/RegisterArrayChar.template" { pattern
-{ P,        R,              DESC,                           NELM,   PINI,   SCAN,       PORT,   PARAM       }
-{ yamlIOC1, BuildStamp,     "Firmware Build String",        64,     "YES",  "Passive",  Atca2,  BUILD_STAMP }   
+{ P,         R,              DESC,                           NELM,   PINI,   SCAN,       PORT,   PARAM       }
+{ yamlIOC1:, BuildStamp,     "Firmware Build String",        64,     "YES",  "Passive",  Atca2,  BUILD_STAMP }   
 }
 
 # ENUM register (1-bit)
 file "db/RegisterEnumBIn.template" { pattern
-{ P,        R,              DESC,                           PINI,   ZNAM,   ONAM,   SCAN,   PORT,   PARAM       }
+{ P,         R,              DESC,                           PINI,   ZNAM,   ONAM,   SCAN,   PORT,   PARAM       }
 }
 
 # ENUM register (multiple bits)
 file "db/RegisterEnumMBBIn.template" { pattern
-{ P,        R,              DESC,                           PINI,   NOBT,	MASK,	ZRVL,   ONVL,   TWVL,	THVL,	ZRST,	ONST,	TWST,	THST,	SCAN,   PORT,   PARAM       }
+{ P,         R,              DESC,                           PINI,   NOBT,	MASK,	ZRVL,   ONVL,   TWVL,	THVL,	ZRST,	ONST,	TWST,	THST,	SCAN,   PORT,   PARAM       }
 }
 
 #======================================
@@ -43,39 +43,39 @@ file "db/RegisterEnumMBBIn.template" { pattern
 #======================================
 # Single register
 file "db/RegisterOut.template" { pattern
-{ P,        R,              DESC,                           PINI,   SCAN,       PORT,   PARAM       }
-{ yamlIOC1, ScratchPad,     "Register to test R/W"          "NO",   "Passive",  Atca2,  SCRATCH_PAD }
+{ P,         R,              DESC,                           PINI,   SCAN,       PORT,   PARAM       }
+{ yamlIOC1:, ScratchPad,     "Register to test R/W"          "NO",   "Passive",  Atca2,  SCRATCH_PAD }
 }
 
 # Single register readback PVs (Note that PARAM has the same name as the RegisterOut case)
 file "db/RegisterOutRBV.template" { pattern
-{ P,        R,              DESC,                           PINI,   SCAN,       PORT,   PARAM       }
-{ yamlIOC1, ScratchPadRBV,  "Register to test R/W"          "NO",   "1 second", Atca2,  SCRATCH_PAD }
+{ P,         R,              DESC,                           PINI,   SCAN,       PORT,   PARAM       }
+{ yamlIOC1:, ScratchPadRBV,  "Register to test R/W"          "NO",   "1 second", Atca2,  SCRATCH_PAD }
 }
 
 # Array of registers
 file "db/RegisterArrayOut.template" { pattern
-{ P,        R,              DESC,                           NELM,   PINI,   SCAN,       PORT,   PARAM       }
+{ P,         R,              DESC,                           NELM,   PINI,   SCAN,       PORT,   PARAM       }
 }
 
 # ENUM register (1-bit)
 file "db/RegisterEnumBOut.template" { pattern
-{ P,        R,              DESC,                           PINI,   ZNAM,   ONAM,   SCAN,   PORT,   PARAM       }
+{ P,         R,              DESC,                           PINI,   ZNAM,   ONAM,   SCAN,   PORT,   PARAM       }
 }
 
 # Readback 1-bit ENUM PVs (Note that PARAM has the same name as the RegisterEnumBOut case)
 file "db/RegisterEnumBOutRBV.template" { pattern
-{ P,        R,              DESC,                           PINI,   ZNAM,   ONAM,   SCAN,   PORT,   PARAM       }
+{ P,         R,              DESC,                           PINI,   ZNAM,   ONAM,   SCAN,   PORT,   PARAM       }
 }
 
 # ENUM register (multiple bits)
 file "db/RegisterEnumMBBOut.template" { pattern
-{ P,        R,              DESC,                           PINI,   NOBT,	MASK,	ZRVL,   ONVL,   TWVL,	THVL,	ZRST,	ONST,	TWST,	THST,	SCAN,   PORT,   PARAM       }
+{ P,         R,              DESC,                           PINI,   NOBT,	MASK,	ZRVL,   ONVL,   TWVL,	THVL,	ZRST,	ONST,	TWST,	THST,	SCAN,   PORT,   PARAM       }
 }
 
 # Readback multiple bits ENUM PVs (Note that PARAM has the same name as the /RegisterEnumMBBOut case)
 file "db/RegisterEnumMBBOutRBV.template" { pattern
-{ P,        R,              DESC,                           PINI,   NOBT,	MASK,	ZRVL,   ONVL,   TWVL,	THVL,	ZRST,	ONST,	TWST,	THST,	SCAN,   PORT,   PARAM       }
+{ P,         R,              DESC,                           PINI,   NOBT,	MASK,	ZRVL,   ONVL,   TWVL,	THVL,	ZRST,	ONST,	TWST,	THST,	SCAN,   PORT,   PARAM       }
 }
 
 #======================================
@@ -83,7 +83,7 @@ file "db/RegisterEnumMBBOutRBV.template" { pattern
 #======================================
 
 file "db/RegisterDoubleIn.template" { pattern
-{ P,        R,              DESC,                           PINI,   SCAN,       PORT,   EGU,    PARAM   }
+{ P,         R,              DESC,                           PINI,   SCAN,       PORT,   EGU,    PARAM   }
 }
 
 #======================================
@@ -91,19 +91,19 @@ file "db/RegisterDoubleIn.template" { pattern
 #======================================
 
 file "db/RegisterDoubleOut.template" { pattern
-{ P,        R,              DESC,                           PINI,   SCAN,       PORT,   EGU,    PARAM   }
+{ P,         R,              DESC,                           PINI,   SCAN,       PORT,   EGU,    PARAM   }
 }
 
 # Readback PVs
 file "db/RegisterDoubleOutRBV.template" { pattern
-{ P,        R,              DESC,                           PINI,   SCAN,       PORT,   EGU,    PARAM   }
+{ P,         R,              DESC,                           PINI,   SCAN,       PORT,   EGU,    PARAM   }
 }
 
 #======================================
 # Command Registers
 #======================================
 file "db/RegisterCommand.template" { pattern
-{ P,        R,              DESC,                           PINI,   SCAN,       PORT,   PARAM       }
+{ P,         R,              DESC,                           PINI,   SCAN,       PORT,   PARAM       }
 }
 
 
@@ -112,8 +112,8 @@ file "db/RegisterCommand.template" { pattern
 #======================================
 
 file "db/RegisterStream.template" {pattern
-{ P,            R,          DESC,               NELM,       PORT,   PARAM       }
-{ yamlIOC1,     Stream0,    "Stream channel 0", 5000000,    Atca2,  STREAM_CH0  }
+{ P,         R,          DESC,               NELM,       PORT,   PARAM       }
+{ yamlIOC1:, Stream0,    "Stream channel 0", 5000000,    Atca2,  STREAM_CH0  }
 }
 
 # For Stream interfaces, an additional parameter is automatically created
@@ -122,6 +122,6 @@ file "db/RegisterStream.template" {pattern
 # is the case for ADC samples for example. Note that the NELM is 2x
 
 file "db/RegisterStream16.template" {pattern
-{ P,            R,          DESC,               			NELM,       PORT,   PARAM       	}
-{ yamlIOC1,     Stream0_16, "Stream channel 0 (16-bit)", 	10000000,    Atca2,  STREAM_CH0:16  }
+{ P,         R,          DESC,               			NELM,       PORT,   PARAM       	}
+{ yamlIOC1:, Stream0_16, "Stream channel 0 (16-bit)", 	10000000,    Atca2,  STREAM_CH0:16  }
 }

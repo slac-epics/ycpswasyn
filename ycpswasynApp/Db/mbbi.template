@@ -1,4 +1,4 @@
-record(mbbi,  "$(P):$(R):Rd") {
+record(mbbi,  "$(P)$(R):Rd") {
   field(PINI, "YES")
   field(DESC, "$(DESC)")
   field(DTYP, "asynUInt32Digital")

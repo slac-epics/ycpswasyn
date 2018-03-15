@@ -15,7 +15,7 @@ It is a mbbi record with type asynUInt32Digital.
 #            For IntField, RO, without encoding is 0.
 #==================================================================
 
-record(mbbi,    "$(P):$(R)") {
+record(mbbi,    "$(P)$(R)") {
     field(DTYP, "asynUInt32Digital")
     field(DESC, "$(DESC)")
     field(PINI, "$(PINI)")

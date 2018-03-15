@@ -1,4 +1,4 @@
-record(bo, 		"$(P):$(R):Ex") {
+record(bo, 		"$(P)$(R):Ex") {
   field(DESC, 	"$(DESC)")
   field(DTYP, 	"asynUInt32Digital")
   field(SCAN, 	"Passive")

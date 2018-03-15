@@ -1,4 +1,4 @@
-record(waveform,	"$(P):$(R):Rd") {
+record(waveform,	"$(P)$(R):Rd") {
   field(PINI,		"YES")
   field(DESC, 		"$(DESC)")
   field(DTYP,		"asynFloat64ArrayIn")

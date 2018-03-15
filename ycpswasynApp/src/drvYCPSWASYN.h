@@ -34,7 +34,7 @@
 #define DB_DESC_LENGTH_MAX          28      // Max lenght of the record description field
 #define DB_MBBX_NELEM_MAX           16      // Max number of menu entries on a MBBx record
 #define DB_NAME_PATH_TRIM_SIZE      3       // Number of chars that the name of the device will be trim to
-#define DB_NAME_SUFIX_LENGHT        3       // Length of the record name sufix
+#define DB_NAME_SUFFIX_LENGHT       3       // Length of the record name sufix
 
 // Record and PV list dump file definitions
 #define DUMP_FILE_PATH              "/tmp/"
@@ -241,7 +241,7 @@ class YCPSWASYN : public asynPortDriver {
         const char                          *driverName_;               // Name of the driver (passed from st.cmd)
         Path                                p_;                         // Path on root
         const char                          *portName_;                 // Name of the port (passed from st.cmd)
-        const char                          *recordPrefix_;             // Record name prefix defined by the user (passed from st.cmd)
+        std::string                         recordPrefix_;              // Record name prefix defined by the user (passed from st.cmd)
         const int                           recordNameLenMax_;          // Max lenght of the record name (passed from st.cmd)
         long                                nRO, nRW, nCMD, nSTM;       // Counter for RO/RW register, command and Stremas found on the YAML file
         long                                nFO, nFW;                   // Counter for Floating point RO/RW registers

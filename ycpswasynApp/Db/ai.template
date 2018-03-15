@@ -1,4 +1,4 @@
-record(ai, 		"$(P):$(R):Rd") {
+record(ai, 		"$(P)$(R):Rd") {
   field(PINI,	"YES")
   field(DESC, 	"$(DESC)")
   field(DTYP, 	"asynFloat64")

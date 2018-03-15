@@ -1,4 +1,4 @@
-record(mbbo,  "$(P):$(R):St") {
+record(mbbo,  "$(P)$(R):St") {
   field(DESC, "$(DESC)")
   field(DTYP, "asynUInt32Digital")
   field(SCAN, "Passive")
@@ -36,11 +36,11 @@ record(mbbo,  "$(P):$(R):St") {
   field(TTST, "$(TTST)")
   field(FTST, "$(FTST)")
   field(FFST, "$(FFST)")
-  field(FLNK, "$(P):$(R)-FL")
+  field(FLNK, "$(P)$(R)-FL")
 }
 
-record(bo,    "$(P):$(R)-FL") {
+record(bo,    "$(P)$(R)-FL") {
   field(SCAN, "Passive")
   field(VAL,  "1")
-  field(OUT,  "$(P):$(R):Rd.PROC")
+  field(OUT,  "$(P)$(R):Rd.PROC")
 }

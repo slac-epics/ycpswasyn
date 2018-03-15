@@ -11,7 +11,7 @@
 #            For an stream it is 5.
 #==================================================================
 
-record(waveform,    "$(P):$(R)") {
+record(waveform,    "$(P)$(R)") {
     field(DTYP,     "asynInt32ArrayIn")
     field(DESC,     "$(DESC)")
     field(PINI,     "NO")

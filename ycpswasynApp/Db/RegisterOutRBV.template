@@ -11,7 +11,7 @@
 #            For IntField, RW, without encoding is 1.
 #==================================================================
 
-record(longin,  "$(P):$(R)") {
+record(longin,  "$(P)$(R)") {
     field(DTYP, "asynInt32")
     field(DESC, "$(DESC)")
     field(PINI, "$(PINI)")

@@ -10,7 +10,7 @@
 #            For IntField, RW, without encoding is 1.
 #==================================================================
 
-record(waveform,    "$(P):$(R)") {
+record(waveform,    "$(P)$(R)") {
     field(DTYP,     "asynInt32ArrayOut")
     field(DESC,     "$(DESC)")
     field(PINI,     "$(PINI)")

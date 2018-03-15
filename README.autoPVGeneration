@@ -38,9 +38,10 @@ For example, the PV for the register
 
 is
 
-        ${P}:C:AV:BuildStamp:Rd
+        ${P}C:AV:BuildStamp:Rd
 
-**Note:** the macro ${P} is defined on st.cmd
+**Note:** the macro ${P} is defined via an argument to CPSWASYNConfig():
+         if the respective argument is a non-empty string then ':' is added.
 
 ### Hashed PV Names
 An entry in “map_top” may contain the special substitution `__hashed__`. This substitution directs
@@ -53,8 +54,9 @@ The prefix is fetched from the environment variable `YCPSWASYN_HASH_PREFIX` and 
 (no prefix is used if this variable does not exist).
 
 The resulting SHA1 hash is converted to a all-uppercase hex-representation (which is 40 characters
-long). The final PV name is obtained by truncating the SHA1 (at the end) to 37 characters minus
-the length of the `${P}:` prefix (so that the `:Rd`, `:St` etc. suffixes may still be appended).
+long). The final PV name is obtained by truncating the SHA1 (at the end) to the name limit
+(as passed to YCPSWASYNConfig) minus the length of the `${P}` prefix minus three (so that the
+`:Rd`, `:St` etc. suffixes may still be appended).
 
 E.g., a prefix `PREFIX` and register path `/mmio/something[2]/reg[0-15]` computes to a SHA1
 sum (over `PREFIX/mmio/something[2]/reg[0-15]`)
@@ -88,10 +90,14 @@ four PVs would be generated (one for each instance of `somehub`), each holding 1
 
 ### Debug information
 
-when the IOC runs, it creates 3 files on the /tmp directory:
-- ${P}_regMap.txt with all the register that it found on the yaml file
-- ${P}_pvList.txt with all the names of the PVs that it created
-- ${P}_keysNotFound.txt   with the name of devies that it didn’t find in the maps
+when the IOC runs, it creates 4 files on the /tmp directory:
+- `<Port>_<P>_regMap.txt`         with all the register that it found on the yaml file
+- `<Port>_<P>_regMap.yaml`        with all the register that it found on the yaml file (alternate, yaml format)
+- `<Port>_<P>_pvList.txt`         with all the names of the PVs that it created
+- `<Port>_<P>_keysNotFound.txt`   with the name of devies that it didn’t find in the maps
+
+<Port> is the port name passed to YCPSWASYNConfig(). <P> is the record prefix
+passed to YCPSWASYNConfig() (`_` separator is omitted if P is empty).
 
 ## Record types and fields
 
