@@ -523,7 +523,7 @@ std::string YCPSWASYN::extractMbbxDbParams(const Enum& isEnum)
 {
 
     int nValues = isEnum->getNelms();
-    int mBits = log2(nValues);
+    int mBits = ceil(log2(nValues));
     stringstream dbParamsLocal;
 
     dbParamsLocal.str("");
