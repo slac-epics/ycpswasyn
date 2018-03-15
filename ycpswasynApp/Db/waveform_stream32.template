@@ -5,10 +5,10 @@ record(waveform, "$(P):$(R):32") {
   field(FTVL,    "LONG")
   field(SCAN,    "I/O Intr")
   field(INP,     "@asyn($(PORT),$(ADDR))$(PARAM)")
-  field(FLNK,    "$(P):$(R):SA32 PP")
+  field(FLNK,    "$(P):$(R):SL PP")
 }
 
-record(subArray, "$(P):$(R):SA32") {
+record(subArray, "$(P):$(R):SL") {
   field(DESC,    "$(DESC) Subarray")
   field(INP,     "$(P):$(R):32")
   field(FTVL,    "LONG")
