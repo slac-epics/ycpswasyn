@@ -10,6 +10,8 @@ DBD += ycpswasyn.dbd
 
 INC += drvYCPSWASYN.h
 
+INCLUDES += $(addprefix -I,$(BOOST_INCLUDE))
+
 LIBRARY_IOC += ycpswasyn
 LIB_SRCS += drvYCPSWASYN.cpp
 LIB_LIBS += asyn

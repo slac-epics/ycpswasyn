@@ -1,7 +1,7 @@
 -include $(TOP)/configure/CONFIG_SITE
 -include $(TOP)/RELEASE_SITE
 
-# For linuxRT_glibc-x86_64
+# For linuxRT-x86_64
 ARCH         = buildroot-2016.11.1-x86_64
 
 # Package top area
@@ -9,7 +9,7 @@ PACKAGE_AREA = /afs/slac/g/lcls/package
 
 # CPSW
 CPSW_FRAMEWORK_PACKAGE_NAME = cpsw/framework
-CPSW_FRAMEWORK_VERSION      = R3.5.4
+CPSW_FRAMEWORK_VERSION      = R3.6.3
 CPSW_FRAMEWORK              = $(PACKAGE_AREA)/$(CPSW_FRAMEWORK_PACKAGE_NAME)/$(CPSW_FRAMEWORK_VERSION)/$(ARCH)
 CPSW_FRAMEWORK_LIB          = $(CPSW_FRAMEWORK)/lib
 CPSW_FRAMEWORK_INCLUDE      = $(CPSW_FRAMEWORK)/include
