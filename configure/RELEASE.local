@@ -20,7 +20,7 @@
 # could match a directory name.
 # ==========================================================
 ASYN_MODULE_VERSION=R4.31-0.1.0
-YAMLLOADER_VERSION=R1.0.3
+YAMLLOADER_VERSION=R1.1.0-BR-ts
 
 # ==========================================================
 # Define module paths using pattern
