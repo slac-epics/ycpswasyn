@@ -9,6 +9,10 @@
 #  Rev:  16-Mar-2017, Reviewer's Name    (Jesus Vasquez)
 #--------------------------------------------------------------
 
+R2.0.3: 2018-03-22 K. Kim
+    * bumpup cpsw/framework R3.6.3
+    * bumpup yamlLoader     R1.1.0
+
 R2.0.2: 2018-02-15 J. Vasquez
     * Improve performace of the stream handling setting its thread
       as a RT task, and erasing only the part of the buffer that was
