@@ -58,6 +58,8 @@
 #define saveConfigRootString    "CONFIG_SAVE_ROOT"
 
 #define hashPrefixVar           "YCPSWASYN_HASH_PREFIX"
+#define mapTopFileVar           "YCPSWASYN_MAP_TOP_FILE"
+#define mapFileVar              "YCPSWASYN_MAP_FILE"
 
 // MBBx record menu value names
 char const *mbbxValParam[] =
