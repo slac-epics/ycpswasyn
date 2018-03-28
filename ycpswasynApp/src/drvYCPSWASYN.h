@@ -134,7 +134,7 @@ enum regTypeList
     REG_ENUM,       // Enum register
     REG_ARRAY,      // Array registers
     REG_ARRAY_8,    // 8-bit array register
-    REG_STRING,
+    REG_STRING,     // String register
     REG_SIZE
 };
 
@@ -158,12 +158,12 @@ enum waveformTypeList
 // record template list (all interfaces but streams)
 const char *templateList[DEV_SIZE - 1][REG_SIZE] =
 {
-     // DEV_SINGLE,             // REG_ENUM             // REG_ARRAY                        // REG_ARRAY_8
-    {"db/longin.template",      "db/mbbi.template",     "db/waveform_in.template",          "db/waveform_8_in.template", "db/waveform_8_in.template"},   //DEV_REG_RO
-    {"db/longout.template",     "db/mbbo.template",     "db/waveform_out.template",         "db/waveform_8_out.template", "db/waveform_8_out.template"},  //DEV_REG_RW
-    {"db/ai.template",          "",                     "db/waveform_in_float.template",    "",                           ""},                            //DEV_FLOAT_RO
-    {"db/ao.template",          "",                     "db/waveform_out_float.template",   "",                           ""},                            //DEV_FLOAT_RW
-    {"db/bo.template",          "",                     "",                                 "",                           ""},                            //DEV_CMD
+     // DEV_SINGLE,             // REG_ENUM             // REG_ARRAY                        // REG_ARRAY_8                  // REG_STRING
+    {"db/longin.template",      "db/mbbi.template",     "db/waveform_in.template",          "db/waveform_8_in.template",    "db/waveform_8_in.template"},   //DEV_REG_RO
+    {"db/longout.template",     "db/mbbo.template",     "db/waveform_out.template",         "db/waveform_8_out.template",   "db/waveform_8_out.template"},  //DEV_REG_RW
+    {"db/ai.template",          "",                     "db/waveform_in_float.template",    "",                             ""},                            //DEV_FLOAT_RO
+    {"db/ao.template",          "",                     "db/waveform_out_float.template",   "",                             ""},                            //DEV_FLOAT_RW
+    {"db/bo.template",          "",                     "",                                 "",                             ""},                            //DEV_CMD
 };
 
 // Record template list (oly for streans)
@@ -208,7 +208,8 @@ struct recordParams
 #define NUM_PARAMS          (NUM_SCALVALS + NUM_CMD)        // Max number of paramters
 #define STREAM_MAX_SIZE     200UL*1024ULL*1024ULL           // Size of the stream buffers
 
-class YCPSWASYN : public asynPortDriver {
+class YCPSWASYN : public asynPortDriver
+{
     public:
         // Constructor
         YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int recordNameLenMax, int autogenerate, const char* dictionary);
@@ -236,8 +237,8 @@ class YCPSWASYN : public asynPortDriver {
         // Initialization routine
         static int YCPSWASYNInit(const char *yaml_doc, const char* rootPath, Path *p, const char *ipAddr);
 
-		// Create a record from a Path
-		virtual int  CreateRecord(Path p);
+        // Create a record from a Path
+        virtual int  CreateRecord(Path p);
 
     private:
         const char                          *driverName_;               // Name of the driver (passed from st.cmd)
@@ -269,7 +270,7 @@ class YCPSWASYN : public asynPortDriver {
         std::string                         saveConfigFileName;         // Save configuration file name
         std::string                         loadConfigRootPath;         // Load configuration cpsw root
         std::string                         saveConfigRootPath;         // Save configuration cpsw root
-		std::string                         hashPrefix;
+        std::string                         hashPrefix;
 
 
         // Automatic generation of database from YAML definition  routine
@@ -337,59 +338,60 @@ class YCPSWASYN : public asynPortDriver {
 
 };
 
-// Sorry, I still like printf formatting better than cout
-class YCPSWASYNRAIIFile {
-private:
-	FILE      *f_;
+class YCPSWASYNRAIIFile
+{
+    private:
+        FILE      *f_;
 
-public:
-	YCPSWASYNRAIIFile(const std::string &name, const char *mode);
+    public:
+        YCPSWASYNRAIIFile(const std::string &name, const char *mode);
 
-	FILE *f()
-	{
-		return f_;
-	}
+        FILE *f()
+        {
+            return f_;
+        }
 
-	virtual ~YCPSWASYNRAIIFile();
+        virtual ~YCPSWASYNRAIIFile();
 };
 
-class YCPSWASYNRegDumpYamlFile : public IPathVisitor, public YCPSWASYNRAIIFile {
-private:
-	YCPSWASYN         *drv_;
-    int                indent_;
-	std::vector<Path>  pathStack_;
-    Path               workingPrefix_;
-	char               idx_[256];
+class YCPSWASYNRegDumpYamlFile : public IPathVisitor, public YCPSWASYNRAIIFile
+{
+    private:
+        YCPSWASYN         *drv_;
+        int                indent_;
+        std::vector<Path>  pathStack_;
+        Path               workingPrefix_;
+        char               idx_[256];
 
-	void dumpWithPrefix_r(unsigned level);
+        void dumpWithPrefix_r(unsigned level);
 
-public:
-	YCPSWASYNRegDumpYamlFile(const std::string &filename, YCPSWASYN *drv);
+    public:
+        YCPSWASYNRegDumpYamlFile(const std::string &filename, YCPSWASYN *drv);
 
-	virtual bool visitPre(ConstPath here);
-	virtual void visitPost(ConstPath here);
+        virtual bool visitPre(ConstPath here);
+        virtual void visitPost(ConstPath here);
 
-	void dump(Path prefix);
+        void dump(Path prefix);
 
-	int
-	indent()
-	{
-		return indent_;
-	}
+        int
+        indent()
+        {
+            return indent_;
+        }
 
-	int
-	pushIndent()
-	{
-		indent_ += 2;
-		return indent_;
-	}
+        int
+        pushIndent()
+        {
+            indent_ += 2;
+            return indent_;
+        }
 
-	int
-	popIndent()
-	{
-		indent_ -= 2;
-		return indent_;
-	}
+        int
+        popIndent()
+        {
+            indent_ -= 2;
+            return indent_;
+        }
 };
 
 // Stream handling function caller

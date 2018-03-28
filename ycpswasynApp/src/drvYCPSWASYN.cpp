@@ -77,14 +77,14 @@ YCPSWASYN::YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int
     nCMD(0),
     nSTM(0)
 {
-	const char *hashPrefixEnv = ::getenv( hashPrefixVar );
-	if ( hashPrefixEnv ) {
-		hashPrefix = std::string( hashPrefixEnv );
-	}
+    const char *hashPrefixEnv = ::getenv( hashPrefixVar );
+    if ( hashPrefixEnv ) {
+        hashPrefix = std::string( hashPrefixEnv );
+    }
 
     if ( recordPrefix_.length() > 0 ) {
-		recordPrefix_ += ":";
-	}
+        recordPrefix_ += ":";
+    }
 
     //const char *functionName = "YCPSWASYN";
 
@@ -383,36 +383,36 @@ int YCPSWASYN::LoadRecord(int regType, const recordParams& rp, const string& dbP
 
     // Write the record name to the PV list file
     if (pvDumpFile.is_open()) {
-		DBENTRY     dbentry;
-		DBENTRY    *pdbentry = &dbentry;
-		long        status;
-		// We don't know the full record name(s) since the template
-		// ultimately defines it.
-		// Assuming that the template merely appends suffixes we
-		// can 'dbgrep' the database. Since dbgrep does not allow
-		// for redirecting output we copy its functionality here :-(
+        DBENTRY     dbentry;
+        DBENTRY    *pdbentry = &dbentry;
+        long        status;
+        // We don't know the full record name(s) since the template
+        // ultimately defines it.
+        // Assuming that the template merely appends suffixes we
+        // can 'dbgrep' the database. Since dbgrep does not allow
+        // for redirecting output we copy its functionality here :-(
 
-		std::string pattern = std::string(recordPrefix_) + rp.recName + '*';
+        std::string pattern = std::string(recordPrefix_) + rp.recName + '*';
 
-		dbInitEntry(pdbbase, pdbentry);
-		status = dbFirstRecordType( pdbentry );
-		while ( 0 == status ) {
-			status = dbFirstRecord( pdbentry );
-			while ( 0 == status ) {
-				const char *rnam = dbGetRecordName(pdbentry);
-				if ( epicsStrGlobMatch( rnam, pattern.c_str() ) ) {
-					pvDumpFile << std::left;
+        dbInitEntry(pdbbase, pdbentry);
+        status = dbFirstRecordType( pdbentry );
+        while ( 0 == status ) {
+            status = dbFirstRecord( pdbentry );
+            while ( 0 == status ) {
+                const char *rnam = dbGetRecordName(pdbentry);
+                if ( epicsStrGlobMatch( rnam, pattern.c_str() ) ) {
+                    pvDumpFile << std::left;
                     pvDumpFile.width(42);
-					pvDumpFile << rnam;
-					pvDumpFile << "#" << p->toString() << std::endl;
-				}
-				status = dbNextRecord ( pdbentry );
-			}
-			status = dbNextRecordType( pdbentry );
-		}
+                    pvDumpFile << rnam;
+                    pvDumpFile << "#" << p->toString() << std::endl;
+                }
+                status = dbNextRecord ( pdbentry );
+            }
+            status = dbNextRecordType( pdbentry );
+        }
 
-		dbFinishEntry( pdbentry );
-	}
+        dbFinishEntry( pdbentry );
+    }
 
     // Incrfement the umber of created records
     ++recordCount;
@@ -606,7 +606,7 @@ int YCPSWASYN::CreateRecord(const T& reg)
         {
             // Create longx record
             trp.paramType = asynParamInt32;
-			arrType       = REG_SINGLE;
+            arrType       = REG_SINGLE;
         }
         else
         {
@@ -620,19 +620,19 @@ int YCPSWASYN::CreateRecord(const T& reg)
             {
                 // Create waveform_8_x record
                 trp.paramType = asynParamOctet;
-				arrType       = IScalVal_Base::ASCII == reg->getEncoding() ? REG_STRING : REG_ARRAY_8;
+                arrType       = IScalVal_Base::ASCII == reg->getEncoding() ? REG_STRING : REG_ARRAY_8;
             }
             else
             {
                 // Create waveform_x record
                 trp.paramType = asynParamInt32Array;
-				arrType       = REG_ARRAY;
+                arrType       = REG_ARRAY;
 
             }
         }
-		trp.recTemplate = templateList[regType][arrType];
-		paramIndex      = LoadRecord(regType, trp, dbParams, p);
-		pushParameter(reg, paramIndex);
+        trp.recTemplate = templateList[regType][arrType];
+        paramIndex      = LoadRecord(regType, trp, dbParams, p);
+        pushParameter(reg, paramIndex);
     }
     else
     {
@@ -884,68 +884,67 @@ int YCPSWASYN::CreateRecordFloat(const T& reg)
     return (arrType << 8) | regType;
 }
 
-int
-YCPSWASYN::CreateRecord(Path p2)
+int YCPSWASYN::CreateRecord(Path p2)
 {
-	ScalVal         rw_aux;
-	ScalVal_RO      ro_aux;
-	Command         cmd_aux;
-	DoubleVal       fw_aux;
-	DoubleVal_RO    fo_aux;
+    ScalVal         rw_aux;
+    ScalVal_RO      ro_aux;
+    Command         cmd_aux;
+    DoubleVal       fw_aux;
+    DoubleVal_RO    fo_aux;
     int             rval = -1;
-	int             stat;
+    int             stat;
 
-	// Try to attach a ScalVal_RO and ScalVal interface
-	try
-	{
-		ro_aux = IScalVal_RO::create(p2);
-		rw_aux = IScalVal::create(p2);
-	}
-	catch (CPSWError &e)
-	{
-	}
+    // Try to attach a ScalVal_RO and ScalVal interface
+    try
+    {
+        ro_aux = IScalVal_RO::create(p2);
+        rw_aux = IScalVal::create(p2);
+    }
+    catch (CPSWError &e)
+    {
+    }
 
-	if ((!ro_aux) && (!rw_aux))
-	{
-		try
-		{
-			fo_aux = IDoubleVal_RO::create(p2);
-			fw_aux = IDoubleVal::create(p2);
-		}
-		catch (CPSWError &e)
-		{
-		}
-	}
+    if ((!ro_aux) && (!rw_aux))
+    {
+        try
+        {
+            fo_aux = IDoubleVal_RO::create(p2);
+            fw_aux = IDoubleVal::create(p2);
+        }
+        catch (CPSWError &e)
+        {
+        }
+    }
 
-	// Now, try to attach a command interface
-	try
-	{
-		cmd_aux = ICommand::create(p2);
-	}
-	catch (CPSWError &e)
-	{
-	}
+    // Now, try to attach a command interface
+    try
+    {
+        cmd_aux = ICommand::create(p2);
+    }
+    catch (CPSWError &e)
+    {
+    }
 
-	// Depending on the attached interface, create a record for it
-	if (ro_aux)
-		rval = YCPSWASYN::CreateRecord(ro_aux);
+    // Depending on the attached interface, create a record for it
+    if (ro_aux)
+        rval = YCPSWASYN::CreateRecord(ro_aux);
 
-	if (rw_aux)
-		rval = YCPSWASYN::CreateRecord(rw_aux);
+    if (rw_aux)
+        rval = YCPSWASYN::CreateRecord(rw_aux);
 
-	if (fo_aux)
-		rval = YCPSWASYN::CreateRecordFloat(fo_aux);
+    if (fo_aux)
+        rval = YCPSWASYN::CreateRecordFloat(fo_aux);
 
-	if (fw_aux)
-		rval = YCPSWASYN::CreateRecordFloat(fw_aux);
+    if (fw_aux)
+        rval = YCPSWASYN::CreateRecordFloat(fw_aux);
 
-	if (cmd_aux) {
-		stat = YCPSWASYN::CreateRecord(cmd_aux, p2);
-		if ( rval < 0 )
-			rval = stat;
-	}
+    if (cmd_aux) {
+        stat = YCPSWASYN::CreateRecord(cmd_aux, p2);
+        if ( rval < 0 )
+            rval = stat;
+    }
 
-	return rval;
+    return rval;
 }
 
 /////////////////////////////////////////////////////////////
@@ -1037,7 +1036,7 @@ void YCPSWASYN::generateDB(const Path& p)
                     // Continue with not-stream registers
                     else
                     {
-						CreateRecord(p2);
+                        CreateRecord(p2);
                     }
                 }
                 catch (CPSWError &e)
@@ -1147,23 +1146,23 @@ std::string YCPSWASYN::generateRecordName(const Path& p)
             childName = childName.substr(0,DB_NAME_PATH_TRIM_SIZE);
         }
 
-		if ( (found_key == std::string::npos) && childName == "__hashed__" ) {
-			char          mdstr[SHA1_HEX_SIZE];
-			std::string   msg = hashPrefix + p->toString();
-			int           i;
+        if ( (found_key == std::string::npos) && childName == "__hashed__" ) {
+            char          mdstr[SHA1_HEX_SIZE];
+            std::string   msg = hashPrefix + p->toString();
+            int           i;
 
-			sha1 hasher( msg.c_str() );
+            sha1 hasher( msg.c_str() );
 
-			hasher.finalize().print_hex(mdstr);
+            hasher.finalize().print_hex(mdstr);
 
-			for (i=0; i<SHA1_HEX_SIZE; i++ ) {
-				mdstr[i] = ::toupper(mdstr[i]);
-			}
-			resultPrefix = std::string(mdstr);
-		} else {
-			// Updte the prefix up to now
-			resultPrefix = childName + childIndexStr + ":" + resultPrefix;
-		}
+            for (i=0; i<SHA1_HEX_SIZE; i++ ) {
+                mdstr[i] = ::toupper(mdstr[i]);
+            }
+            resultPrefix = std::string(mdstr);
+        } else {
+            // Updte the prefix up to now
+            resultPrefix = childName + childIndexStr + ":" + resultPrefix;
+        }
 
         // If we found a key on the top map, stop the creation of the prefix
         if (found_top_key != std::string::npos)
@@ -1233,7 +1232,7 @@ void YCPSWASYN::loadConfiguration()
     {
         // If unsuccessfull, send error message
         printf("CPSW Error writing the configuration: %s\n", e.getInfo().c_str());
-		entryCount = 0;
+        entryCount = 0;
 
         // Update status
         setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_ERROR, PROCESS_CONFIG_MASK);
@@ -1301,7 +1300,7 @@ void YCPSWASYN::saveConfiguration()
     {
         // If unsuccessfull, send error message
         printf("CPSW Error reading the configuration: %s\n", e.getInfo().c_str());
-		entryCount = 0;
+        entryCount = 0;
 
         // Update status
         setUIntDigitalParam(DEV_CONFIG, saveConfigStatusValue_, CONFIG_STAT_ERROR, PROCESS_CONFIG_MASK);
@@ -1328,10 +1327,10 @@ std::string YCPSWASYN::getEpicsScan(double scan)
     std::string scanStr;
     scanStr = std::string(",SCAN=");
 
-	if ( scan < 0.0 ) {
-		// application, i.e., we pick a default
-		scan = 2.0;
-	}
+    if ( scan < 0.0 ) {
+        // application, i.e., we pick a default
+        scan = 2.0;
+    }
 
     if (scan == 0.0)
         // Let's use s default a Passive scan value
@@ -1363,31 +1362,40 @@ int YCPSWASYN::autogenerateDatabase(int mode)
 {
     // Create file names for the register and PV list dumps
     std::string pre                  = DUMP_FILE_PATH + std::string(this->portName_) + "_";
-    if ( recordPrefix_.length() > 0 ) {
-		pre += string(recordPrefix_) + "_";
-	}
+    if ( recordPrefix_.length() > 0 )
+    {
+        pre += string(recordPrefix_) + "_";
+    }
     std::string regDumpFileName      = pre + REG_DUMP_FILE_NAME;
     std::string pvDumpFileName       = pre + PV_DUMP_FILE_NAME;
+
     // Create file names for the "keys not found" dump
     std::string keysNotFoundFileName = pre + KEYS_NOT_FOUND_FILE_NAME;
-	std::string regDumpYamlFileName  = pre + REG_DUMP_YAML_FILE_NAME;
+    std::string regDumpYamlFileName  = pre + REG_DUMP_YAML_FILE_NAME;
 
     std::string mapFileName;
     std::string mapTopFileName;
-	const char *fromEnv;
-    // Create file names for the ubstitution map list
-	fromEnv = ::getenv( mapFileVar );
-	if ( fromEnv ) {
-    	mapFileName = string(fromEnv);
-	} else {
-	    mapFileName = string(MAP_FILE_PATH) + string(MAP_FILE_NAME);
-	}
-	fromEnv = ::getenv( mapTopFileVar );
-	if ( fromEnv ) {
-    	mapTopFileName = string(fromEnv);
-	} else {
-    	mapTopFileName = string(MAP_FILE_PATH) + string(MAP_TOP_FILE_NAME);
-	}
+    const char *fromEnv;
+
+    // Create file names for the wubstitution map list
+    fromEnv = ::getenv( mapFileVar );
+    if ( fromEnv )
+    {
+        mapFileName = string(fromEnv);
+    }
+    else
+    {
+        mapFileName = string(MAP_FILE_PATH) + string(MAP_FILE_NAME);
+    }
+    fromEnv = ::getenv( mapTopFileVar );
+    if ( fromEnv )
+    {
+        mapTopFileName = string(fromEnv);
+    }
+    else
+    {
+        mapTopFileName = string(MAP_FILE_PATH) + string(MAP_TOP_FILE_NAME);
+    }
 
     // Create the substitution maps
     std::ifstream mapFile;
@@ -1462,22 +1470,28 @@ int YCPSWASYN::autogenerateDatabase(int mode)
 
     // Generate the EPICS databse from the root path
     printf("Generating EPICS database from yaml file (mode %d)...\n", mode);
-    if ( mode == 1 ) {
-    	generateDB(p_);
-	} else {
-		// generate fully flattened DB
-		try {
-			YCPSWASYNRegDumpYamlFile regDumpYamlFile( regDumpYamlFileName, this );
+    if ( mode == 1 )
+    {
+        generateDB(p_);
+    }
+    else
+    {
+        // generate fully flattened DB
+        try
+        {
+            YCPSWASYNRegDumpYamlFile regDumpYamlFile( regDumpYamlFileName, this );
 
-			fprintf( regDumpYamlFile.f(), "hashPrefix: %s\nroot:\n", hashPrefix.c_str() );
-			regDumpYamlFile.pushIndent();
-			regDumpYamlFile.dump( p_ );
-			regDumpYamlFile.popIndent();
+            fprintf( regDumpYamlFile.f(), "hashPrefix: %s\nroot:\n", hashPrefix.c_str() );
+            regDumpYamlFile.pushIndent();
+            regDumpYamlFile.dump( p_ );
+            regDumpYamlFile.popIndent();
 
-		} catch (CPSWError &e) {
+        }
+        catch (CPSWError &e)
+        {
             fprintf(stderr, "CPSW Error (during DB generation, port: %s): %s\n", this->portName_, e.getInfo().c_str());
-		}
-	}
+        }
+    }
     printf("Generation of EPICS database from yaml file Done!.\n");
 
     // Close the "keys not found" file
@@ -2494,94 +2508,101 @@ void YCPSWASYN::report(FILE *fp, int details)
 
 YCPSWASYNRAIIFile::YCPSWASYNRAIIFile(const std::string &name, const char *mode)
 {
-	if ( ! (f_ = fopen( name.c_str(), mode )) ) {
-		throw CPSWError(std::string("Unable to open file: " + name));
-	}
+    if ( ! (f_ = fopen( name.c_str(), mode )) )
+    {
+        throw CPSWError(std::string("Unable to open file: " + name));
+    }
 }
 
 YCPSWASYNRAIIFile::~YCPSWASYNRAIIFile()
 {
-	fclose( f_ );
+    fclose( f_ );
 }
 
 YCPSWASYNRegDumpYamlFile::YCPSWASYNRegDumpYamlFile(const std::string &name, YCPSWASYN *drv)
-	: 
-	YCPSWASYNRAIIFile( name, "w" ),
-	drv_   ( drv ),
-	indent_( 0   )
+    :
+    YCPSWASYNRAIIFile( name, "w" ),
+    drv_   ( drv ),
+    indent_( 0   )
 {
 }
 
-bool
-YCPSWASYNRegDumpYamlFile::visitPre(ConstPath p)
+bool YCPSWASYNRegDumpYamlFile::visitPre(ConstPath p)
 {
-std::string rep = p->toString();
-const char *lst = strrchr( rep.c_str(), '/' );
-int         type;
-	lst = lst ? lst + 1 : rep.c_str();
-	fprintf( f(), "%*s%s:", indent(), "", lst);
-	if ( ! p->tail()->isHub() ) {
-		type = drv_->CreateRecord( p->clone() );
-		enum registerInterfaceTypeList ifType( static_cast<enum registerInterfaceTypeList>(type & 0xff) );
-		enum regTypeList               rgType( static_cast<enum regTypeList>         ((type>>8) & 0xff) );
+    std::string rep = p->toString();
+    const char *lst = strrchr( rep.c_str(), '/' );
+    int         type;
+
+    lst = lst ? lst + 1 : rep.c_str();
+    fprintf( f(), "%*s%s:", indent(), "", lst);
+    if ( ! p->tail()->isHub() )
+    {
+        type = drv_->CreateRecord( p->clone() );
+        enum registerInterfaceTypeList ifType( static_cast<enum registerInterfaceTypeList>(type & 0xff) );
+        enum regTypeList               rgType( static_cast<enum regTypeList>         ((type>>8) & 0xff) );
         fprintf( f(), " \"%s,%s\"", regInterfaceTypeNames[ifType], regTypeNames[rgType]);
-	}
+    }
     fprintf( f(), "\n");
-	pushIndent();
-	return true;
+    pushIndent();
+    return true;
 }
 
-void
-YCPSWASYNRegDumpYamlFile::visitPost(ConstPath p)
+void YCPSWASYNRegDumpYamlFile::visitPost(ConstPath p)
 {
-	popIndent();
+    popIndent();
 }
 
-void
-YCPSWASYNRegDumpYamlFile::dumpWithPrefix_r(unsigned level)
+void YCPSWASYNRegDumpYamlFile::dumpWithPrefix_r(unsigned level)
 {
-unsigned i, t;
+    unsigned i, t;
 
-	for ( i = pathStack_[level]->getTailFrom(); i <= (t = pathStack_[level]->getTailTo()); i++ ) {
-		if ( pathStack_[level]->tail()->getNelms() == 1 ) {
-			snprintf(idx_, sizeof(idx_), "%s", pathStack_[level]->tail()->getName());
-		} else {
-			snprintf(idx_, sizeof(idx_), "%s[%d]", pathStack_[level]->tail()->getName(), i);
-		}
+    for ( i = pathStack_[level]->getTailFrom(); i <= (t = pathStack_[level]->getTailTo()); i++ )
+    {
+        if ( pathStack_[level]->tail()->getNelms() == 1 )
+        {
+            snprintf(idx_, sizeof(idx_), "%s", pathStack_[level]->tail()->getName());
+        }
+        else
+        {
+            snprintf(idx_, sizeof(idx_), "%s[%d]", pathStack_[level]->tail()->getName(), i);
+        }
 
-		if ( level == 0 ) {
-			// explore already expands the last level of the prefix
-			if ( t != i ) {
-				snprintf(idx_, sizeof(idx_), "%s[%d-%d]", pathStack_[level]->tail()->getName(), i, t);
-			}
-			workingPrefix_->findByName( idx_ )->explore( this );
-			return;
-		}
+        if ( level == 0 )
+        {
+            // explore already expands the last level of the prefix
+            if ( t != i )
+            {
+                snprintf(idx_, sizeof(idx_), "%s[%d-%d]", pathStack_[level]->tail()->getName(), i, t);
+            }
+            workingPrefix_->findByName( idx_ )->explore( this );
+            return;
+        }
 
-		fprintf( f(), "%*s%s:\n", indent(), "", idx_ );
-		workingPrefix_ = workingPrefix_->findByName( idx_ );
-		pushIndent();
-			dumpWithPrefix_r( level - 1 );
-		popIndent();
-		workingPrefix_->up();
-	}
+        fprintf( f(), "%*s%s:\n", indent(), "", idx_ );
+        workingPrefix_ = workingPrefix_->findByName( idx_ );
+        pushIndent();
+            dumpWithPrefix_r( level - 1 );
+        popIndent();
+        workingPrefix_->up();
+    }
 }
 
-void
-YCPSWASYNRegDumpYamlFile::dump(Path p)
+void YCPSWASYNRegDumpYamlFile::dump(Path p)
 {
-	if ( p->empty() )
-		return;
+    if ( p->empty() )
+        return;
 
-	workingPrefix_ = p->clone();
+    workingPrefix_ = p->clone();
 
-	do {
-		pathStack_.push_back( workingPrefix_ );
-		workingPrefix_ = workingPrefix_->clone();
-		workingPrefix_->up();
-	} while ( ! workingPrefix_->empty() );
+    do
+    {
+        pathStack_.push_back( workingPrefix_ );
+        workingPrefix_ = workingPrefix_->clone();
+        workingPrefix_->up();
+    }
+    while ( ! workingPrefix_->empty() );
 
-	dumpWithPrefix_r( pathStack_.size() - 1 );
+    dumpWithPrefix_r( pathStack_.size() - 1 );
 }
 
 /////////////////////////////////////////////
@@ -2594,7 +2615,8 @@ extern "C" int YCPSWASYNConfig(const char *portName, const char *yaml_doc, const
     int status;
     Path p;
 
-    if ( 0 == recordNameLenMax ) {
+    if ( 0 == recordNameLenMax )
+    {
         recordNameLenMax = sizeof( ((dbCommon*)0)->name ) - 1;
     }
 
