@@ -1105,26 +1105,26 @@ std::string YCPSWASYN::generateRecordName(const Path& p)
             childIndexStr = pathStrAux.substr(found_bracket + 1 , pathStrAux.length() - found_bracket - 2);
         }
 
-        // Look for keys on the map definition
-        for (it = map.begin(); it != map.end(); ++it)
+        // Look for keys on the top map definition
+        for (it = mapTop.begin(); it != mapTop.end(); ++it)
         {
-            found_key = childName.find(it->first);
+            found_top_key = childName.find(it->first);
 
-            if (found_key != std::string::npos)
+            if (found_top_key != std::string::npos)
             {
                 childName = it->second;
                 break;
             }
         }
 
-        // Look for keys on the top map definition
-        if (found_key == std::string::npos)
+        // Look for keys on the map definition
+        if (found_top_key == std::string::npos)
         {
-            for (it = mapTop.begin(); it != mapTop.end(); ++it)
+            for (it = map.begin(); it != map.end(); ++it)
             {
-                found_top_key = childName.find(it->first);
+                found_key = childName.find(it->first);
 
-                if (found_top_key != std::string::npos)
+                if (found_key != std::string::npos)
                 {
                     childName = it->second;
                     break;
