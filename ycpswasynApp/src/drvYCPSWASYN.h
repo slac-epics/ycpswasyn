@@ -57,7 +57,6 @@
 #define loadConfigRootString    "CONFIG_LOAD_ROOT"
 #define saveConfigRootString    "CONFIG_SAVE_ROOT"
 
-#define hashPrefixVar           "YCPSWASYN_HASH_PREFIX"
 #define mapTopFileVar           "YCPSWASYN_MAP_TOP_FILE"
 #define mapFileVar              "YCPSWASYN_MAP_FILE"
 
@@ -270,7 +269,6 @@ class YCPSWASYN : public asynPortDriver
         std::string                         saveConfigFileName;         // Save configuration file name
         std::string                         loadConfigRootPath;         // Load configuration cpsw root
         std::string                         saveConfigRootPath;         // Save configuration cpsw root
-        std::string                         hashPrefix;
 
 
         // Automatic generation of database from YAML definition  routine
