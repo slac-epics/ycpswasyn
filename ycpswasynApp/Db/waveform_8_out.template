@@ -1,15 +1,9 @@
-record(waveform,  "$(P)$(R):St") {
-  field(DESC,     "$(DESC)")
-  field(DTYP,     "asynOctetWrite")
-  field(NELM,     "$(N)")
-  field(FTVL,     "CHAR")
-  field(SCAN,     "Passive")
-  field(INP,      "@asyn($(PORT),$(ADDR))$(PARAM)")
-  field(FLNK,     "$(P)$(R)-FL")
-}
-
-record(bo,    "$(P)$(R)-FL") {
-	field(SCAN,	"Passive")
-	field(VAL,	"1")
-	field(OUT,	"$(P)$(R):Rd.PROC")
+record(waveform,    "$(R)") {
+    field(DESC,     "$(DESC)")
+    field(DTYP,     "asynOctetWrite")
+    field(NELM,     "$(N)")
+    field(FTVL,     "CHAR")
+    field(SCAN,     "Passive")
+    field(INP,      "@asyn($(PORT),$(ADDR))$(PARAM)")
+    field(FLNK,     "$(R_RBV)")
 }

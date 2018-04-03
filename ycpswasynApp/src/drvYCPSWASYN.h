@@ -198,6 +198,7 @@ struct recordParams
     std::string recTemplate;
     std::string paramName;
     asynParamType paramType;
+    std::string recRbvName;
 };
 
 #define MAX_SIGNALS         ((int)DEV_SIZE)                 // Max number of parameter list (size of register type list)
@@ -281,7 +282,7 @@ class YCPSWASYN : public asynPortDriver
         void dumpRegisterMap(const Path& p);
 
         // Create the record name from its path
-        std::string generateRecordName(const Path& p);
+        std::string generateRecordName(const Path& p, const std::string& suffix);
 
         // Generate the EPICS databse for all the registers on the especified path
         virtual void generateDB(const Path& p);

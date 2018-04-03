@@ -30,6 +30,7 @@
 #include <iocsh.h>
 #include <sha1.hpp>
 #include <ctype.h>
+#include <iomanip>
 
 #include <dbAccess.h>
 #include <dbStaticLib.h>
@@ -77,10 +78,6 @@ YCPSWASYN::YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int
     nCMD(0),
     nSTM(0)
 {
-
-    if ( recordPrefix_.length() > 0 ) {
-        recordPrefix_ += ":";
-    }
 
     //const char *functionName = "YCPSWASYN";
 
@@ -365,49 +362,23 @@ int YCPSWASYN::LoadRecord(int regType, const recordParams& rp, const string& dbP
     dbParamsLocal.str("");
     dbParamsLocal << "PORT=" << portName_;
     dbParamsLocal << ",ADDR=" << regType;
-    dbParamsLocal << ",P=" << recordPrefix_;
     dbParamsLocal << ",R=" << rp.recName;
     dbParamsLocal << ",PARAM=" << rp.paramName;
     dbParamsLocal << ",DESC=" << rp.recDesc;
     dbParamsLocal << dbParams;
 
     // Create the asyn paramater
-    createParam(regType, rp.paramName.c_str(), rp.paramType, &paramIndex);  //
+    createParam(regType, rp.paramName.c_str(), rp.paramType, &paramIndex);
 
     // Create the record
     dbLoadRecords(rp.recTemplate.c_str(), dbParamsLocal.str().c_str());
 
     // Write the record name to the PV list file
-    if (pvDumpFile.is_open()) {
-        DBENTRY     dbentry;
-        DBENTRY    *pdbentry = &dbentry;
-        long        status;
-        // We don't know the full record name(s) since the template
-        // ultimately defines it.
-        // Assuming that the template merely appends suffixes we
-        // can 'dbgrep' the database. Since dbgrep does not allow
-        // for redirecting output we copy its functionality here :-(
-
-        std::string pattern = std::string(recordPrefix_) + rp.recName + '*';
-
-        dbInitEntry(pdbbase, pdbentry);
-        status = dbFirstRecordType( pdbentry );
-        while ( 0 == status ) {
-            status = dbFirstRecord( pdbentry );
-            while ( 0 == status ) {
-                const char *rnam = dbGetRecordName(pdbentry);
-                if ( epicsStrGlobMatch( rnam, pattern.c_str() ) ) {
-                    pvDumpFile << std::left;
-                    pvDumpFile.width(42);
-                    pvDumpFile << rnam;
-                    pvDumpFile << "#" << p->toString() << std::endl;
-                }
-                status = dbNextRecord ( pdbentry );
-            }
-            status = dbNextRecordType( pdbentry );
-        }
-
-        dbFinishEntry( pdbentry );
+    if (pvDumpFile.is_open())
+    {
+        pvDumpFile << std::setw(recordNameLenMax_ + 4) << std::left << rp.recName;
+        pvDumpFile << "# " << p->toString();
+        pvDumpFile << " (" << regInterfaceTypeNames[regType] << ")" <<std::endl;
     }
 
     // Incrfement the umber of created records
@@ -582,8 +553,14 @@ int YCPSWASYN::CreateRecord(const T& reg)
 
     // Create the argument list used when loading the record
     recordParams trp;
-    // + record name
-    trp.recName = YCPSWASYN::generateRecordName(p);
+    // + record name (and readback PV name if any)
+    if (regType == DEV_REG_RW)
+    {
+        trp.recName = YCPSWASYN::generateRecordName(p, "St");
+        dbParams += ",R_RBV=" + YCPSWASYN::generateRecordName(p, "Rd");
+    }
+    else
+        trp.recName = YCPSWASYN::generateRecordName(p, "Rd");
     // + parameter name
     pName.str("");
     pName << string(c->getName()).substr(0, 10) << recordCount;
@@ -663,7 +640,13 @@ int YCPSWASYN::CreateRecord(const T& reg)
                 Path c_path = pClone->findByName(c_name.c_str());
                 T c_reg = IScalVal::create(c_path);
 
-                trp.recName = YCPSWASYN::generateRecordName(c_path);
+                if (regType == DEV_REG_RW)
+                {
+                    trp.recName = YCPSWASYN::generateRecordName(c_path, "St");
+                    dbParams += ",R_RBV=" + YCPSWASYN::generateRecordName(c_path, "Rd");
+                }
+                else
+                    trp.recName = YCPSWASYN::generateRecordName(c_path, "Rd");
 
                 pName.str("");
                 pName << string(c->getName()).substr(0, 10) << recordCount;
@@ -714,7 +697,7 @@ int YCPSWASYN::CreateRecord(const Command& reg, const Path& p_)
     // Create the argument list used when loading the record
     recordParams trp;
     // + record name
-    trp.recName = YCPSWASYN::generateRecordName(p);
+    trp.recName = YCPSWASYN::generateRecordName(p, "Ex");
     // + parameter name
     pName.str("");
     pName << string(c->getName()).substr(0, 10) << recordCount;
@@ -756,7 +739,7 @@ int YCPSWASYN::CreateRecord(const Stream& reg, const Path& p_)
     // Create the argument list used when loading the record
     recordParams trp;
     // + record name
-    trp.recName = YCPSWASYN::generateRecordName(p);
+    trp.recName = YCPSWASYN::generateRecordName(p, "32");
     // + parameter name
     pName.str("");
     pName << string(c->getName()).substr(0, 10) << recordCount;
@@ -774,7 +757,7 @@ int YCPSWASYN::CreateRecord(const Stream& reg, const Path& p_)
     // Create PVs for 16-bit stream data
     dbParams.clear();
     // + record name
-    trp.recName = YCPSWASYN::generateRecordName(p);
+    trp.recName = YCPSWASYN::generateRecordName(p, "16");
     // + parameter name
     pName.str("");
     pName << string(c->getName()).substr(0, 10) << recordCount;
@@ -843,8 +826,14 @@ int YCPSWASYN::CreateRecordFloat(const T& reg)
 
     // Create the argument list used when loading the record
     recordParams trp;
-    // + record name
-    trp.recName = YCPSWASYN::generateRecordName(p);
+    // + record name (and readback PV name if any)
+    if (regType == DEV_FLOAT_RW)
+    {
+        trp.recName = YCPSWASYN::generateRecordName(p, "St");
+        dbParams += ",R_RBV=" + YCPSWASYN::generateRecordName(p, "Rd");
+    }
+    else
+        trp.recName = YCPSWASYN::generateRecordName(p, "Rd");
     // + parameter name
     pName.str("");
     pName << string(c->getName()).substr(0, 10) << recordCount;
@@ -1051,12 +1040,12 @@ void YCPSWASYN::generateDB(const Path& p)
     return;
 }
 
-///////////////////////////////////////////////////////////////
-// std::string YCPSWASYN::generateRecordName(const Path& p); //
-//                                                           //
-// - Create the record name from its path                    //
-///////////////////////////////////////////////////////////////
-std::string YCPSWASYN::generateRecordName(const Path& p)
+////////////////////////////////////////////////////////////////////////////////////////////
+// std::string YCPSWASYN::generateRecordName(const Path& p, , const std::string& suffix); //
+//                                                                                        //
+// - Create the record name from its path                                                 //
+////////////////////////////////////////////////////////////////////////////////////////////
+std::string YCPSWASYN::generateRecordName(const Path& p, const std::string& suffix)
 {
     Path pLocal = p->clone();
     Child tail;
@@ -1112,12 +1101,34 @@ std::string YCPSWASYN::generateRecordName(const Path& p)
 
             if (found_top_key != std::string::npos)
             {
-                childName = it->second;
+                // If the record is hashed, compute its SHA1 hash and use it as the record name name
+                if (it->second == "__hashed__")
+                {
+                    char          mdstr[SHA1_HEX_SIZE];
+                    std::string   msg = recordPrefix_ + p->toString() + suffix;
+                    int           i;
+
+                    sha1 hasher( msg.c_str() );
+
+                    hasher.finalize().print_hex(mdstr);
+
+                    for (i=0; i<SHA1_HEX_SIZE; i++ )
+                    {
+                        mdstr[i] = ::toupper(mdstr[i]);
+                    }
+                    resultPrefix = std::string(mdstr);
+
+                    // Return a truncated string (if necessary) to satisfy the record max length
+                    return resultPrefix.substr(0, recordNameLenMax_);
+                }
+                else
+                    childName = it->second;
+
                 break;
             }
         }
 
-        // Look for keys on the map definition
+        // If key was not fount on opt map, look for keys on the map definition
         if (found_top_key == std::string::npos)
         {
             for (it = map.begin(); it != map.end(); ++it)
@@ -1142,24 +1153,8 @@ std::string YCPSWASYN::generateRecordName(const Path& p)
             childName = childName.substr(0,DB_NAME_PATH_TRIM_SIZE);
         }
 
-
-        if ( (found_key == std::string::npos) && childName == "__hashed__" ) {
-            char          mdstr[SHA1_HEX_SIZE];
-            std::string   msg = recordPrefix_ + p->toString();
-            int           i;
-
-            sha1 hasher( msg.c_str() );
-
-            hasher.finalize().print_hex(mdstr);
-
-            for (i=0; i<SHA1_HEX_SIZE; i++ ) {
-                mdstr[i] = ::toupper(mdstr[i]);
-            }
-            resultPrefix = std::string(mdstr);
-        } else {
-            // Updte the prefix up to now
-            resultPrefix = childName + childIndexStr + ":" + resultPrefix;
-        }
+        // Updte the prefix up to now
+        resultPrefix = childName + childIndexStr + ":" + resultPrefix;
 
         // If we found a key on the top map, stop the creation of the prefix
         if (found_top_key != std::string::npos)
@@ -1169,9 +1164,16 @@ std::string YCPSWASYN::generateRecordName(const Path& p)
         pLocal->up();
     }
 
-    // Return a truncated string (if necessary) to satisfy the record max length and adding the index to the first element if any
-    // (record prefix length) + (record name length) + (first element index length) + (record suffix length) <= record max length
-    return resultPrefix.substr(0, recordNameLenMax_ - recordPrefix_.length() - DB_NAME_SUFFIX_LENGHT - firstElementIndexStr.length()) + firstElementIndexStr;
+    // Truncated string (if necessary) to satisfy the record max length and adding the index to the first element if any
+    // (record prefix length [ +1 from adding ':']) + (record name length) + (first element index length) + (record suffix length) <= record max length
+    resultPrefix = resultPrefix.substr(0, recordNameLenMax_ - (recordPrefix_.length() + 1) - DB_NAME_SUFFIX_LENGHT - firstElementIndexStr.length()) + firstElementIndexStr;
+
+    // Add the record name prefix and suffix
+    resultPrefix += ":" + suffix;
+    if ( recordPrefix_.length() > 0 )
+        resultPrefix = recordPrefix_ + ":" + resultPrefix;
+
+    return resultPrefix;
 }
 
 /////////////////////////////////////////

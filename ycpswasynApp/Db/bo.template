@@ -1,8 +1,8 @@
-record(bo, 		"$(P)$(R):Ex") {
-  field(DESC, 	"$(DESC)")
-  field(DTYP, 	"asynUInt32Digital")
-  field(SCAN, 	"Passive")
-  field(OUT, 	"@asynMask($(PORT),$(ADDR),$(MASK))$(PARAM)")
-  field(ZNAM, 	"$(ZNAM)")
-  field(ONAM, 	"$(ONAM)")
+record(bo,      "$(R)") {
+  field(DESC,   "$(DESC)")
+  field(DTYP,   "asynUInt32Digital")
+  field(SCAN,   "Passive")
+  field(OUT,    "@asynMask($(PORT),$(ADDR),$(MASK))$(PARAM)")
+  field(ZNAM,   "$(ZNAM)")
+  field(ONAM,   "$(ONAM)")
 }
