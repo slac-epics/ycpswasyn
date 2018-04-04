@@ -286,9 +286,6 @@ class YCPSWASYN : public asynPortDriver
         // Create the record name from its path
         std::string generateRecordName(const Path& p, const std::string& suffix);
 
-        // Generate the EPICS databse for all the registers on the especified path
-        virtual void generateDB(const Path& p);
-
         // Create a record from a register pointer
         template <typename T>
         int CreateRecord(const T& reg);
