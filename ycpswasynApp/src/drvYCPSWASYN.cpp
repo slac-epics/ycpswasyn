@@ -2543,42 +2543,47 @@ void YCPSWASYNRegDumpYamlFile::dumpWithPrefix_r(unsigned level)
 {
     unsigned i, t;
 
-    for ( i = pathStack_[level]->getTailFrom(); i <= (t = pathStack_[level]->getTailTo()); i++ )
+    if  ( pathStack_[level]->empty() )
     {
-        if ( pathStack_[level]->tail()->getNelms() == 1 )
+        // Process empty paths, (i.e. paths starting at root)
+        pathStack_[level]->explore( this );
+    }
+    else
+    {
+        for ( i = pathStack_[level]->getTailFrom(); i <= (t = pathStack_[level]->getTailTo()); i++ )
         {
-            snprintf(idx_, sizeof(idx_), "%s", pathStack_[level]->tail()->getName());
-        }
-        else
-        {
-            snprintf(idx_, sizeof(idx_), "%s[%d]", pathStack_[level]->tail()->getName(), i);
-        }
-
-        if ( level == 0 )
-        {
-            // explore already expands the last level of the prefix
-            if ( t != i )
+            if ( pathStack_[level]->tail()->getNelms() == 1 )
             {
-                snprintf(idx_, sizeof(idx_), "%s[%d-%d]", pathStack_[level]->tail()->getName(), i, t);
+                snprintf(idx_, sizeof(idx_), "%s", pathStack_[level]->tail()->getName());
             }
-            workingPrefix_->findByName( idx_ )->explore( this );
-            return;
-        }
+            else
+            {
+                snprintf(idx_, sizeof(idx_), "%s[%d]", pathStack_[level]->tail()->getName(), i);
+            }
 
-        fprintf( f(), "%*s%s:\n", indent(), "", idx_ );
-        workingPrefix_ = workingPrefix_->findByName( idx_ );
-        pushIndent();
-            dumpWithPrefix_r( level - 1 );
-        popIndent();
-        workingPrefix_->up();
+            if ( level == 0 )
+            {
+                // explore already expands the last level of the prefix
+                if ( t != i )
+                {
+                    snprintf(idx_, sizeof(idx_), "%s[%d-%d]", pathStack_[level]->tail()->getName(), i, t);
+                }
+                workingPrefix_->findByName( idx_ )->explore( this );
+                return;
+            }
+
+            fprintf( f(), "%*s%s:\n", indent(), "", idx_ );
+            workingPrefix_ = workingPrefix_->findByName( idx_ );
+            pushIndent();
+                dumpWithPrefix_r( level - 1 );
+            popIndent();
+            workingPrefix_->up();
+        }
     }
 }
 
 void YCPSWASYNRegDumpYamlFile::dump(Path p)
 {
-    if ( p->empty() )
-        return;
-
     workingPrefix_ = p->clone();
 
     do
