@@ -38,10 +38,10 @@
 
 // Record and PV list dump file definitions
 #define DUMP_FILE_PATH              "/tmp/"
-#define REG_DUMP_FILE_NAME          "regMap.txt"
+#define REG_DUMP_TEXT_FILE_NAME     "regMap.txt"
+#define REG_DUMP_YAML_FILE_NAME     "regMap.yaml"
 #define PV_DUMP_FILE_NAME           "pvList.txt"
 #define KEYS_NOT_FOUND_FILE_NAME    "keysNotFound.txt"
-#define REG_DUMP_YAML_FILE_NAME     "regMap.yaml"
 #define MAP_FILE_PATH               "yaml/"
 #define MAP_TOP_FILE_NAME           "map_top"
 #define MAP_FILE_NAME               "map"
@@ -257,7 +257,6 @@ class YCPSWASYN : public asynPortDriver
         DoubleVal_RO                        fo[NUM_DOUBLEVALS];         // Array of DoubleVals (RO)
         Command                             cmd[NUM_CMD];               // Array of Commands
         std::ofstream                       pvDumpFile;                 // File with the list of Pvs
-        YCPSWASYNRAIIFile                   *regDumpFile;                // File with the list of registers
         std::ofstream                       keysNotFoundFile;           // File with the name of elements not found on the substitution map
         std::map<std::string, std::string>  mapTop, map;                // Substitution maps
         int                                 loadConfigValue_;           // Load configuration parameter index
@@ -281,9 +280,6 @@ class YCPSWASYN : public asynPortDriver
 
         // Load database from dictionary file routine
         int loadDBFromFile(const char* dictionary);
-
-        // Write list of register to file
-        void dumpRegisterMap(const Path& p);
 
         // Create the record name from its path
         std::string generateRecordName(const Path& p, const std::string& suffix);
@@ -342,6 +338,7 @@ class YCPSWASYNRAIIFile
 {
     private:
         FILE      *f_;
+        std::string name_;
 
     public:
         YCPSWASYNRAIIFile(const std::string &name, const char *mode);
@@ -354,7 +351,7 @@ class YCPSWASYNRAIIFile
         virtual ~YCPSWASYNRAIIFile();
 };
 
-class YCPSWASYNRegDumpYamlFile : public IPathVisitor, public YCPSWASYNRAIIFile
+class YCPSWASYNRegDumpYamlFile : public IPathVisitor
 {
     private:
         YCPSWASYN         *drv_;
@@ -363,13 +360,17 @@ class YCPSWASYNRegDumpYamlFile : public IPathVisitor, public YCPSWASYNRAIIFile
         Path               workingPrefix_;
         char               idx_[256];
 
+        YCPSWASYNRAIIFile  textFile;
+
         void dumpWithPrefix_r(unsigned level);
 
     public:
-        YCPSWASYNRegDumpYamlFile(const std::string &filename, YCPSWASYN *drv);
+        YCPSWASYNRegDumpYamlFile(const std::string &pre, YCPSWASYN *drv);
 
         virtual bool visitPre(ConstPath here);
         virtual void visitPost(ConstPath here);
+
+        YCPSWASYNRAIIFile  yamlFile;
 
         void dump(Path prefix);
 
