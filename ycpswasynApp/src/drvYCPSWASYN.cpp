@@ -242,7 +242,7 @@ class IYamlSetIP : public IYamlFixup
 int YCPSWASYN::YCPSWASYNInit(const char *yaml_doc, const char* rootPath, Path *p, const char *ipAddr)
 {
     unsigned char buf[sizeof(struct in6_addr)];
-    Path root, subPath;
+    Path root;
 
     // Try first to get tge root from the cpswLoadYamlFile module
     root = cpswGetRoot();
@@ -290,21 +290,11 @@ int YCPSWASYN::YCPSWASYNInit(const char *yaml_doc, const char* rootPath, Path *p
     {
         try
         {
-            subPath = root->findByName(rootPath);
+            *p = root->findByName(rootPath);
         }
         catch (CPSWError &e)
         {
-            printf("CPSW error: %s\n", e.getInfo().c_str());
-        }
-
-        if (subPath)
-        {
-            printf("Starting at path: %s\n", subPath->toString().c_str());
-            *p = subPath;
-        }
-        else
-        {
-            printf("Path not found! Starting at root\n");
+            printf("Path not found! (CPSW error: %s). Starting at root\n", e.getInfo().c_str());
         }
     }
 
