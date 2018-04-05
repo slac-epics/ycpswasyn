@@ -208,6 +208,8 @@ struct recordParams
 #define NUM_PARAMS          (NUM_SCALVALS + NUM_CMD)        // Max number of paramters
 #define STREAM_MAX_SIZE     200UL*1024ULL*1024ULL           // Size of the stream buffers
 
+class YCPSWASYNRAIIFile;
+
 class YCPSWASYN : public asynPortDriver
 {
     public:
@@ -255,7 +257,7 @@ class YCPSWASYN : public asynPortDriver
         DoubleVal_RO                        fo[NUM_DOUBLEVALS];         // Array of DoubleVals (RO)
         Command                             cmd[NUM_CMD];               // Array of Commands
         std::ofstream                       pvDumpFile;                 // File with the list of Pvs
-        std::ofstream                       regDumpFile;                // File with the list of registers
+        YCPSWASYNRAIIFile                   *regDumpFile;                // File with the list of registers
         std::ofstream                       keysNotFoundFile;           // File with the name of elements not found on the substitution map
         std::map<std::string, std::string>  mapTop, map;                // Substitution maps
         int                                 loadConfigValue_;           // Load configuration parameter index
