@@ -42,6 +42,8 @@ IOCS_APPL_TOP  = $(INSTALL_LOCATION)
 INSTALL_LOCATION_STARTUP += $(INSTALL_LOCATION)/startup
 DIRECTORY_TARGETS += $(INSTALL_LOCATION_STARTUP)
 # =======================================================
+CPSW_FRAMEWORK_LIB=$(addsuffix /lib,$(CPSW))
+YAML_LIB=$(addsuffix /lib,$(YAML_CPP))
 
 ## =============================
 ## Build Application Statically

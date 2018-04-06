@@ -1,7 +1,7 @@
 -include $(TOP)/configure/CONFIG_SITE
 -include $(TOP)/RELEASE_SITE
 
-# For linuxRT_glibc-x86_64
+# For linuxRT-x86_64
 ARCH         = buildroot-2016.11.1-x86_64
 
 # Package top area

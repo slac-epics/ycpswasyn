@@ -1,16 +1,16 @@
-record(waveform, "$(P):$(R):16") {
+record(waveform, "$(R)") {
   field(DESC,    "$(DESC)")
   field(DTYP,    "asynInt16ArrayIn")
   field(NELM,    "10000000")
   field(FTVL,    "SHORT")
   field(SCAN,    "I/O Intr")
   field(INP,     "@asyn($(PORT),$(ADDR))$(PARAM)")
-  field(FLNK,    "$(P):$(R):SA16 PP")
+  field(FLNK,    "$(R_SA) PP")
 }
 
-record(subArray, "$(P):$(R):SA16") {
+record(subArray, "$(R_SA)") {
   field(DESC,    "$(DESC) Subarray")
-  field(INP,     "$(P):$(R):16")
+  field(INP,     "$(R)")
   field(FTVL,    "SHORT")
   field(MALM,    "65536")
   field(NELM,    "4096")

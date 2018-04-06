@@ -11,7 +11,7 @@
 #            For SequenceCommand is 4
 #==================================================================
 
-record(bo,      "$(P):$(R)") {
+record(bo,      "$(P)$(R)") {
     field(DTYP, "asynUInt32Digital")
     field(DESC, "$(DESC)")
     field(PINI, "$(PINI)")
