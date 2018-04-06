@@ -258,8 +258,8 @@ class YCPSWASYN : public asynPortDriver
         DoubleVal                           fw[NUM_DOUBLEVALS];         // Array of DoubleVals (RW)
         DoubleVal_RO                        fo[NUM_DOUBLEVALS];         // Array of DoubleVals (RO)
         Command                             cmd[NUM_CMD];               // Array of Commands
-        std::ofstream                       pvDumpFile;                 // File with the list of Pvs
-        std::ofstream                       keysNotFoundFile;           // File with the name of elements not found on the substitution map
+        YCPSWASYNRAIIFile                   *pvDumpFile;                // File with the list of Pvs
+        YCPSWASYNRAIIFile                   *keysNotFoundFile;          // File with the name of elements not found on the substitution map
         std::map<std::string, std::string>  mapTop, map;                // Substitution maps
         int                                 loadConfigValue_;           // Load configuration parameter index
         int                                 saveConfigValue_;           // Save configuration parameter index
