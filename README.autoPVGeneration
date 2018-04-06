@@ -94,6 +94,12 @@ each holding 16 values.
 
 Registers, i.e., 'leaves' are always left as arrays.
 
+## Stream data PVs
+
+For each stream data interface, two templates will be loaded. One template will present the data as 16-bit values, while the other one will present the same data as 32-bit values. In both case the data will be available in waveform PVs.
+
+For each waveform PV, a subArray PV will also be loaded, so a subset of data points can be selected. The subArray related to the 16-bit waveform will have a post-fix "SS" (Subarray Short) while the subArray related to the 32-bit waveform will have a post-fix "SL" (Subarray Long).
+
 ## Debug information
 
 when the IOC runs, it creates 4 files on the /tmp directory:
