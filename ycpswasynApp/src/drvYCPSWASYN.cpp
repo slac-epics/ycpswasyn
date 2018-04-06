@@ -335,7 +335,7 @@ int YCPSWASYN::LoadRecord(int regType, const recordParams& rp, const string& dbP
         pvDumpFile << " (" << regInterfaceTypeNames[regType] << ")" <<std::endl;
     }
 
-    // Incrfement the umber of created records
+    // Incrfement the number of created records
     ++recordCount;
 
     // Return the parameter index

@@ -252,7 +252,7 @@ class YCPSWASYN : public asynPortDriver
         const int                           recordNameLenMax_;          // Max lenght of the record name (passed from st.cmd)
         long                                nRO, nRW, nCMD, nSTM;       // Counter for RO/RW register, command and Stremas found on the YAML file
         long                                nFO, nFW;                   // Counter for Floating point RO/RW registers
-        long                                recordCount;                //Counter for the total number of register loaded
+        long                                recordCount;                // Counter for the total number of register loaded
         ScalVal                             rw[NUM_SCALVALS];           // Array of ScalVals (RW)
         ScalVal_RO                          ro[NUM_SCALVALS];           // Array of ScalVals (RO)
         DoubleVal                           fw[NUM_DOUBLEVALS];         // Array of DoubleVals (RW)
