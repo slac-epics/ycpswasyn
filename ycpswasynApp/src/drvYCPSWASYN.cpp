@@ -77,6 +77,9 @@ YCPSWASYN::YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int
     nRW(0),
     nCMD(0),
     nSTM(0),
+    nFO(0),
+    nFW(0),
+    recordCount(0),
     mapFilePath_(mapFilePath),
     autogenerationMode_(autogenerationMode)
 {
