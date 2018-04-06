@@ -345,6 +345,8 @@ class YCPSWASYNRAIIFile
     public:
         YCPSWASYNRAIIFile(const std::string &name, const char *mode);
 
+        void write(const char * format, ...);
+
         FILE *f()
         {
             return f_;
