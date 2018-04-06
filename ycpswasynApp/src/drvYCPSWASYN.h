@@ -217,7 +217,7 @@ class YCPSWASYN : public asynPortDriver
 {
     public:
         // Constructor
-        YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int recordNameLenMax, int autogenerationMode, const char* mapFilePath, const char* dictionary);
+        YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int recordNameLenMax, int autogenerationMode, const char* mapFilePath, const char* dictionary, double defaultScan);
 
         // Methods that we override from asynPortDriver
         virtual asynStatus  readInt32           (asynUser *pasynUser, epicsInt32 *value);
@@ -276,6 +276,7 @@ class YCPSWASYN : public asynPortDriver
         std::string                         saveConfigRootPath;         // Save configuration cpsw root
         std::string                         mapFilePath_;               // Path to map file used in autogeneration mode
         int                                 autogenerationMode_;        // DB autogeneration mode
+        double                              defaultScanValue;           // Default SCAN value for PVs
 
 
         // Automatic generation of database from YAML definition  routine

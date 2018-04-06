@@ -56,7 +56,7 @@
 using std::string;
 using std::stringstream;
 
-YCPSWASYN::YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int recordNameLenMax, int autogenerationMode, const char* mapFilePath, const char* dictionary)
+YCPSWASYN::YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int recordNameLenMax, int autogenerationMode, const char* mapFilePath, const char* dictionary, double defaultScan)
     : asynPortDriver(
         portName,
         MAX_SIGNALS,
@@ -81,7 +81,8 @@ YCPSWASYN::YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int
     nFW(0),
     recordCount(0),
     mapFilePath_(mapFilePath),
-    autogenerationMode_(autogenerationMode)
+    autogenerationMode_(autogenerationMode),
+    defaultScanValue(defaultScan)
 {
 
     //const char *functionName = "YCPSWASYN";
@@ -1200,13 +1201,11 @@ std::string YCPSWASYN::getEpicsScan(double scan)
     std::string scanStr;
     scanStr = std::string(",SCAN=");
 
-    if ( scan < 0.0 ) {
+    if ( scan < 0.0 )
         // application, i.e., we pick a default
-        scan = 2.0;
-    }
+        scan = defaultScanValue;
 
     if (scan == 0.0)
-        // Let's use s default a Passive scan value
         scanStr += std::string("Passive");
     else if (scan <= 0.1)
         scanStr += std::string(".1 second");
@@ -2481,7 +2480,7 @@ void YCPSWKeysNotFound::dump()
 /////////////////////////////////////////////
 
 // + YCPSWASYNConfig //
-extern "C" int YCPSWASYNConfig(const char *portName, const char *yaml_doc, const char *rootPath, const char *ipAddr, const char *recordPrefix, unsigned int recordNameLenMax, int autogenerationMode, const char* mapFilePath, const char* dictionary)
+extern "C" int YCPSWASYNConfig(const char *portName, const char *yaml_doc, const char *rootPath, const char *ipAddr, const char *recordPrefix, unsigned int recordNameLenMax, int autogenerationMode, const char* mapFilePath, const char* dictionary, int defaultScan)
 {
     int status;
     Path p;
@@ -2505,7 +2504,7 @@ extern "C" int YCPSWASYNConfig(const char *portName, const char *yaml_doc, const
         return asynError;
     }
 
-    new YCPSWASYN(portName, p, recordPrefix, recordNameLenMax, autogenerationMode, mapFilePath, dictionary);
+    new YCPSWASYN(portName, p, recordPrefix, recordNameLenMax, autogenerationMode, mapFilePath, dictionary, defaultScan);
 
     return (status==0) ? asynSuccess : asynError;
 }
@@ -2519,7 +2518,7 @@ static const iocshArg confArg5 =    { "recordNameLenMax",   iocshArgInt};
 static const iocshArg confArg6 =    { "autoGenerationMode", iocshArgInt};
 static const iocshArg confArg7 =    { "mapFilePath",        iocshArgString};
 static const iocshArg confArg8 =    { "loadDictionary",     iocshArgString};
-
+static const iocshArg confArg9 =    { "defaultScan",        iocshArgInt};
 
 static const iocshArg * const confArgs[] = {
     &confArg0,
@@ -2530,14 +2529,15 @@ static const iocshArg * const confArgs[] = {
     &confArg5,
     &confArg6,
     &confArg7,
-    &confArg8
+    &confArg8,
+    &confArg9,
 };
 
-static const iocshFuncDef configFuncDef = {"YCPSWASYNConfig", 9, confArgs};
+static const iocshFuncDef configFuncDef = {"YCPSWASYNConfig", 10, confArgs};
 
 static void configCallFunc(const iocshArgBuf *args)
 {
-    YCPSWASYNConfig(args[0].sval, args[1].sval, args[2].sval, args[3].sval, args[4].sval, args[5].ival, args[6].ival, args[7].sval, args[8].sval);
+    YCPSWASYNConfig(args[0].sval, args[1].sval, args[2].sval, args[3].sval, args[4].sval, args[5].ival, args[6].ival, args[7].sval, args[8].sval, args[9].ival);
 }
 // - YCPSWASYNConfig //
 
