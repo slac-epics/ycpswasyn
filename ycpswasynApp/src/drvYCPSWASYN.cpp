@@ -694,6 +694,7 @@ int YCPSWASYN::CreateRecord(const Stream& reg, const Path& p_)
     recordParams trp;
     // + record name
     trp.recName = YCPSWASYN::generateRecordName(p, "32");
+    dbParams += ",R_SA=" + YCPSWASYN::generateRecordName(p, "SL");
     // + parameter name
     pName.str("");
     pName << string(c->getName()).substr(0, 10) << recordCount;
@@ -712,6 +713,7 @@ int YCPSWASYN::CreateRecord(const Stream& reg, const Path& p_)
     dbParams.clear();
     // + record name
     trp.recName = YCPSWASYN::generateRecordName(p, "16");
+    dbParams += ",R_SA=" + YCPSWASYN::generateRecordName(p, "SS");
     // + parameter name
     pName.str("");
     pName << string(c->getName()).substr(0, 10) << recordCount;
@@ -744,7 +746,7 @@ int YCPSWASYN::CreateRecord(const Stream& reg, const Path& p_)
 
     nSTM++;
 
-    return (REG_SIZE << 8) | regType;
+    return (REG_STREAM << 8) | regType;
 }
 ///////////////////////////////////////////////////////
 // - template <typename T>                           //
@@ -830,24 +832,28 @@ int YCPSWASYN::CreateRecord(Path p2)
     Command         cmd_aux;
     DoubleVal       fw_aux;
     DoubleVal_RO    fo_aux;
+    Stream          stm_aux;
     int             rval = -1;
-    int             stat;
+    bool            interfaceAttached = false;
 
     // Try to attach a ScalVal_RO and ScalVal interface
     try
     {
         ro_aux = IScalVal_RO::create(p2);
+        interfaceAttached = true;
         rw_aux = IScalVal::create(p2);
     }
     catch (CPSWError &e)
     {
     }
 
-    if ((!ro_aux) && (!rw_aux))
+    // If not interface was attached, try to attached a DoubleVal[_RO] interface
+    if (!interfaceAttached)
     {
         try
         {
             fo_aux = IDoubleVal_RO::create(p2);
+            interfaceAttached = true;
             fw_aux = IDoubleVal::create(p2);
         }
         catch (CPSWError &e)
@@ -855,13 +861,32 @@ int YCPSWASYN::CreateRecord(Path p2)
         }
     }
 
-    // Now, try to attach a command interface
-    try
+    // If not interface was attached, try to attached a Command interface
+    if (!interfaceAttached)
     {
-        cmd_aux = ICommand::create(p2);
+        try
+        {
+            cmd_aux = ICommand::create(p2);
+            interfaceAttached = true;
+        }
+        catch (CPSWError &e)
+        {
+        }
     }
-    catch (CPSWError &e)
+
+    // If not interface was attached, try to attached a Stream interface is the leaf name contains "Stream"
+    if (!interfaceAttached)
     {
+        if ( (std::string(p2->tail()->getName())).find(STREAM_KEY) !=  std::string::npos )
+        {
+            try
+            {
+                stm_aux = IStream::create(p2);
+            }
+            catch (CPSWError &e)
+            {
+            }
+        }
     }
 
     // Depending on the attached interface, create a record for it
@@ -877,11 +902,11 @@ int YCPSWASYN::CreateRecord(Path p2)
     if (fw_aux)
         rval = YCPSWASYN::CreateRecordFloat(fw_aux);
 
-    if (cmd_aux) {
-        stat = YCPSWASYN::CreateRecord(cmd_aux, p2);
-        if ( rval < 0 )
-            rval = stat;
-    }
+    if (cmd_aux)
+        rval = YCPSWASYN::CreateRecord(cmd_aux, p2);
+
+    if (stm_aux)
+        rval = YCPSWASYN::CreateRecord(stm_aux, p2);
 
     return rval;
 }
@@ -2335,7 +2360,7 @@ YCPSWASYNRegDumpYamlFile::YCPSWASYNRegDumpYamlFile(const std::string &pre, YCPSW
     :
     drv_   ( drv ),
     indent_( 0   ),
-    textFile( F( pre + REG_DUMP_TEXT_FILE_NAME, "w" ) ),
+    textFile( YCPSWASYNRAIIFile( pre + REG_DUMP_TEXT_FILE_NAME, "w" ) ),
     yamlFile( YCPSWASYNRAIIFile( pre + REG_DUMP_YAML_FILE_NAME, "w" ) )
 
 {

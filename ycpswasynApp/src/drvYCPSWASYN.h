@@ -134,6 +134,7 @@ enum regTypeList
     REG_ARRAY,      // Array registers
     REG_ARRAY_8,    // 8-bit array register
     REG_STRING,     // String register
+    REG_STREAM,     // Stream register
     REG_SIZE
 };
 
@@ -143,7 +144,8 @@ char const *regTypeNames[] =
   "ENM",
   "ARR",
   "AR8",
-  "STR"
+  "STR",
+  "STM"
 };
 
 // Type of interfaces
@@ -155,7 +157,7 @@ enum waveformTypeList
 };
 
 // record template list (all interfaces but streams)
-const char *templateList[DEV_SIZE - 1][REG_SIZE] =
+const char *templateList[DEV_SIZE - 1][REG_SIZE-1] =
 {
      // DEV_SINGLE,             // REG_ENUM             // REG_ARRAY                        // REG_ARRAY_8                  // REG_STRING
     {"db/longin.template",      "db/mbbi.template",     "db/waveform_in.template",          "db/waveform_8_in.template",    "db/waveform_8_in.template"},   //DEV_REG_RO
