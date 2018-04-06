@@ -737,12 +737,12 @@ int YCPSWASYN::CreateRecord(const Stream& reg, const Path& p_)
 
     if (status)
     {
-        printf("epicsThreadCreate failure for stream %s\n", trp.recName.c_str());
+        printf("epicsThreadCreate failure for stream %s\n", p->toString().c_str());
         delete arglist;
         return -1;
     }
     else
-        printf("epicsThreadCreate successfully for stream %s\n", trp.recName.c_str());
+        printf("epicsThreadCreate successfully for stream %s\n", p->toString().c_str());
 
     nSTM++;
 
