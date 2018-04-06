@@ -355,7 +355,7 @@ class YCPSWASYNRAIIFile
         virtual ~YCPSWASYNRAIIFile();
 };
 
-class YCPSWASYNRegDumpYamlFile : public IPathVisitor
+class YCPSWASYNGenerateDB : public IPathVisitor
 {
     private:
         YCPSWASYN         *drv_;
@@ -363,40 +363,39 @@ class YCPSWASYNRegDumpYamlFile : public IPathVisitor
         std::vector<Path>  pathStack_;
         Path               workingPrefix_;
         char               idx_[256];
-
         YCPSWASYNRAIIFile  textFile;
 
-        void dumpWithPrefix_r(unsigned level);
+        void processStack(unsigned level);
 
     public:
-        YCPSWASYNRegDumpYamlFile(const std::string &pre, YCPSWASYN *drv);
+        YCPSWASYNGenerateDB(const std::string &pre, YCPSWASYN *drv);
 
         virtual bool visitPre(ConstPath here);
         virtual void visitPost(ConstPath here);
 
-        YCPSWASYNRAIIFile  yamlFile;
-
-        void dump(Path prefix);
+        void genereate(Path prefix);
 
         int
-        indent()
+        yamlIndent()
         {
             return indent_;
         }
 
         int
-        pushIndent()
+        pushYamlIndent()
         {
             indent_ += 2;
             return indent_;
         }
 
         int
-        popIndent()
+        popYamlIndent()
         {
             indent_ -= 2;
             return indent_;
         }
+
+        YCPSWASYNRAIIFile  yamlFile;
 };
 
 // Stream handling function caller
