@@ -211,6 +211,7 @@ struct recordParams
 #define STREAM_MAX_SIZE     200UL*1024ULL*1024ULL           // Size of the stream buffers
 
 class YCPSWASYNRAIIFile;
+class YCPSWKeysNotFound;
 
 class YCPSWASYN : public asynPortDriver
 {
@@ -259,7 +260,7 @@ class YCPSWASYN : public asynPortDriver
         DoubleVal_RO                        fo[NUM_DOUBLEVALS];         // Array of DoubleVals (RO)
         Command                             cmd[NUM_CMD];               // Array of Commands
         YCPSWASYNRAIIFile                   *pvDumpFile;                // File with the list of Pvs
-        YCPSWASYNRAIIFile                   *keysNotFoundFile;          // File with the name of elements not found on the substitution map
+        YCPSWKeysNotFound                   *keysNotFound;              // Set of name of elements not found on the substitution map
         std::map<std::string, std::string>  mapTop, map;                // Substitution maps
         int                                 loadConfigValue_;           // Load configuration parameter index
         int                                 saveConfigValue_;           // Save configuration parameter index
@@ -396,6 +397,18 @@ class YCPSWASYNGenerateDB : public IPathVisitor
         }
 
         YCPSWASYNRAIIFile  yamlFile;
+};
+
+class YCPSWKeysNotFound
+{
+    private:
+        std::set<std::string> list_;
+        std::string           fileName_;
+
+    public:
+        YCPSWKeysNotFound(const std::string &fileName);
+        void insert(const std::string &element);
+        void dump();
 };
 
 // Stream handling function caller
