@@ -2533,7 +2533,7 @@ static const iocshArg * const confArgs[] = {
     &confArg8
 };
 
-static const iocshFuncDef configFuncDef = {"YCPSWASYNConfig",8,confArgs};
+static const iocshFuncDef configFuncDef = {"YCPSWASYNConfig", 9, confArgs};
 
 static void configCallFunc(const iocshArgBuf *args)
 {
@@ -2543,7 +2543,7 @@ static void configCallFunc(const iocshArgBuf *args)
 
 void drvYCPSWASYNRegister(void)
 {
-    iocshRegister(&configFuncDef,           configCallFunc);
+    iocshRegister(&configFuncDef, configCallFunc);
 }
 
 extern "C" {
