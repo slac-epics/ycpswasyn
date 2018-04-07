@@ -2,12 +2,26 @@
 #
 #  Name: RELEASE_NOTES
 #
-#  Rem: Release notes for the YCPSWASYN epics module 
-#        
+#  Rem: Release notes for the YCPSWASYN epics module
+#
 #
 #  Auth: Jesus Vasquez
 #  Rev:  16-Mar-2017, Reviewer's Name    (Jesus Vasquez)
 #--------------------------------------------------------------
+
+R3.0.0: 2018-04-05 J. Vasquez
+    * Added a new mode of autogeneration of PVs using SHA1 hash
+      as PV names. Now YCPSWASYNConfig accepts an mode arguments
+      (1: PV names using maps as before, 2: using new hashed names).
+      See README.autoPVGeneration for more information.
+    * YCPSWASYNConfig accepts two new arguments to select: the
+      location of the mapping files, and the default SCAN values.
+      See README.configureDriver for more information.
+    * The PV name prefix can now be empty, in this case ":" is not
+      addedd to the PV names.
+    * Bug fixed when computing bit-size.
+    * Improve debug inforamtion style.
+    * Code clean up and refactored.
 
 R2.0.3: 2018-03-22 K. Kim
     * bumpup cpsw/framework R3.6.3
@@ -24,12 +38,12 @@ R2.0.1: 2018-01-22 J. Vasquez
 R2.0.0: 2017-11-14 J. Vasquez
     * Change save/load default PV to waveforms so they can
       hold longer paths respect to string PVs. With this
-      change a defult configuration file can not longer be 
+      change a defult configuration file can not longer be
       defined as a macro in st.cmd.
     * Add the CPSW root path for save/load configurations.
-    * Add subArrays to the stream waveform PVs for easier 
+    * Add subArrays to the stream waveform PVs for easier
       visualization in GUIs.
-    * Handle error when saving/loading configurations and 
+    * Handle error when saving/loading configurations and
       print number of entries saved/loaded.
     * Verify if entries were actually saved/loaded.
     * Minor code clean up.
@@ -39,7 +53,7 @@ R1.1.6: 2017-05-03 J. Vasquez
     * Update to yamlLoader R1.0.3
     * Minor bug fixes
 
-R1.1.5: 2017-04-27 J. Vasquez 
+R1.1.5: 2017-04-27 J. Vasquez
     * Fix lookup function for stream interfaces
 
 R1.1.4: 2017-04-05 J. Vasquez
