@@ -1254,7 +1254,7 @@ std::string YCPSWASYN::getEpicsScan(double scan)
     std::string scanStr;
     scanStr = std::string(",SCAN=");
 
-    if (scan == 0.0)
+    if (scan <= 0.0)
         // Let's use s default a Passive scan value
         scanStr += std::string("Passive");
     else if (scan <= 0.1)
