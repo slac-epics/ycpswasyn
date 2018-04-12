@@ -9,6 +9,10 @@
 #  Rev:  16-Mar-2017, Reviewer's Name    (Jesus Vasquez)
 #--------------------------------------------------------------
 
+R2.0.4: 2018-04-11 J. Vasquez
+    * Make the SCAN calculation backward compatible with previous versions
+      i.e., setting SCAN to Passive when pollSecs is not defined in YAML.
+
 R2.0.3: 2018-03-22 K. Kim
     * bumpup cpsw/framework R3.6.3
     * bumpup yamlLoader     R1.1.0
