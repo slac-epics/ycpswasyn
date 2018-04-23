@@ -30,6 +30,7 @@
 #include <sha1.hpp>
 #include <ctype.h>
 #include <iomanip>
+#include <stdexcept>
 
 #include <dbAccess.h>
 #include <dbStaticLib.h>
@@ -254,6 +255,8 @@ int YCPSWASYN::YCPSWASYNInit(const char* rootPath, Path *p)
         fprintf(stderr, "ERROR: cpswGetRoot() returned an empty root.\n");
         fprintf(stderr, "Did you forget to called the yamlLoder module first?.\n");
         fprintf(stderr, "Aborting...\n");
+
+        throw std::runtime_error( "cpswGetRoot() returned an empty root." );
     }
 
     printf("cpswGetRoot() returned a non-empty root...\n");
