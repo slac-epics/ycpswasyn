@@ -240,7 +240,7 @@ class YCPSWASYN : public asynPortDriver
         virtual void streamTask(Stream stm, int param16index, int param32index);
 
         // Initialization routine
-        static int YCPSWASYNInit(const char *yaml_doc, const char* rootPath, Path *p, const char *ipAddr);
+        static int YCPSWASYNInit(const char* rootPath, Path *p);
 
         // Create a record from a Path
         virtual int  CreateRecord(Path p);

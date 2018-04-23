@@ -12,14 +12,12 @@ In order to use YCPSWASYN in your application you must call **YCPSWASYNConfig** 
 
 With the following parameters
 
-YCPSWASYNConfig(PORT_NAME, YAML_FILE, ROOT_PATH, FPGA_IP, PREFIX, PV_MAX_LEN, AUTO_GEN_MODE, MAP_FILE_PATH, DICT_FILE, DEFAULT_SCAN)
+YCPSWASYNConfig(PORT_NAME, ROOT_PATH, PREFIX, PV_MAX_LEN, AUTO_GEN_MODE, MAP_FILE_PATH, DICT_FILE, DEFAULT_SCAN)
 
 | Parameter                  | Description
 |----------------------------|-----------------------------
 | PORT_NAME                  | The name given to this port driver
-| YAML_FILE                  | Path to the top level YAML file. Ignored if **cpswLoadYamlFile** has been already called.
 | ROOT_PATH                  | OPTIONAL: Root path to start the generation. If empty, the Yaml root will be used
-| FPGA_IP                    | OPTIONAL: Target FPGA IP Address. If not given it is taken from the YAML file. Ignored if **cpswLoadYamlFile** has been already called.
 | PREFIX                     | Record name prefix
 | PV_MAX_LEN                 | Record name maximum length (must be greater than lenght of prefix + 4)
 | AUTO_GEN_MODE              | 0: Disable autogeneration. 1: Enabled autogeneration using mapped names. 2: Enable autogeneration using hashed names.
@@ -28,7 +26,7 @@ YCPSWASYNConfig(PORT_NAME, YAML_FILE, ROOT_PATH, FPGA_IP, PREFIX, PV_MAX_LEN, AU
 | DEFAULT_SCAN               | Default SCAN value for registers which YAML's *pollSecs* is not defined.
 
 **Notes:**
-- *PORT_NAME* and *YAML_FILE* are always necessary
+- *PORT_NAME* is always necessary
 - The auto generation of PVs is enabled setting *AUTO_GEN_MODE* to *1* or *2*.
   - In mode *1*, the PV names are generated using mapping files, which location is especified with *MAP_FILE_PATH*.
   - In mode *2*, the PV names are generated from SHA1 hash.
@@ -40,6 +38,6 @@ YCPSWASYNConfig(PORT_NAME, YAML_FILE, ROOT_PATH, FPGA_IP, PREFIX, PV_MAX_LEN, AU
 
 ## Used of the yamlLoader Module
 
-You can use this and the **yamlLoader** module together. You juts need to call **cpswLoadYamlFile()** before **YCPSWASYNConfig()** in your st.cmd.
+This module requires the use of the **yamlLoader** module. You must call **cpswLoadYamlFile()** before **YCPSWASYNConfig()** in your st.cmd.
 
-When **cpswLoadYamlFile()** is called before **YCPSWASYNConfig()**, this driver will ignored the parameters *YAML_FILE* and *FPGA_IP*. It will use the root obtained by calling the yamlLoader's cpswGetRoot() function instead. However, you can still use *ROOT_PATH* to define the start of the generation.
+This module will use the root obtained by calling the yamlLoader's cpswGetRoot() function. However, you can still use *ROOT_PATH* to define the start of the generation.

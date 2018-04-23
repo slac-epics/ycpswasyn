@@ -16,7 +16,6 @@
 #include <boost/array.hpp>
 #include <iostream>
 #include <fstream>
-#include <arpa/inet.h>
 #include <math.h>
 #include <sys/mman.h>
 #include <sched.h>
@@ -243,46 +242,21 @@ class IYamlSetIP : public IYamlFixup
         std::string ip_addr_;
 };
 
-int YCPSWASYN::YCPSWASYNInit(const char *yaml_doc, const char* rootPath, Path *p, const char *ipAddr)
+int YCPSWASYN::YCPSWASYNInit(const char* rootPath, Path *p)
 {
-    unsigned char buf[sizeof(struct in6_addr)];
     Path root;
 
     // Try first to get tge root from the cpswLoadYamlFile module
     root = cpswGetRoot();
 
-    if (root)
+    if (!root)
     {
-        printf("cpswGetRoot() returned a non-empty root. Ignoring YAML file...\n");
+        fprintf(stderr, "ERROR: cpswGetRoot() returned an empty root.\n");
+        fprintf(stderr, "Did you forget to called the yamlLoder module first?.\n");
+        fprintf(stderr, "Aborting...\n");
     }
-    else
-    {
-        printf("cpswGetRoot() returned an empty root. Loading YAML file instead...\n");
 
-        if (yaml_doc[0] == '\0')
-        {
-            printf("ERROR! No YAML file was defined\n\n");
-            return -1;
-        }
-
-        // Check if the IP address was especify. Otherwise use the one defined on the YAML file
-        if (inet_pton(AF_INET, ipAddr, buf))
-        {
-            printf("Using IP address: %s\n", ipAddr);
-            IYamlSetIP setIP(ipAddr);
-
-            // Read YAML file
-            root = IPath::loadYamlFile( yaml_doc, "NetIODev", NULL, &setIP );
-        }
-        else
-        {
-            printf("Using IP address from YAML file\n");
-
-            // Read YAML file
-            root = IPath::loadYamlFile( yaml_doc, "NetIODev" );
-        }
-
-    }
+    printf("cpswGetRoot() returned a non-empty root...\n");
 
     *p = root;
 
@@ -298,7 +272,7 @@ int YCPSWASYN::YCPSWASYNInit(const char *yaml_doc, const char* rootPath, Path *p
         }
         catch (CPSWError &e)
         {
-            printf("Path not found! (CPSW error: %s). Starting at root\n", e.getInfo().c_str());
+            fprintf(stderr, "Path not found! (CPSW error: %s). Starting at root\n", e.getInfo().c_str());
         }
     }
 
@@ -2480,7 +2454,7 @@ void YCPSWKeysNotFound::dump()
 /////////////////////////////////////////////
 
 // + YCPSWASYNConfig //
-extern "C" int YCPSWASYNConfig(const char *portName, const char *yaml_doc, const char *rootPath, const char *ipAddr, const char *recordPrefix, unsigned int recordNameLenMax, int autogenerationMode, const char* mapFilePath, const char* dictionary, int defaultScan)
+extern "C" int YCPSWASYNConfig(const char *portName, const char *rootPath, const char *recordPrefix, unsigned int recordNameLenMax, int autogenerationMode, const char* mapFilePath, const char* dictionary, int defaultScan)
 {
     int status;
     Path p;
@@ -2496,7 +2470,7 @@ extern "C" int YCPSWASYNConfig(const char *portName, const char *yaml_doc, const
         return asynError;
     }
 
-    status = YCPSWASYN::YCPSWASYNInit(yaml_doc, rootPath, &p, ipAddr);
+    status = YCPSWASYN::YCPSWASYNInit(rootPath, &p);
 
     if (status)
     {
@@ -2510,15 +2484,13 @@ extern "C" int YCPSWASYNConfig(const char *portName, const char *yaml_doc, const
 }
 
 static const iocshArg confArg0 =    { "portName",           iocshArgString};
-static const iocshArg confArg1 =    { "yamlDoc",            iocshArgString};
-static const iocshArg confArg2 =    { "rootPath",           iocshArgString};
-static const iocshArg confArg3 =    { "ipAddr",             iocshArgString};
-static const iocshArg confArg4 =    { "recordPrefix",       iocshArgString};
-static const iocshArg confArg5 =    { "recordNameLenMax",   iocshArgInt};
-static const iocshArg confArg6 =    { "autoGenerationMode", iocshArgInt};
-static const iocshArg confArg7 =    { "mapFilePath",        iocshArgString};
-static const iocshArg confArg8 =    { "loadDictionary",     iocshArgString};
-static const iocshArg confArg9 =    { "defaultScan",        iocshArgInt};
+static const iocshArg confArg1 =    { "rootPath",           iocshArgString};
+static const iocshArg confArg2 =    { "recordPrefix",       iocshArgString};
+static const iocshArg confArg3 =    { "recordNameLenMax",   iocshArgInt};
+static const iocshArg confArg4 =    { "autoGenerationMode", iocshArgInt};
+static const iocshArg confArg5 =    { "mapFilePath",        iocshArgString};
+static const iocshArg confArg6 =    { "loadDictionary",     iocshArgString};
+static const iocshArg confArg7 =    { "defaultScan",        iocshArgInt};
 
 static const iocshArg * const confArgs[] = {
     &confArg0,
@@ -2529,15 +2501,13 @@ static const iocshArg * const confArgs[] = {
     &confArg5,
     &confArg6,
     &confArg7,
-    &confArg8,
-    &confArg9,
 };
 
 static const iocshFuncDef configFuncDef = {"YCPSWASYNConfig", 10, confArgs};
 
 static void configCallFunc(const iocshArgBuf *args)
 {
-    YCPSWASYNConfig(args[0].sval, args[1].sval, args[2].sval, args[3].sval, args[4].sval, args[5].ival, args[6].ival, args[7].sval, args[8].sval, args[9].ival);
+    YCPSWASYNConfig(args[0].sval, args[1].sval, args[2].sval, args[3].ival, args[4].ival, args[5].sval, args[6].sval, args[7].ival);
 }
 // - YCPSWASYNConfig //
 
