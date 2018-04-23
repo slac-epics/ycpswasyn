@@ -2503,7 +2503,7 @@ static const iocshArg * const confArgs[] = {
     &confArg7,
 };
 
-static const iocshFuncDef configFuncDef = {"YCPSWASYNConfig", 10, confArgs};
+static const iocshFuncDef configFuncDef = {"YCPSWASYNConfig", 8, confArgs};
 
 static void configCallFunc(const iocshArgBuf *args)
 {
