@@ -82,7 +82,7 @@ YCPSWASYN::YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int
     recordCount(0),
     mapFilePath_(mapFilePath),
     autogenerationMode_(autogenerationMode),
-    defaultScanValue(defaultScan)
+    defaultScanValue(defaultScan <= 0. ? 2.0 : defaultScan)
 {
 
     //const char *functionName = "YCPSWASYN";
