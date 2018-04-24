@@ -9,14 +9,24 @@
 #  Rev:  16-Mar-2017, Reviewer's Name    (Jesus Vasquez)
 #--------------------------------------------------------------
 
-R3.0.0: 2018-04-05 J. Vasquez
+R3.0.0: 2018-04-23 J. Vasquez
     * Added a new mode of autogeneration of PVs using SHA1 hash
       as PV names. Now YCPSWASYNConfig accepts an mode arguments
       (1: PV names using maps as before, 2: using new hashed names).
       See README.autoPVGeneration for more information.
-    * YCPSWASYNConfig accepts two new arguments to select: the
-      location of the mapping files, and the default SCAN values.
-      See README.configureDriver for more information.
+    * The signature of YCPSWASYNConfig changed in order to have fewer
+      parameters (See README.configureDriver for more information): 
+      - It doesn't accept anymore a YAML file and IP address.
+        The yamlLoader module must be used instead.
+      - The PV name max lenght was a default value of 60, and it can
+        be changed using the function "YCPSWASYNSetPvMaxNameLen".
+      - The default SCAN value has a default value of "Passive", and
+        it can be changed using the function "YCPSWASYNSetDefaultScan".
+    * A new function can be used to select the location of the mapping
+      files: "YCPSWASYNSetMapFilePath". The default location is "yaml/".
+    * A new function can be used to select the destination of the debug
+      information files: "YCPSWASYNSetDebugFilePath". The default
+      location is "/tmp/".
     * The PV name prefix can now be empty, in this case ":" is not
       addedd to the PV names.
     * Bug fixed when computing bit-size.
