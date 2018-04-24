@@ -317,7 +317,7 @@ int YCPSWASYN::LoadRecord(int regType, const recordParams& rp, const string& dbP
 
     // Write the record name to the PV list file
     pvDumpFile->write("%s%*s", rp.recName.c_str(), recordNameLenMax - rp.recName.size() + 4, "");
-    pvDumpFile->write("# %s (%s)\n", p->toString().c_str(), regInterfaceTypeNames[regType]);
+    pvDumpFile->write("# %s (%s)\n", getNameWithoutLeafIndexes(p).c_str(), regInterfaceTypeNames[regType]);
 
     // Incrfement the number of created records
     ++recordCount;
@@ -913,14 +913,13 @@ std::string YCPSWASYN::generateRecordName(const Path& p, const std::string& suff
     if (autogenerationMode_ == 2)
     {
         char          mdstr[SHA1_HEX_SIZE];
-        std::string   msg = recordPrefix_ + p->toString() + suffix;
-        int           i;
+        std::string   msg = recordPrefix_ + getNameWithoutLeafIndexes(p) + suffix;
 
         sha1 hasher( msg.c_str() );
 
         hasher.finalize().print_hex(mdstr);
 
-        for (i=0; i<SHA1_HEX_SIZE; i++ )
+        for (int i=0; i<SHA1_HEX_SIZE; i++ )
         {
             mdstr[i] = ::toupper(mdstr[i]);
         }
@@ -2457,6 +2456,16 @@ void YCPSWKeysNotFound::dump()
         for (std::set<std::string>::iterator it = list_.begin() ; it != list_.end() ; ++it )
             f.write("%s\n", (*it).c_str());
     }
+}
+
+// Remove '[a-b]' of the name when leaf are arrays
+std::string getNameWithoutLeafIndexes(const Path& p)
+{
+    std::string s(p->toString());
+    if (*s.rbegin() == ']')
+        s.erase(s.find_last_of('['));
+
+    return s;
 }
 
 /////////////////////////////////////////////

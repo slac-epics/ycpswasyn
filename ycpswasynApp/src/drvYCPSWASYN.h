@@ -413,5 +413,8 @@ class YCPSWKeysNotFound
         void dump();
 };
 
+// Remove '[a-b]' of the name when leaf are arrays
+std::string getNameWithoutLeafIndexes(const Path& p);
+
 // Stream handling function caller
 static void streamTaskC(void *args);
