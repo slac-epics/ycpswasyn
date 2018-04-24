@@ -24,7 +24,7 @@ YCPSWASYNConfig(PORT_NAME, ROOT_PATH, PREFIX, AUTO_GEN_MODE, DICT_FILE)
 
 **Notes:**
 - *PORT_NAME* is always necessary.
-- More than one instance of **YCPSWASYNConfig** can be called in the same IOC. 
+- More than one instance of **YCPSWASYNConfig** can be called in the same IOC.
 - The auto generation of PVs is enabled setting *AUTO_GEN_MODE* to *1* or *2*.
   - In mode *1*, the PV names are generated using mapping files.
   - In mode *2*, the PV names are generated from SHA1 hash.
@@ -43,6 +43,7 @@ their default values, and the function used to change them.
 | Path to map files used in autogeneration mode 1    | yaml/             | YCPSWASYNSetMapFilePath(const char* path)
 | PV name maximum lenght                             | Base default (60) | YCPSWASYNSetPvMaxNameLen(int len)
 | SCAN value for register without *pollSecs* in YAML | Passive           | YCPSWASYNSetDefaultScan(double scan)
+| Path to debug information  file                    | /tmp/             | YCPSWASYNSetDebugFilePath(const char* path)
 
 You must call these functions in your st.cmd before calling **YCPSWASYNConfig**. The changes will apply to all instances of YCPSWASYN you have in
 your application.

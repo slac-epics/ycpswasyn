@@ -102,7 +102,7 @@ For each waveform PV, a subArray PV will also be loaded, so a subset of data poi
 
 ## Debug information
 
-when the IOC runs, it creates 4 files on the /tmp directory:
+when the IOC runs, it creates 4 files:
 - `<PORT_NAME>_<PREFIX>_regMap.txt`         with all the register that it found on the yaml file
 - `<PORT_NAME>_<PREFIX>_regMap.yaml`        with all the register that it found on the yaml file (alternate, yaml format)
 - `<PORT_NAME>_<PREFIX>_pvList.txt`         with all the names of the PVs that it created
@@ -110,6 +110,9 @@ when the IOC runs, it creates 4 files on the /tmp directory:
 
 <PORT_NAME> is the port name passed to YCPSWASYNConfig(). <PREFIX> is the record prefix
 passed to YCPSWASYNConfig() (`_` separator is omitted if PREFIX is empty).
+
+By default, these files are created on the /tmp directory. But this location can be changed using the function **YCPSWASYNSetDebugFilePath**. See **README.configureDriver.md**
+for more information.
 
 ## Record types and fields
 

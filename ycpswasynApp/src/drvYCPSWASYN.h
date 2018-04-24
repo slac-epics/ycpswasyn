@@ -244,10 +244,11 @@ class YCPSWASYN : public asynPortDriver
         // Create a record from a Path
         virtual int  CreateRecord(Path p);
 
-        // Default parameters, which can be changed from the IOC shell 
+        // Default parameters, which can be changed from the IOC shell
         static double       defaultScan;      // Default SCAN value for PVs
         static unsigned int recordNameLenMax; // Max lenght of the record name
         static std::string  mapFilePath;      // Path to map file used in autogeneration mode
+        static std::string  debugFilePath;    // Path to dump debug information files
 
     private:
         const char                          *driverName_;               // Name of the driver (passed from st.cmd)
