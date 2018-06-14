@@ -9,6 +9,11 @@
 #  Rev:  16-Mar-2017, Reviewer's Name    (Jesus Vasquez)
 #--------------------------------------------------------------
 
+R3.0.1: 2018-06-13 J. Vasquez
+    * Add ":" between "$(P)" and "$(R)" macros on the templates use 
+      with dictionarie (named "Register*.templates"), in order to be 
+      backward compatible with previous versions.
+
 R3.0.0: 2018-04-23 J. Vasquez
     * Added a new mode of autogeneration of PVs using SHA1 hash
       as PV names. Now YCPSWASYNConfig accepts an mode arguments
