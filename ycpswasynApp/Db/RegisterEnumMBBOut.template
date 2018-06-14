@@ -15,7 +15,7 @@
 #            For IntField, RW, without encoding is 1.
 #==================================================================
 
-record(mbbo,    "$(P)$(R)") {
+record(mbbo,    "$(P):$(R)") {
     field(DTYP, "asynUInt32Digital")
     field(DESC, "$(DESC)")
     field(PINI, "$(PINI)")
@@ -23,11 +23,11 @@ record(mbbo,    "$(P)$(R)") {
     field(OUT,  "@asynMask($(PORT),1,$(MASK))$(PARAM)")
     field(NOBT,	"$(NOBT)")
     field(ZRVL, "$(ZRVL)")
-	field(ONVL, "$(ONVL)")
-	field(TWVL, "$(TWVL)")
-	field(THVL, "$(THVL)")
-	field(ZRST, "$(ZRST)")
-	field(ONST, "$(ONST)")
-	field(TWST, "$(TWST)")
-	field(THST, "$(THST)")
+    field(ONVL, "$(ONVL)")
+    field(TWVL, "$(TWVL)")
+    field(THVL, "$(THVL)")
+    field(ZRST, "$(ZRST)")
+    field(ONST, "$(ONST)")
+    field(TWST, "$(TWST)")
+    field(THST, "$(THST)")
 }

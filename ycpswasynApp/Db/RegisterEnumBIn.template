@@ -12,7 +12,7 @@
 #            For IntField, RO, without encoding is 0.
 #==================================================================
 
-record(bi,      "$(P)$(R)") {
+record(bi,      "$(P):$(R)") {
     field(DTYP, "asynUInt32Digital")
     field(DESC, "$(DESC)")
     field(PINI, "$(PINI)")
