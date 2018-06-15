@@ -150,15 +150,13 @@ void YCPSWASYN::streamTask(Stream stm, int param16index, int param32index)
     param.sched_priority = MY_PRIORITY;
     if(sched_setscheduler(0, SCHED_FIFO, &param) == -1)
     {
-        perror("sched_setscheduler failed");
-        exit(-1);
+        perror("sched_setscheduler failed on stream handler");
     }
 
     // Lock memory
     if(mlockall(MCL_CURRENT|MCL_FUTURE) == -1)
     {
-        perror("mlockall failed");
-        exit(-2);
+        perror("mlockall failed on stream handler");
     }
 
     // Pre-fault our stack
