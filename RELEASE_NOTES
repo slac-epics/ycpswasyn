@@ -8,6 +8,14 @@
 #  Auth: Jesus Vasquez
 #  Rev:  16-Mar-2017, Reviewer's Name    (Jesus Vasquez)
 #--------------------------------------------------------------
+R3.0.4: 2018-11-08 J. Vasquez
+    * build against:
+      - cpsw/framework -> R3.6.6, which implies:
+        - boost -> 1.64.0
+        - yaml-cpp -> yaml-cpp-0.5.3_boost-1.64.0
+      - asyn -> R4.31.0-0.1.0, 
+      - yamlLoader -> R1.1.2
+
 R3.0.3: 2018-10-29 K. Kim
     * build against cpsw/framework R3.6.6
                     asyn R4.31.0-0.1.0
