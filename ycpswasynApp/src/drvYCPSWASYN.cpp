@@ -1,10 +1,23 @@
-// This file is part of 'YCPSW EPICS module'.
-// It is subject to the license terms in the LICENSE.txt file found in the
-// top-level directory of this distribution and at:
-//    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
-// No part of 'YCPSW EPICS module', including this file,
-// may be copied, modified, propagated, or distributed except according to
-// the terms contained in the LICENSE.txt file.
+/**
+ *-----------------------------------------------------------------------------
+ * Title      : YCPSW EPICS module driver
+ * ----------------------------------------------------------------------------
+ * File       : drvYCPSWASYN.cpp
+ * Author     : Jesus Vasquez, jvasquez@slac.stanford.edu
+ * Created    : 2016-08-25
+ * ----------------------------------------------------------------------------
+ * Description:
+ * YCPSW EPICS module driver.
+ * ----------------------------------------------------------------------------
+ * This file is part of l2Mps. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of l2Mps, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
+ * contained in the LICENSE.txt file.
+ * ----------------------------------------------------------------------------
+**/
 
 #include <string.h>
 #include <stdio.h>
