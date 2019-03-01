@@ -1,14 +1,9 @@
-#==============================================================
-#
-#  Name: RELEASE_NOTES
-#
-#  Rem: Release notes for the YCPSWASYN epics module
-#
-#
-#  Auth: Jesus Vasquez
-#  Rev:  16-Mar-2017, Reviewer's Name    (Jesus Vasquez)
-#--------------------------------------------------------------
-R3.0.4: 2018-11-08 J. Vasquez
+# Release notes
+
+Release note fot the YPCSWASYN EPICS module.
+
+## Releases:
+* __R3.0.4__: 2018-11-08 J. Vasquez
     * build against:
       - cpsw/framework -> R3.6.6, which implies:
         - boost -> 1.64.0
@@ -16,15 +11,15 @@ R3.0.4: 2018-11-08 J. Vasquez
       - asyn -> R4.31.0-0.1.0, 
       - yamlLoader -> R1.1.2
 
-R3.0.3: 2018-10-29 K. Kim
+* __R3.0.3__: 2018-10-29 K. Kim
     * build against cpsw/framework R3.6.6
                     asyn R4.31.0-0.1.0
                     yamlLoader R1.1.1
 
-R3.0.2: 2018-07-18 K. Kim
+* __R3.0.2__: 2018-07-18 K. Kim
     * build against asyn/R4.32-1.0.0
 
-R3.0.1: 2018-06-13 J. Vasquez
+* __R3.0.1__: 2018-06-13 J. Vasquez
     * Add ":" between "$(P)" and "$(R)" macros on the templates use 
       with dictionarie (named "Register*.templates"), in order to be 
       backward compatible with previous versions.
@@ -32,7 +27,7 @@ R3.0.1: 2018-06-13 J. Vasquez
       This will allow IOC to run even if the user do not have the right
       privileges.
 
-R3.0.0: 2018-04-23 J. Vasquez
+* __R3.0.0__: 2018-04-23 J. Vasquez
     * Added a new mode of autogeneration of PVs using SHA1 hash
       as PV names. Now YCPSWASYNConfig accepts an mode arguments
       (1: PV names using maps as before, 2: using new hashed names).
@@ -56,19 +51,19 @@ R3.0.0: 2018-04-23 J. Vasquez
     * Improve debug inforamtion style.
     * Code clean up and refactored.
 
-R2.0.3: 2018-03-22 K. Kim
+* __R2.0.3__: 2018-03-22 K. Kim
     * bumpup cpsw/framework R3.6.3
     * bumpup yamlLoader     R1.1.0
 
-R2.0.2: 2018-02-15 J. Vasquez
+* __R2.0.2__: 2018-02-15 J. Vasquez
     * Improve performace of the stream handling setting its thread
       as a RT task, and erasing only the part of the buffer that was
       not updated.
 
-R2.0.1: 2018-01-22 J. Vasquez
+* __R2.0.1__: 2018-01-22 J. Vasquez
     * Update ASYN to version R4.31-0.1.0.
 
-R2.0.0: 2017-11-14 J. Vasquez
+* __R2.0.0__: 2017-11-14 J. Vasquez
     * Change save/load default PV to waveforms so they can
       hold longer paths respect to string PVs. With this
       change a defult configuration file can not longer be
@@ -81,32 +76,32 @@ R2.0.0: 2017-11-14 J. Vasquez
     * Verify if entries were actually saved/loaded.
     * Minor code clean up.
 
-R1.1.6: 2017-05-03 J. Vasquez
+* __R1.1.6__: 2017-05-03 J. Vasquez
     * Update to CPSW framework R3.5.4
     * Update to yamlLoader R1.0.3
     * Minor bug fixes
 
-R1.1.5: 2017-04-27 J. Vasquez
+* __R1.1.5__: 2017-04-27 J. Vasquez
     * Fix lookup function for stream interfaces
 
-R1.1.4: 2017-04-05 J. Vasquez
+* __R1.1.4__: 2017-04-05 J. Vasquez
     * Added support for using the yamlLoader module
 
-R1.1.3: 2017-04-05 J. Vasquez
+* __R1.1.3__: 2017-04-05 J. Vasquez
     * Remove Display and Restore sources
 
-R1.1.2: 2017-03-29 J. Vasquez
+* __R1.1.2__: 2017-03-29 J. Vasquez
     * Bug fixed on stream thread handler that was causing random
       segmentation faults.
     * Fixed some memory leaks.
     * Minor improvements to code.
 
-R1.1.1: 2017-03-16 J. Vasquez
+* __R1.1.1__: 2017-03-16 J. Vasquez
     * First stable tag for EPICS base 3.15.
     * This version includes the autogeneraton of PVs as well as the
       possibility to manually generate PVs for selected registers.
 
-R1.0.0: 2017-03-16 J. Vasquez
+* __R1.0.0__: 2017-03-16 J. Vasquez
     * First stable release version
 
 
