@@ -931,7 +931,8 @@ std::string YCPSWASYN::generateRecordName(const Path& p, const std::string& suff
     Child tail;
 
     std::map<std::string, std::string>::iterator it;
-    std::size_t found_key, found_top_key, found_bracket;
+    std::size_t found_bracket;
+    bool found_key, found_top_key;
     std::string childName, childIndexStr;
     std::string pathStrAux, firstElementIndexStr;
 
@@ -959,8 +960,8 @@ std::string YCPSWASYN::generateRecordName(const Path& p, const std::string& suff
     pLocal->up();
     while (tail = pLocal->tail())
     {
-        found_top_key = std::string::npos;
-        found_key = std::string::npos;
+        found_top_key = false;
+        found_key = false;
         found_bracket = std::string::npos;
         childIndexStr.clear();
 
@@ -977,9 +978,9 @@ std::string YCPSWASYN::generateRecordName(const Path& p, const std::string& suff
         // Look for keys on the top map definition
         for (it = mapTop.begin(); it != mapTop.end(); ++it)
         {
-            found_top_key = childName.find(it->first);
+            found_top_key = ( 0 == childName.compare(it->first) );
 
-            if (found_top_key != std::string::npos)
+            if (found_top_key)
             {
                 childName = it->second;
                 break;
@@ -987,13 +988,13 @@ std::string YCPSWASYN::generateRecordName(const Path& p, const std::string& suff
         }
 
         // If key was not fount on opt map, look for keys on the map definition
-        if (found_top_key == std::string::npos)
+        if (!found_top_key)
         {
             for (it = map.begin(); it != map.end(); ++it)
             {
-                found_key = childName.find(it->first);
+                found_key = ( 0 == childName.compare(it->first) );
 
-                if (found_key != std::string::npos)
+                if (found_key)
                 {
                     childName = it->second;
                     break;
@@ -1003,7 +1004,7 @@ std::string YCPSWASYN::generateRecordName(const Path& p, const std::string& suff
 
         // If the current child name was not found either on the map or top map, trim the name
         // and write its name to the dump file
-        if ((found_key == std::string::npos) && (found_top_key == std::string::npos))
+        if ( !( found_key || found_top_key ) )
         {
             keysNotFound->insert(childName);
             childName = childName.substr(0,DB_NAME_PATH_TRIM_SIZE);
@@ -1013,7 +1014,7 @@ std::string YCPSWASYN::generateRecordName(const Path& p, const std::string& suff
         resultPrefix = childName + childIndexStr + ":" + resultPrefix;
 
         // If we found a key on the top map, stop the creation of the prefix
-        if (found_top_key != std::string::npos)
+        if ( found_top_key )
             break;
 
         // Go up one level con the path and continue
