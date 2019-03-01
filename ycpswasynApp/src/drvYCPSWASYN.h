@@ -1,3 +1,6 @@
+#ifndef DRVYCPSWASYN_H
+#define DRVYCPSWASYN_H
+
 /**
  *-----------------------------------------------------------------------------
  * Title      : YCPSW EPICS module driver
@@ -431,3 +434,5 @@ std::string getNameWithoutLeafIndexes(const Path& p);
 
 // Stream handling function caller
 static void streamTaskC(void *args);
+
+#endif
