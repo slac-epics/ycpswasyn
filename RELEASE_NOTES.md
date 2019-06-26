@@ -3,6 +3,9 @@
 Release note fot the YPCSWASYN EPICS module.
 
 ## Releases:
+* __R3.0.6__: 2019-06-25 K. Kim
+  * build with cpsw/framework R4.1.0 and yamlLoader R1.1.3
+
 * __R3.0.5__: 2019-02-28 J. Vasquez
   * Bug fix: key comparison must be done with std::string::compare 
     to search for exact matches.
