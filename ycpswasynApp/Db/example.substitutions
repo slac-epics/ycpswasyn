@@ -1,6 +1,6 @@
 #=========================================================================================================
 # Example substitution file showing how to manually load records.                
-# P,R: The PV name as $(P)$(R)
+# P,R: The PV name as $(P):$(R)
 # DESC, PINI, SCAN, NELM, etc.: The same fields on the records
 # PORT: The asyn port name. It must match the port name given when calling "YCPSWASYNConfig" on st.cmd 
 # PARAM: The asyn paramter name. It must be defined in the dictionary file and assigned to a register 
@@ -12,9 +12,9 @@
 # Single register
 file "db/RegisterIn.template" { pattern
 { P,         R,              DESC,                           PINI,   SCAN,       PORT,   PARAM       }
-{ yamlIOC1:, DeviceDna,      "Xilinx Device DNA",            "YES",  "Passive",  Atca2,  DEVICE_DNA  }
-{ yamlIOC1:, FpgaVersion,    "FPGA Firmware Version Number"  "YES",  "Passive",  Atca2,  FPGA_VERS   }
-{ yamlIOC1:, UpTimeCnt,      "Seconds since last reset"      "YES",  "1 second", Atca2,  UP_TIME_CNT }
+{ yamlIOC1, DeviceDna,      "Xilinx Device DNA",            "YES",  "Passive",  Atca2,  DEVICE_DNA  }
+{ yamlIOC1, FpgaVersion,    "FPGA Firmware Version Number"  "YES",  "Passive",  Atca2,  FPGA_VERS   }
+{ yamlIOC1, UpTimeCnt,      "Seconds since last reset"      "YES",  "1 second", Atca2,  UP_TIME_CNT }
 }
 
 # Array of register
@@ -25,7 +25,7 @@ file "db/RegisterArrayIn.template" { pattern
 # Array of 8-bit register as a string 
 file "db/RegisterArrayChar.template" { pattern
 { P,         R,              DESC,                           NELM,   PINI,   SCAN,       PORT,   PARAM       }
-{ yamlIOC1:, BuildStamp,     "Firmware Build String",        64,     "YES",  "Passive",  Atca2,  BUILD_STAMP }   
+{ yamlIOC1, BuildStamp,     "Firmware Build String",        64,     "YES",  "Passive",  Atca2,  BUILD_STAMP }   
 }
 
 # ENUM register (1-bit)
@@ -44,13 +44,13 @@ file "db/RegisterEnumMBBIn.template" { pattern
 # Single register
 file "db/RegisterOut.template" { pattern
 { P,         R,              DESC,                           PINI,   SCAN,       PORT,   PARAM       }
-{ yamlIOC1:, ScratchPad,     "Register to test R/W"          "NO",   "Passive",  Atca2,  SCRATCH_PAD }
+{ yamlIOC1, ScratchPad,     "Register to test R/W"          "NO",   "Passive",  Atca2,  SCRATCH_PAD }
 }
 
 # Single register readback PVs (Note that PARAM has the same name as the RegisterOut case)
 file "db/RegisterOutRBV.template" { pattern
 { P,         R,              DESC,                           PINI,   SCAN,       PORT,   PARAM       }
-{ yamlIOC1:, ScratchPadRBV,  "Register to test R/W"          "NO",   "1 second", Atca2,  SCRATCH_PAD }
+{ yamlIOC1, ScratchPadRBV,  "Register to test R/W"          "NO",   "1 second", Atca2,  SCRATCH_PAD }
 }
 
 # Array of registers
@@ -113,7 +113,7 @@ file "db/RegisterCommand.template" { pattern
 
 file "db/RegisterStream.template" {pattern
 { P,         R,          DESC,               NELM,       PORT,   PARAM       }
-{ yamlIOC1:, Stream0,    "Stream channel 0", 5000000,    Atca2,  STREAM_CH0  }
+{ yamlIOC1, Stream0,    "Stream channel 0", 5000000,    Atca2,  STREAM_CH0  }
 }
 
 # For Stream interfaces, an additional parameter is automatically created
@@ -123,5 +123,5 @@ file "db/RegisterStream.template" {pattern
 
 file "db/RegisterStream16.template" {pattern
 { P,         R,          DESC,               			NELM,       PORT,   PARAM       	}
-{ yamlIOC1:, Stream0_16, "Stream channel 0 (16-bit)", 	10000000,    Atca2,  STREAM_CH0:16  }
+{ yamlIOC1, Stream0_16, "Stream channel 0 (16-bit)", 	10000000,    Atca2,  STREAM_CH0:16  }
 }
