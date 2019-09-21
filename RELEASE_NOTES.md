@@ -3,6 +3,9 @@
 Release note fot the YPCSWASYN EPICS module.
 
 ## Releases:
+* __R3.1.2__: 2019-09-21 K. Kim
+  * build with cpsw/framework R4.2.0 and yamlLoader R1.1.4
+
 * __R3.1.1__: 2019-07-15 J. Vasquez
   * Some templates were missing the ":" after "$(P)", which was 
     added back in R3.0.1 to be backward compatible with previous 
