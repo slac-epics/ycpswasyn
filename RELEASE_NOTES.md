@@ -3,6 +3,11 @@
 Release note fot the YPCSWASYN EPICS module.
 
 ## Releases:
+* __R3.2.0__: 2019-10-29 J. Vasquez
+  * build against:
+    - cpsw/framework -> R4.3.1
+    - yamlLoader     -> R1.1.5
+
 * __R3.1.2__: 2019-09-21 K. Kim
   * build with cpsw/framework R4.2.0 and yamlLoader R1.1.4
 
