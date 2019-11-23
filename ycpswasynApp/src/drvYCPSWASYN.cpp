@@ -266,9 +266,9 @@ int YCPSWASYN::YCPSWASYNInit(const char* rootPath, Path *p, const char* named_ro
     Path root;
 
     // Try first to get tge root from the cpswLoadYamlFile module
-    root = (!named_root || !strlen(named_root))?cpswGetRoot():cpswGetNamedRoot(named_root);
+    root = (named_root && strlen(named_root))?cpswGetNamedRoot(named_root):cpswGetRoot();
 
-    if (root->empty())
+    if (!root)
     {
         fprintf(stderr, "ERROR: cpswGetRoot() returned an empty root.\n");
         fprintf(stderr, "Did you forget to called the yamlLoder module first?.\n");
