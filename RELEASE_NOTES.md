@@ -3,6 +3,9 @@
 Release note fot the YPCSWASYN EPICS module.
 
 ## Releases:
+* __R3.2.0-0.0.1__: 2019-12-10 B. Hill
+  * PCDS build support
+
 * __R3.2.0__: 2019-10-29 J. Vasquez
   * build against:
     - cpsw/framework -> R4.3.1
