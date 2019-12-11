@@ -19,7 +19,7 @@ CHECK_RELEASE = YES
 # Set this when you only want to compile this application
 #   for a subset of the cross-compiled target architectures
 #   that Base is built for.
-CROSS_COMPILER_TARGET_ARCHS = linuxRT-x86_64
+CROSS_COMPILER_TARGET_ARCHS = 
 
 
 # To install files into a location other than $(TOP) define
@@ -42,8 +42,6 @@ IOCS_APPL_TOP  = $(INSTALL_LOCATION)
 INSTALL_LOCATION_STARTUP += $(INSTALL_LOCATION)/startup
 DIRECTORY_TARGETS += $(INSTALL_LOCATION_STARTUP)
 # =======================================================
-CPSW_FRAMEWORK_LIB=$(addsuffix /lib,$(CPSW))
-YAML_LIB=$(addsuffix /lib,$(YAML_CPP))
 
 ## =============================
 ## Build Application Statically
@@ -60,24 +58,34 @@ LINUX_VERSION=rhel6
 # ===================================
 # Support for external packages
 # ===================================
+PKG_ARCH = $(T_A)
+ifneq ($(wildcard /reg/g/pcds/pkg_mgr/release/cpsw-framework),)
+	RELEASE_TOP					= /reg/g/pcds/pkg_mgr/release
+	CPSW_FRAMEWORK_PACKAGE_NAME = cpsw-framework
+	CPSW_FRAMEWORK_VERSION      = 4.3.1
+	YAML_VERSION      			= 0.5.3
+	BOOST_VERSION      			= 1.63.0
+else
+	RELEASE_TOP					= $(PACKAGE_SITE_TOP)
+	CPSW_FRAMEWORK_PACKAGE_NAME = cpsw/framework
+	CPSW_FRAMEWORK_VERSION      = R4.3.1
+	YAML_VERSION      			= yaml-cpp-0.5.3_boost-1.64.0
+	BOOST_VERSION      			= 1.64.0
+endif
 
 # CPSW
-CPSW_FRAMEWORK_PACKAGE_NAME = cpsw/framework
-CPSW_FRAMEWORK_VERSION      = R4.3.1
-CPSW_FRAMEWORK_TOP          = $(PACKAGE_SITE_TOP)/$(CPSW_FRAMEWORK_PACKAGE_NAME)/$(CPSW_FRAMEWORK_VERSION)
+CPSW_FRAMEWORK_TOP          = $(RELEASE_TOP)/$(CPSW_FRAMEWORK_PACKAGE_NAME)/$(CPSW_FRAMEWORK_VERSION)
 CPSW_FRAMEWORK_LIB          = $(CPSW_FRAMEWORK_TOP)/$(PKG_ARCH)/lib
 CPSW_FRAMEWORK_INCLUDE      = $(CPSW_FRAMEWORK_TOP)/$(PKG_ARCH)/include
 
 # YAML-CPP
-YAML_PACKAGE_NAME = yaml-cpp
-YAML_VERSION      = yaml-cpp-0.5.3_boost-1.64.0
-YAML_TOP          = $(PACKAGE_SITE_TOP)/$(YAML_PACKAGE_NAME)/$(YAML_VERSION)
-YAML_LIB          = $(YAML_TOP)/$(PKG_ARCH)/lib
-YAML_INCLUDE      = $(YAML_TOP)/$(PKG_ARCH)/include
+YAML_PACKAGE_NAME 			= yaml-cpp
+YAML_TOP          			= $(RELEASE_TOP)/$(YAML_PACKAGE_NAME)/$(YAML_VERSION)
+YAML_LIB          			= $(YAML_TOP)/$(PKG_ARCH)/lib
+YAML_INCLUDE      			= $(YAML_TOP)/$(PKG_ARCH)/include
 
 # BOOST
-BOOST_PACKAGE_NAME = boost
-BOOST_VERSION      = 1.64.0
-BOOST_TOP          = $(PACKAGE_SITE_TOP)/$(BOOST_PACKAGE_NAME)/$(BOOST_VERSION)
-BOOST_LIB          = $(BOOST_TOP)/$(PKG_ARCH)/lib
-BOOST_INCLUDE      = $(BOOST_TOP)/$(PKG_ARCH)/include
+BOOST_PACKAGE_NAME 			= boost
+BOOST_TOP          			= $(RELEASE_TOP)/$(BOOST_PACKAGE_NAME)/$(BOOST_VERSION)
+BOOST_LIB          			= $(BOOST_TOP)/$(PKG_ARCH)/lib
+BOOST_INCLUDE      			= $(BOOST_TOP)/$(PKG_ARCH)/include

@@ -19,8 +19,8 @@
 # Don't set your version to anything such as "test" that
 # could match a directory name.
 # ==========================================================
-ASYN_MODULE_VERSION=R4.31-0.1.0
-YAMLLOADER_VERSION=R1.1.5
+ASYN_MODULE_VERSION = R4.31-0.1.0
+YAMLLOADER_MODULE_VERSION	= R2.0.0-0.0.1
 
 # ==========================================================
 # Define module paths using pattern
@@ -29,7 +29,7 @@ YAMLLOADER_VERSION=R1.1.5
 # FOO = /Full/Path/To/Development/Version 
 # ==========================================================
 ASYN=$(EPICS_MODULES)/asyn/$(ASYN_MODULE_VERSION)
-YAMLLOADER=$(EPICS_MODULES)/yamlLoader/$(YAMLLOADER_VERSION)
+YAMLLOADER=$(EPICS_MODULES)/yamlLoader/$(YAMLLOADER_MODULE_VERSION)
 
 # ============================================================
 #  Module Location
