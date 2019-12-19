@@ -12,15 +12,16 @@ In order to use YCPSWASYN in your application you must call **YCPSWASYNConfig** 
 
 With the following parameters
 
-YCPSWASYNConfig(PORT_NAME, ROOT_PATH, PREFIX, AUTO_GEN_MODE, DICT_FILE)
+YCPSWASYNConfig(PORT_NAME, ROOT_PATH, PREFIX, AUTO_GEN_MODE, DICT_FILE, NAMED_ROOT)
 
 | Parameter                  | Description
 |----------------------------|-------------------------------------------
-| PORT_NAME                  | The name given to this port driver
-| ROOT_PATH                  | Root path to start the generation. If empty, the root will be used
-| PREFIX                     | Record name prefix
+| PORT_NAME                  | The name given to this port driver.
+| ROOT_PATH                  | Root path to start the generation. If empty, the root will be used.
+| PREFIX                     | Record name prefix.
 | AUTO_GEN_MODE              | 0: Disable autogeneration. 1: Enabled autogeneration using mapped names. 2: Enable autogeneration using hashed names.
-| DICT_FILE                  | Dictionary file path with registers to load. An empty string will disable this function
+| DICT_FILE                  | Dictionary file path with registers to load. An empty string will disable this function.
+| NAMED_ROOT                 | The name of the root to be used, as passed to **cpswLoadYamlFile()**.
 
 **Notes:**
 - *PORT_NAME* is always necessary.
@@ -32,6 +33,7 @@ YCPSWASYNConfig(PORT_NAME, ROOT_PATH, PREFIX, AUTO_GEN_MODE, DICT_FILE)
   - See **README.autoPVGeneration** for more detailed information about this modes.
 - The auto generation of PVs is disabled setting *AUTO_GEN* to *0*.
 - To manually creates PVs for register you just need to set *DICT_FILE* to a dictionary file. Otherwise you can set it to an empty string.
+- *NAMED_ROOT* is optional, and it can be left empty. It is only necessary to support multiple ATCA blades on a single IOC.
 
 ## Optional configuration parameters
 
