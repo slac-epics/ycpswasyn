@@ -265,7 +265,7 @@ int YCPSWASYN::YCPSWASYNInit(const char* rootPath, Path *p, const char* namedRoo
 {
     Path root;
 
-    // Try first to get tge root from the cpswLoadYamlFile module
+    // Try first to get the root from the cpswLoadYamlFile module
     if ( ( ! namedRoot ) || ( namedRoot[0] == '\0' ) )
     {
         printf("Root name empty or not defined. Calling cpswGetRoot()\n");
@@ -2520,8 +2520,8 @@ static const iocshArg confArg0 =    { "portName",           iocshArgString };
 static const iocshArg confArg1 =    { "rootPath",           iocshArgString };
 static const iocshArg confArg2 =    { "recordPrefix",       iocshArgString };
 static const iocshArg confArg3 =    { "autoGenerationMode", iocshArgInt    };
-static const iocshArg confArg4 =    { "loadDictionary",     iocshArgString};
-static const iocshArg confArg5 =    { "namedRoot",          iocshArgString};
+static const iocshArg confArg4 =    { "loadDictionary",     iocshArgString };
+static const iocshArg confArg5 =    { "namedRoot",          iocshArgString };
 
 static const iocshArg * const confArgs[] =
 {
