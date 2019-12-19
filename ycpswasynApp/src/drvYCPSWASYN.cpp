@@ -261,12 +261,21 @@ class IYamlSetIP : public IYamlFixup
         std::string ip_addr_;
 };
 
-int YCPSWASYN::YCPSWASYNInit(const char* rootPath, Path *p, const char* named_root)
+int YCPSWASYN::YCPSWASYNInit(const char* rootPath, Path *p, const char* namedRoot)
 {
     Path root;
 
     // Try first to get tge root from the cpswLoadYamlFile module
-    root = (named_root && strlen(named_root))?cpswGetNamedRoot(named_root):cpswGetRoot();
+    if ( ( ! namedRoot ) || ( namedRoot[0] == '\0' ) )
+    {
+        printf("Root name empty or not defined. Calling cpswGetRoot()\n");
+        root = cpswGetRoot();
+    }
+    else
+    {
+        printf("Root name defined. Calling cpswGetiNamedRoot(%s)\n", namedRoot);
+        root = cpswGetNamedRoot(namedRoot);
+    }
 
     if (!root)
     {
@@ -2489,12 +2498,12 @@ std::string getNameWithoutLeafIndexes(const Path& p)
 ////////////////////////////////////
 
 // YCPSWASYNConfig
-extern "C" int YCPSWASYNConfig(const char *portName, const char *rootPath, const char *recordPrefix, int autogenerationMode, const char* dictionary, const char* named_root)
+extern "C" int YCPSWASYNConfig(const char *portName, const char *rootPath, const char *recordPrefix, int autogenerationMode, const char* dictionary, const char* namedRoot)
 {
     int status;
     Path p;
 
-    status = YCPSWASYN::YCPSWASYNInit(rootPath, &p, named_root);
+    status = YCPSWASYN::YCPSWASYNInit(rootPath, &p, namedRoot);
 
     if (status)
     {
@@ -2512,7 +2521,7 @@ static const iocshArg confArg1 =    { "rootPath",           iocshArgString };
 static const iocshArg confArg2 =    { "recordPrefix",       iocshArgString };
 static const iocshArg confArg3 =    { "autoGenerationMode", iocshArgInt    };
 static const iocshArg confArg4 =    { "loadDictionary",     iocshArgString};
-static const iocshArg confArg5 =    { "named_root (optional)", iocshArgString};
+static const iocshArg confArg5 =    { "namedRoot",          iocshArgString};
 
 static const iocshArg * const confArgs[] =
 {
@@ -2528,8 +2537,7 @@ static const iocshFuncDef configFuncDef = {"YCPSWASYNConfig", 6, confArgs};
 
 static void configCallFunc(const iocshArgBuf *args)
 {
-    YCPSWASYNConfig(args[0].sval, args[1].sval, args[2].sval, args[3].ival, args[4].sval,
-                    (args[5].sval && strlen(args[5].sval))?args[5].sval: NULL);
+    YCPSWASYNConfig(args[0].sval, args[1].sval, args[2].sval, args[3].ival, args[4].sval, args[5].sval);
 }
 
 // YCPSWASYNSetDefaultScan
