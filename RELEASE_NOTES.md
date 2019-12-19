@@ -3,6 +3,10 @@
 Release note fot the YPCSWASYN EPICS module.
 
 ## Releases:
+* __R3.3.0__: 2019-12-19 J. Vasquez
+  * Update yamlLoader to version R2.0.0, and add support for
+    its new feature to support multiple roots.
+
 * __R3.2.1__: 2019-11-18 K. Kim
   * build against asyn R4.32-1.0.0
 
@@ -15,24 +19,24 @@ Release note fot the YPCSWASYN EPICS module.
   * build with cpsw/framework R4.2.0 and yamlLoader R1.1.4
 
 * __R3.1.1__: 2019-07-15 J. Vasquez
-  * Some templates were missing the ":" after "$(P)", which was 
-    added back in R3.0.1 to be backward compatible with previous 
+  * Some templates were missing the ":" after "$(P)", which was
+    added back in R3.0.1 to be backward compatible with previous
     versions.
 
 * __R3.1.0__: 2019-06-25 K. Kim
   * build with cpsw/framework R4.1.2 and yamlLoader R1.1.3
 
 * __R3.0.5__: 2019-02-28 J. Vasquez
-  * Bug fix: key comparison must be done with std::string::compare 
+  * Bug fix: key comparison must be done with std::string::compare
     to search for exact matches.
-  * Minor clean ups. 
+  * Minor clean ups.
 
 * __R3.0.4__: 2018-11-08 J. Vasquez
   * build against:
     - cpsw/framework -> R3.6.6, which implies:
       - boost -> 1.64.0
       - yaml-cpp -> yaml-cpp-0.5.3_boost-1.64.0
-    - asyn -> R4.31.0-0.1.0, 
+    - asyn -> R4.31.0-0.1.0,
     - yamlLoader -> R1.1.2
 
 * __R3.0.3__: 2018-10-29 K. Kim
@@ -44,10 +48,10 @@ Release note fot the YPCSWASYN EPICS module.
   * build against asyn/R4.32-1.0.0
 
 * __R3.0.1__: 2018-06-13 J. Vasquez
-  * Add ":" between "$(P)" and "$(R)" macros on the templates use 
-    with dictionarie (named "Register*.templates"), in order to be 
+  * Add ":" between "$(P)" and "$(R)" macros on the templates use
+    with dictionarie (named "Register*.templates"), in order to be
     backward compatible with previous versions.
-  * Do not call exit() if sched_setscheduler or mlockall fail. 
+  * Do not call exit() if sched_setscheduler or mlockall fail.
     This will allow IOC to run even if the user do not have the right
     privileges.
 
@@ -57,7 +61,7 @@ Release note fot the YPCSWASYN EPICS module.
     (1: PV names using maps as before, 2: using new hashed names).
     See README.autoPVGeneration for more information.
   * The signature of YCPSWASYNConfig changed in order to have fewer
-    parameters (See README.configureDriver for more information): 
+    parameters (See README.configureDriver for more information):
     - It doesn't accept anymore a YAML file and IP address.
       The yamlLoader module must be used instead.
     - The PV name max lenght was a default value of 60, and it can
