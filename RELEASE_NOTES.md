@@ -3,6 +3,9 @@
 Release note fot the YPCSWASYN EPICS module.
 
 ## Releases:
+* __R3.3.1__: 2020-01-29 K. Kim
+  * build with yamlLoader R2.1.0, cpsw/framework R4.4.1 and buildroot-2019.08
+
 * __R3.3.0__: 2019-12-19 J. Vasquez
   * Update yamlLoader to version R2.0.0, and add support for
     its new feature to support multiple roots.
