@@ -14,7 +14,7 @@ Go to the CPSW and YAML go to the official [confluence page about CPSW](https://
 
 ## PV Naming
 
-PVs are automatically generated for all registers defined on the YAML files. There are 2 mode of autogeneratio of the PV names, depending on the *AUTO_GEN_MODE* mode passed to the driver (see **README.configureDriver**):
+PVs are automatically generated for all registers defined on the YAML files. There are 2 mode of intergeneration of the PV names, depending on the `AUTO_GEN_MODE` mode passed to the driver (see **README.configureDriver**):
 
 ### PV names based on mappings (AUTO_GEN_MODE = 1)
 
@@ -22,46 +22,48 @@ The PV names are calculated based on the register path, following the mapping de
 - map
 - map_top
 
-These file location can be especified with the driver's argument *MAP_FILE_PATH*. If the argument is empty, the default location is <TOP>/yaml.
+These file location can be specified with the driver's argument `MAP_FILE_PATH`. If the argument is empty, the default location is `<TOP>/yaml`.
 
-Each device name, from right to left, in the path is substitute by its map on the “map” or “map_top” file. The difference is that if it finds the name on “map_top” the substitution ends and the PV name is completed.
+Each device name, from right to left, in the path is substitute by its map on the `map` or `map_top` file. The difference is that if it finds the name on `map_top` the substitution ends and the PV name is completed.
 
 If the device is not found on the maps, the device name is truncated to 3 chars.
 
 The register name at the tip of the path is left unmodified.
 
 A post-fix is added to the PV name based on the type of register:
-- ":Rd" for RO registers
-- ":St" for RW registers
-- ":Ex" for Command registers
-- ":16" for stream data interpreted as 16-bit words
-- ":32" for stream data interpreted as 32-bit words
+- `:Rd` for RO registers
+- `:St` for RW registers
+- `:Ex` for Command registers
+- `:16` for stream data interpreted as 16-bit words
+- `:32` for stream data interpreted as 32-bit words
 
-**Note:** RW register must be written using its *:St PV and read back using its *:Rd PV
+**Note:** RW register must be written using its `:St` PV and read back using its `:Rd` PV.
 
 
 For example, the PV for the register
-
-        /mmio/DigFpga/AmcCarrierCore/AxiVersion/BuildStamp
+```
+/mmio/DigFpga/AmcCarrierCore/AxiVersion/BuildStamp
+```
 
 is
+```
+${P}C:AV:BuildStamp:Rd
+```
 
-        ${P}C:AV:BuildStamp:Rd
-
-**Note:** the macro ${P} is defined via argument *PREFIX* on CPSWASYNConfig():
-         if the respective argument is a non-empty string then ':' is added.
+**Note:** the macro `${P}` is defined via argument `PREFIX` on `CPSWASYNConfig()`:
+         if the respective argument is a non-empty string then `:` is added.
 
 ### Hashed PV Names (AUTO_GEN_MODE = 2)
 
 The driver computes a SHA1 hash over a string composed by:
-- The prefix especified using the *PREFIX* driver's argument,
+- The prefix specified using the `PREFIX` driver's argument,
 - the complete register path,
 - the post-fix, based in the type of register
-  - "Rd" for RO registers
-  - "St" for RW registers
-  - "Ex" for Command registers
-  - "16" for stream data interpreted as 16-bit words
-  - "32" for stream data interpreted as 32-bit words
+  - `Rd` for RO registers
+  - `St` for RW registers
+  - `Ex` for Command registers
+  - `16` for stream data interpreted as 16-bit words
+  - `32` for stream data interpreted as 32-bit words
 
         [PREFIX]REGISTER_PATH[POST-FIX]
 
@@ -74,20 +76,25 @@ long). The final PV name is obtained by truncating the SHA1 (at the end) to the 
 E.g., a prefix `PREFIX` and RO register path `/mmio/something[2]/reg[0-15]` computes to a SHA1
 sum (over `PREFIX/mmio/something[2]/reg[0-15]Rd`)
 
-         DD9B9EAAB711EB22FE04B7690BE42AC5A35C29C5
+```
+DD9B9EAAB711EB22FE04B7690BE42AC5A35C29C5
+```
 
 If the register is RW, then an additional PV will be generated, and its name will be computed over
 `PREFIX/mmio/something[2]/reg[0-15]St` resulting in:
 
-         DED03BD0F70CEE1ADA33FCD83A8FCE59B6112FB9
+```
+DED03BD0F70CEE1ADA33FCD83A8FCE59B6112FB9
+```
 
 Knowing the full register path and prefix, an application may thus compute the hashed record name.
 
 ## Arrays of Hubs
 
 Arrays of Hubs, as in
-
-         /mmio/somehub[0-3]/somereg[0-15]
+```
+/mmio/somehub[0-3]/somereg[0-15]
+```
 
 are flattened out. In the above example four PVs would be generated (one for each instance of `somehub`),
 each holding 16 values.
@@ -98,7 +105,7 @@ Registers, i.e., 'leaves' are always left as arrays.
 
 For each stream data interface, two templates will be loaded. One template will present the data as 16-bit values, while the other one will present the same data as 32-bit values. In both case the data will be available in waveform PVs.
 
-For each waveform PV, a subArray PV will also be loaded, so a subset of data points can be selected. The subArray related to the 16-bit waveform will have a post-fix "SS" (Subarray Short) while the subArray related to the 32-bit waveform will have a post-fix "SL" (Subarray Long).
+For each waveform PV, a subArray PV will also be loaded, so a subset of data points can be selected. The subArray related to the 16-bit waveform will have a post-fix `SS` (Sub-array Short) while the subArray related to the 32-bit waveform will have a post-fix `SL` (Sub-array Long).
 
 ## Debug information
 
@@ -108,11 +115,10 @@ when the IOC runs, it creates 4 files:
 - `<PORT_NAME>_<PREFIX>_pvList.txt`         with all the names of the PVs that it created
 - `<PORT_NAME>_<PREFIX>_keysNotFound.txt`   with the name of devices that it didn’t find in the maps
 
-<PORT_NAME> is the port name passed to YCPSWASYNConfig(). <PREFIX> is the record prefix
-passed to YCPSWASYNConfig() (`_` separator is omitted if PREFIX is empty).
+`<PORT_NAME>` is the port name passed to `YCPSWASYNConfig()`. `<PREFIX>` is the record prefix
+passed to `YCPSWASYNConfig()` (`_` separator is omitted if PREFIX is empty).
 
-By default, these files are created on the /tmp directory. But this location can be changed using the function **YCPSWASYNSetDebugFilePath**. See **README.configureDriver.md**
-for more information.
+By default, these files are created on the `/tmp` directory. But this location can be changed using the function `YCPSWASYNSetDebugFilePath`. See [README.configureDriver.md](README.configureDriver.md) for more information.
 
 ## Record types and fields
 

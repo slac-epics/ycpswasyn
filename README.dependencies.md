@@ -77,7 +77,7 @@ yaml-cpp_DIR = $(YAML_LIB)
 USR_LIBS_Linux += cpsw yaml-cpp
 # ======================================================
 
-# ayn yamlLoader DBD
+# asyn yamlLoader DBD
 xxx_DBD += asyn.dbd
 xxx_DBD += yamlLoader.dbd
 
