@@ -77,9 +77,8 @@ std::string  YCPSWASYN::debugFilePath    = "/tmp/";
 
 YCPSWASYN::YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int autogenerationMode, const char* dictionary)
     : asynPortDriver(
-        portName,
-        MAX_SIGNALS,
-        NUM_PARAMS,
+        portName,                                                                                   // Port Name
+        MAX_SIGNALS,                                                                                // Max Address
         asynInt32Mask | asynDrvUserMask | asynInt16ArrayMask | asynInt32ArrayMask | asynOctetMask | \
         asynFloat64ArrayMask | asynUInt32DigitalMask | asynFloat64Mask,                             // Interface Mask
         asynInt16ArrayMask | asynInt32ArrayMask | asynInt32Mask | asynUInt32DigitalMask,            // Interrupt Mask
