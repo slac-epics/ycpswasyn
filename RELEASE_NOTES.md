@@ -3,6 +3,10 @@
 Release note fot the YPCSWASYN EPICS module.
 
 ## Releases:
+* __R3.3.2__: 2020-03-31 J. Vasquez
+  * Bug fix: writeUInt32Digital processes writes to ScaVals twice.
+    Add missing `else` statement.
+
 * __R3.3.1__: 2020-01-29 K. Kim
   * build with yamlLoader R2.1.0, cpsw/framework R4.4.1 and buildroot-2019.08
 
