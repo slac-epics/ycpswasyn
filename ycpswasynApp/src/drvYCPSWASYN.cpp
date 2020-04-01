@@ -77,9 +77,8 @@ std::string  YCPSWASYN::debugFilePath    = "/tmp/";
 
 YCPSWASYN::YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int autogenerationMode, const char* dictionary)
     : asynPortDriver(
-        portName,
-        MAX_SIGNALS,
-        NUM_PARAMS,
+        portName,                                                                                   // Port Name
+        MAX_SIGNALS,                                                                                // Max Address
         asynInt32Mask | asynDrvUserMask | asynInt16ArrayMask | asynInt32ArrayMask | asynOctetMask | \
         asynFloat64ArrayMask | asynUInt32DigitalMask | asynFloat64Mask,                             // Interface Mask
         asynInt16ArrayMask | asynInt32ArrayMask | asynInt32Mask | asynUInt32DigitalMask,            // Interrupt Mask
@@ -101,7 +100,7 @@ YCPSWASYN::YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int
     autogenerationMode_(autogenerationMode)
 {
 
-    // In mode 1 (autogeneration using maps, check the PV name length respect to the prefix's
+    // In mode 1 (auto-generation using maps, check the PV name length respect to the prefix's
     if ( ( autogenerationMode_ == 1 ) && ( recordNameLenMax <= ( recordPrefix_.length() + 4 ) ) )
     {
         fprintf( stderr, "Error: PV name length (%d) must be greater than the length of the prefix (%zu) + 4\n", recordNameLenMax, recordPrefix_.length() );
@@ -116,7 +115,7 @@ YCPSWASYN::YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int
 
     loadDBFromFile(dictionary);
 
-    // Create parameters and load records relted to save/load default funcitons
+    // Create parameters and load records related to save/load default functions
     createParam(DEV_CONFIG, loadConfigString,       asynParamInt32,         &loadConfigValue_);
     createParam(DEV_CONFIG, saveConfigString,       asynParamInt32,         &saveConfigValue_);
     createParam(DEV_CONFIG, loadConfigFileString,   asynParamOctet,         &loadConfigFileValue_);
@@ -228,7 +227,8 @@ void YCPSWASYN::streamTask(Stream stm, int param16index, int param32index)
                  asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, "%s: Received frame too small\n", driverName_);
             }
         }
-    } catch( IntrError e )
+    }
+    catch(IntrError &e)
     {
         delete[] buf;
     }
@@ -312,7 +312,7 @@ int YCPSWASYN::YCPSWASYNInit(const char* rootPath, Path *p, const char* namedRoo
 /////////////////////////////////////////////////////////////////////////////////////////////
 // int YCPSWASYN::LoadRecord(int regType, const recordParams& rp, const string& dbParams); //
 //                                                                                         //
-// - Load a EPICS record with the provided infomation                                      //
+// - Load a EPICS record with the provided information                                     //
 /////////////////////////////////////////////////////////////////////////////////////////////
 //template <typename T>
 int YCPSWASYN::LoadRecord(int regType, const recordParams& rp, const string& dbParams, Path p)
@@ -320,7 +320,7 @@ int YCPSWASYN::LoadRecord(int regType, const recordParams& rp, const string& dbP
     int paramIndex;
     stringstream dbParamsLocal;
 
-    // Create list of paramater to pass to the  dbLoadRecords function
+    // Create list of parameter to pass to the  dbLoadRecords function
     dbParamsLocal.str("");
     dbParamsLocal << "PORT=" << portName_;
     dbParamsLocal << ",ADDR=" << regType;
@@ -329,7 +329,7 @@ int YCPSWASYN::LoadRecord(int regType, const recordParams& rp, const string& dbP
     dbParamsLocal << ",DESC=" << rp.recDesc;
     dbParamsLocal << dbParams;
 
-    // Create the asyn paramater
+    // Create the asyn parameter
     createParam(regType, rp.paramName.c_str(), rp.paramType, &paramIndex);
 
     // Create the record
@@ -339,7 +339,7 @@ int YCPSWASYN::LoadRecord(int regType, const recordParams& rp, const string& dbP
     pvDumpFile->write("%s%*s", rp.recName.c_str(), recordNameLenMax - rp.recName.size() + 4, "");
     pvDumpFile->write("# %s (%s)\n", getNameWithoutLeafIndexes(p).c_str(), regInterfaceTypeNames[regType]);
 
-    // Incrfement the number of created records
+    // Increment the number of created records
     ++recordCount;
 
     // Return the parameter index
@@ -511,7 +511,7 @@ int YCPSWASYN::CreateRecord(const T& reg)
 
     // Create the argument list used when loading the record
     recordParams trp;
-    // + record name (and readback PV name if any)
+    // + record name (and read back PV name if any)
     if (regType == DEV_REG_RW)
     {
         trp.recName = YCPSWASYN::generateRecordName(p, "St");
@@ -530,7 +530,7 @@ int YCPSWASYN::CreateRecord(const T& reg)
     if (regType == DEV_REG_RO)
         dbParams += getEpicsScan(scan);
 
-    // Look trough the register properties and create the appropiate record type
+    // Look trough the register properties and create the appropriate record type
     if ((!isEnum) || (isEnum->getNelms() > DB_MBBX_NELEM_MAX))
     {
         if (nElements == 1)
@@ -729,7 +729,7 @@ int YCPSWASYN::CreateRecord(const Stream& reg, const Path& p_)
 
     p16StmIndex = LoadRecord(regType, trp, dbParams, p);
 
-    // Crteate Acquisition Thread
+    // Create Acquisition Thread
     asynStatus status;
     ThreadArgs *arglist = new ThreadArgs();
     arglist->pPvt = this;
@@ -776,7 +776,7 @@ int YCPSWASYN::CreateRecordFloat(const T& reg)
     // Get the child at the tail
     Child c = p->tail();
 
-    // Het the register type
+    // Get the register type
     int regType = getRegType(reg);
     int arrType;
 
@@ -786,7 +786,7 @@ int YCPSWASYN::CreateRecordFloat(const T& reg)
 
     // Create the argument list used when loading the record
     recordParams trp;
-    // + record name (and readback PV name if any)
+    // + record name (and read back PV name if any)
     if (regType == DEV_FLOAT_RW)
     {
         trp.recName = YCPSWASYN::generateRecordName(p, "St");
@@ -805,7 +805,7 @@ int YCPSWASYN::CreateRecordFloat(const T& reg)
     if (regType == DEV_FLOAT_RO)
         dbParams += getEpicsScan(scan);
 
-    // Look trough the register properties and create the appropiate record type
+    // Look trough the register properties and create the appropriate record type
     if (nElements == 1)
     {
         // Create ax record
@@ -929,7 +929,7 @@ std::string YCPSWASYN::generateRecordName(const Path& p, const std::string& suff
 {
     std::string resultPrefix;
 
-    // Autogeneration mode 2: generate hashed names
+    // Auto-generation mode 2: generate hashed names
     if (autogenerationMode_ == 2)
     {
         char          mdstr[SHA1_HEX_SIZE];
@@ -1032,7 +1032,7 @@ std::string YCPSWASYN::generateRecordName(const Path& p, const std::string& suff
             childName = childName.substr(0,DB_NAME_PATH_TRIM_SIZE);
         }
 
-        // Updte the prefix up to now
+        // Update the prefix up to now
         resultPrefix = childName + childIndexStr + ":" + resultPrefix;
 
         // If we found a key on the top map, stop the creation of the prefix
@@ -1058,7 +1058,7 @@ std::string YCPSWASYN::generateRecordName(const Path& p, const std::string& suff
 /////////////////////////////////////////
 // void YCPSWASYN::loadConfiguration() //
 //                                     //
-// - Load configurtion from YAML       //
+// - Load configuration from YAML      //
 /////////////////////////////////////////
 void YCPSWASYN::loadConfiguration()
 {
@@ -1073,7 +1073,7 @@ void YCPSWASYN::loadConfiguration()
     }
     catch (CPSWError &e)
     {
-        // If unsuccessfull, send error message, update status and return
+        // If unsuccessful, send error message, update status and return
         printf("CPSW Error: Root path for loading configuration \"%s\" not found\n", e.getInfo().c_str());
         setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_ERROR, PROCESS_CONFIG_MASK);
         return;
@@ -1084,7 +1084,7 @@ void YCPSWASYN::loadConfiguration()
 
     if (!loadFile.is_open())
     {
-        // If unsuccessfull, update status and return
+        // If unsuccessful, update status and return
         setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_ERROR, PROCESS_CONFIG_MASK);
         return;
     }
@@ -1108,7 +1108,7 @@ void YCPSWASYN::loadConfiguration()
     }
     catch (CPSWError &e)
     {
-        // If unsuccessfull, send error message
+        // If unsuccessful, send error message
         printf("CPSW Error writing the configuration: %s\n", e.getInfo().c_str());
         entryCount = 0;
 
@@ -1126,7 +1126,7 @@ void YCPSWASYN::loadConfiguration()
 /////////////////////////////////////////
 // void YCPSWASYN::saveConfiguration() //
 //                                     //
-// - Save configurtion to YAML         //
+// - Save configuration to YAML        //
 /////////////////////////////////////////
 void YCPSWASYN::saveConfiguration()
 {
@@ -1141,7 +1141,7 @@ void YCPSWASYN::saveConfiguration()
     }
     catch (CPSWError &e)
     {
-        // If unsuccessfull, send error message, update status and return
+        // If unsuccessful, send error message, update status and return
         printf("CPSW Error: Root path for saving configuration \"%s\" not found\n", e.getInfo().c_str());
         setUIntDigitalParam(DEV_CONFIG, saveConfigStatusValue_, CONFIG_STAT_ERROR, PROCESS_CONFIG_MASK);
         return;
@@ -1152,7 +1152,7 @@ void YCPSWASYN::saveConfiguration()
 
     if (!saveFile.is_open())
     {
-        // If unsuccessfull, update status and return
+        // If unsuccessful, update status and return
         setUIntDigitalParam(DEV_CONFIG, saveConfigStatusValue_, CONFIG_STAT_ERROR, PROCESS_CONFIG_MASK);
         return;
     }
@@ -1176,7 +1176,7 @@ void YCPSWASYN::saveConfiguration()
     }
     catch (CPSWError &e)
     {
-        // If unsuccessfull, send error message
+        // If unsuccessful, send error message
         printf("CPSW Error reading the configuration: %s\n", e.getInfo().c_str());
         entryCount = 0;
 
@@ -1245,13 +1245,13 @@ int YCPSWASYN::autogenerateDatabase()
     std::string pvDumpFileName       = pre + PV_DUMP_FILE_NAME;
     std::string keysNotFoundFileName = pre + KEYS_NOT_FOUND_FILE_NAME;
 
-    // Mapping files are only need when autogeneration is used in mode 1
+    // Mapping files are only need when auto generation is used in mode 1
     if (autogenerationMode_ == 1)
     {
         std::string mapFileName;
         std::string mapTopFileName;
 
-        // Create file names for the wubstitution map list
+        // Create file names for the substitution map list
         mapFileName = string(mapFilePath) + string(MAP_FILE_NAME);
         mapTopFileName = string(mapFilePath) + string(MAP_TOP_FILE_NAME);
 
@@ -1297,10 +1297,10 @@ int YCPSWASYN::autogenerateDatabase()
     }
 
     // Open the PV list file
-    printf("Opening file \"%s\" for dumping pv list.\n", pvDumpFileName.c_str());
+    printf("Opening file \"%s\" for dumping PV list.\n", pvDumpFileName.c_str());
     pvDumpFile  = new YCPSWASYNRAIIFile(pvDumpFileName, "w");
 
-    // Generate the EPICS databse from the root path
+    // Generate the EPICS database from the root path
     printf("Generating EPICS database from yaml file...\n");
     try
     {
@@ -1366,7 +1366,7 @@ void YCPSWASYN::addParameter(const Stream& reg, const std::string& paramName, co
     createParam(DEV_STM, paramName.c_str(), paramType, &paramIndex32);
     createParam(DEV_STM, paramName16.c_str(), paramType, &paramIndex16);
 
-    // Crteate Acquisition Thread
+    // Create Acquisition Thread
     asynStatus status;
     ThreadArgs *arglist = new ThreadArgs();
     arglist->pPvt = this;
@@ -1390,7 +1390,7 @@ void YCPSWASYN::addParameter(const Stream& reg, const std::string& paramName, co
 
 /////////////////////////////////////////////////////////////////////////////////////////
 // void YCPSWASYN::createRegisterParameter(const T& reg, const std::string& paramName) //
-// - Creates a asyn paramter for the given register                                    //
+// - Creates a asyn parameter for the given register                                   //
 //                                                                                     //
 /////////////////////////////////////////////////////////////////////////////////////////
 template <typename T>
@@ -1431,7 +1431,7 @@ void YCPSWASYN::createRegisterParameter(const Stream& reg, const std::string& pa
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // void YCPSWASYN::createRegisterParameterFloat(const T& reg, const std::string& paramName) //
-// - Creates a asyn paramter for the given float register                                   //
+// - Creates a asyn parameter for the given float register                                  //
 //                                                                                          //
 //////////////////////////////////////////////////////////////////////////////////////////////
 template <typename T>
@@ -1586,9 +1586,9 @@ int YCPSWASYN::loadDBFromFile(const char* dictionary)
     return 0;
 }
 
-/////////////////////////////////////////////
-// + Methods overrided from asynPortDriver //
-/////////////////////////////////////////////
+//////////////////////////////////////////////
+// + Methods overridden from asynPortDriver //
+//////////////////////////////////////////////
 asynStatus YCPSWASYN::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int addr;
@@ -1680,7 +1680,7 @@ asynStatus YCPSWASYN::readInt32(asynUser *pasynUser, epicsInt32 *value)
                 *value = (epicsInt32)u32;
                 setIntegerParam(addr, function, (int)u32);
             }
-            else if (DEV_CONFIG)
+            else if (addr == DEV_CONFIG)
             {
                 getIntegerParam(addr, function, (int*)value);
             }
@@ -2278,7 +2278,7 @@ asynStatus YCPSWASYN::readUInt32Digital(asynUser *pasynUser, epicsUInt32 *value,
                 *value = (epicsInt32)u32;
                 setUIntDigitalParam(addr, function, (epicsUInt32)u32, mask);
             }
-            else if (DEV_CONFIG)
+            else if (addr == DEV_CONFIG)
             {
                 getUIntDigitalParam(addr, function, value, mask);
             }
@@ -2489,9 +2489,9 @@ std::string getNameWithoutLeafIndexes(const Path& p)
     return s;
 }
 
-/////////////////////////////////////////////
-// - Methods overrided from asynPortDriver //
-/////////////////////////////////////////////
+//////////////////////////////////////////////
+// - Methods overridden from asynPortDriver //
+//////////////////////////////////////////////
 
 ////////////////////////////////////
 // Driver configuration functions //

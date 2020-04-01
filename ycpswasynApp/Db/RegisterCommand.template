@@ -2,12 +2,12 @@
 # Record example for a SequenceCommand register.
 # It is a bo record with type asynUInt32Digital.
 # The OUT field has the form @asynMask(PORT,ADDR,MASK)PARAM where:
-#  - PORT  : The asyn port name. It must match the port name given 
+#  - PORT  : The asyn port name. It must match the port name given
 #            when calling "YCPSWASYNConfig" on st.cmd
-#  - PARAM : The asyn paramter name. It must be defined in the 
-#            dictionary file and assigned to a register 
-#  - MASK  : It is alwasy 1 (we only have 1-bit commands)
-#  - ADDR  : Addrres based on the type of register interface. 
+#  - PARAM : The asyn parameter name. It must be defined in the
+#            dictionary file and assigned to a register
+#  - MASK  : It is always 1 (we only have 1-bit commands)
+#  - ADDR  : Address based on the type of register interface.
 #            For SequenceCommand is 4
 #==================================================================
 

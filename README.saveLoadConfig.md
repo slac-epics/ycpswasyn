@@ -8,7 +8,7 @@ This document describes how to save and load the registers configuration values 
 
 ## Background
 
-You should be familiar with CPSW and how hierarchies are defined in YAML. 
+You should be familiar with CPSW and how hierarchies are defined in YAML.
 
 Go to the CPSW and YAML go to the official [confluence page about CPSW](https://confluence.slac.stanford.edu/display/ppareg/CPSW%3A+HowTo+User+Guide), or take a look at the README files in the CPSW framework package area.
 
@@ -17,7 +17,7 @@ Go to the CPSW and YAML go to the official [confluence page about CPSW](https://
 
 YCPSWASYN uses the following Asyn parameter in order to call the save and load function as well as to give the necessary parameters and :
 
-| Asyn Parameter      | DTYP               | Description            
+| Asyn Parameter      | DTYP               | Description
 |:--------------------|:------------------:|:--------------------------------------------------------------------------
 | CONFIG_LOAD         | asynInt32          | Start the loading of the configuration
 | CONFIG_LOAD_FILE    | asynOctetWrite     | Name of the YAML configuration file to be loaded
@@ -29,10 +29,10 @@ YCPSWASYN uses the following Asyn parameter in order to call the save and load f
 
 ## EPICS Database
 
-In order to use the provided Asyn parameters, you need to attached then to appropriate records. This is done in the standard way AsynPortDriver does it, that is: use an Asyn device type on the record DTYP field, and define the INP or OUT fields following the AsynPortDriver convention as @asyn(PORT, ADDR, TIMEOUT)ASYN_PARAMETER_NAME or @asynMask(PORT, ADDR, MASK)ASYN_PARAMETER_NAME. You must use the parameter name defined on the previous table.
+In order to use the provided Asyn parameters, you need to attached then to appropriate records. This is done in the standard way AsynPortDriver does it, that is: use an Asyn device type on the record `DTYP` field, and define the `INP` or `OUT` fields following the AsynPortDriver convention as `@asyn(PORT, ADDR, TIMEOUT)ASYN_PARAMETER_NAME` for parameters of type `asynInt32`, or `@asynMask(PORT, ADDR, MASK)ASYN_PARAMETER_NAME` for parameters of type `asynUInt32Digital`. You must use the parameter name defined in the previous table.
 
-For this function, you should use ADDR = 6.
+For this function, you should use `ADDR` set to `6`.
 
 ### Example
 
-A database example is given as a reference. It it located in <TOP>/ycpswasyn/Db/saveLoadConfig.template
+A database example is given as a reference. It it located in `<TOP>/ycpswasyn/Db/saveLoadConfig.template`.

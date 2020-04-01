@@ -2,11 +2,11 @@
 # Record example for an IntField, RW, 1 element, no encoding register.
 # It is a longout record with type asynInt32.
 # The OUT field has the form @asyn(PORT,ADDR)PARAM where:
-#  - PORT  : The asyn port name. It must match the port name given 
+#  - PORT  : The asyn port name. It must match the port name given
 #            when calling "YCPSWASYNConfig" on st.cmd
-#  - PARAM : The asyn paramter name. It must be defined in the 
+#  - PARAM : The asyn parameter name. It must be defined in the
 #            dictionary file and assigned to a register.
-#  - ADDR  : Addrres based on the type of register.
+#  - ADDR  : Address based on the type of register.
 #            For IntField, RW, without encoding is 1.
 #==================================================================
 
