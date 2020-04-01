@@ -8,6 +8,8 @@ Release note fot the YPCSWASYN EPICS module.
     Fixed by adding a missing `else` statement.
   * Bug fix: `readInt32` and `readUInt32Digital` methods had a typo in if
     statements.
+  * Capture the return code from setIntegerParam and similar function
+    calls, and use it to determine if the asyn method call succeed.
   * Add missing newline at end of template files.
   * Fix typos, misspelled words, and formatting errors.
 
