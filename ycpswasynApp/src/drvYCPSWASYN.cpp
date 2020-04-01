@@ -228,7 +228,8 @@ void YCPSWASYN::streamTask(Stream stm, int param16index, int param32index)
                  asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, "%s: Received frame too small\n", driverName_);
             }
         }
-    } catch( IntrError e )
+    }
+    catch(IntrError &e)
     {
         delete[] buf;
     }
