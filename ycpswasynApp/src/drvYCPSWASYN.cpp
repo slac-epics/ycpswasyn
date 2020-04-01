@@ -1672,17 +1672,17 @@ asynStatus YCPSWASYN::readInt32(asynUser *pasynUser, epicsInt32 *value)
             {
                 ro[function]->getVal(&u32, 1);
                 *value = (epicsInt32)u32;
-                setIntegerParam(addr, function, (int)u32);
+                status = setIntegerParam(addr, function, (int)u32);
             }
             else if (addr == DEV_REG_RW)
             {
                 rw[function]->getVal(&u32, 1);
                 *value = (epicsInt32)u32;
-                setIntegerParam(addr, function, (int)u32);
+                status = setIntegerParam(addr, function, (int)u32);
             }
             else if (addr == DEV_CONFIG)
             {
-                getIntegerParam(addr, function, (int*)value);
+                status = getIntegerParam(addr, function, (int*)value);
             }
             else
                 status = asynPortDriver::readInt32(pasynUser, value);
@@ -2263,24 +2263,24 @@ asynStatus YCPSWASYN::readUInt32Digital(asynUser *pasynUser, epicsUInt32 *value,
                 ro[function]->getVal(&u32, 1);
                 u32 &= mask;
                 *value = (epicsInt32)u32;
-                setUIntDigitalParam(addr, function, (epicsUInt32)u32, mask);
+                status = setUIntDigitalParam(addr, function, (epicsUInt32)u32, mask);
             }
             else if (addr == DEV_REG_RW)
             {
                 rw[function]->getVal(&u32, 1);
                 u32 &= mask;
                 *value = (epicsInt32)u32;
-                setUIntDigitalParam(addr, function, (epicsUInt32)u32, mask);
+                status = setUIntDigitalParam(addr, function, (epicsUInt32)u32, mask);
             }
             else if (addr == DEV_CMD)
             {
                 u32 = 0;
                 *value = (epicsInt32)u32;
-                setUIntDigitalParam(addr, function, (epicsUInt32)u32, mask);
+                status = setUIntDigitalParam(addr, function, (epicsUInt32)u32, mask);
             }
             else if (addr == DEV_CONFIG)
             {
-                getUIntDigitalParam(addr, function, value, mask);
+                status = getUIntDigitalParam(addr, function, value, mask);
             }
 
             else
