@@ -1680,7 +1680,7 @@ asynStatus YCPSWASYN::readInt32(asynUser *pasynUser, epicsInt32 *value)
                 *value = (epicsInt32)u32;
                 setIntegerParam(addr, function, (int)u32);
             }
-            else if (DEV_CONFIG)
+            else if (addr == DEV_CONFIG)
             {
                 getIntegerParam(addr, function, (int*)value);
             }
@@ -2278,7 +2278,7 @@ asynStatus YCPSWASYN::readUInt32Digital(asynUser *pasynUser, epicsUInt32 *value,
                 *value = (epicsInt32)u32;
                 setUIntDigitalParam(addr, function, (epicsUInt32)u32, mask);
             }
-            else if (DEV_CONFIG)
+            else if (addr == DEV_CONFIG)
             {
                 getUIntDigitalParam(addr, function, value, mask);
             }
