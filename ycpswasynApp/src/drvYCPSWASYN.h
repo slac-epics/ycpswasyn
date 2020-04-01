@@ -46,11 +46,11 @@
 #define STREAM_KEY      "Stream"        // Stream
 #define STREAM_SUBS     ""
 
-#define DB_NAME_PREFIX_LENGTH_MAX   10      // Max lenght of the record prefix name provided by the user
-#define DB_DESC_LENGTH_MAX          28      // Max lenght of the record description field
+#define DB_NAME_PREFIX_LENGTH_MAX   10      // Max length of the record prefix name provided by the user
+#define DB_DESC_LENGTH_MAX          28      // Max length of the record description field
 #define DB_MBBX_NELEM_MAX           16      // Max number of menu entries on a MBBx record
 #define DB_NAME_PATH_TRIM_SIZE      3       // Number of chars that the name of the device will be trim to
-#define DB_NAME_SUFFIX_LENGHT       3       // Length of the record name sufix
+#define DB_NAME_SUFFIX_LENGHT       3       // Length of the record name suffix
 
 // Record and PV list dump file definitions
 #define DUMP_FILE_PATH              "/tmp/"
@@ -182,7 +182,7 @@ const char *templateList[DEV_SIZE - 1][REG_SIZE-1] =
     {"db/bo.template",          "",                     "",                                 "",                             ""},                            //DEV_CMD
 };
 
-// Record template list (oly for streans)
+// Record template list (only for streams)
 const char * templateListWaforms[WF_SIZE] =
 {
     "db/waveform_stream32.template",    "db/waveform_stream16.template" //DEV_STM
@@ -222,7 +222,7 @@ struct recordParams
 #define NUM_SCALVALS        5000                            // Max number of ScalVals
 #define NUM_DOUBLEVALS      100                             // Max number of DoubleVals
 #define NUM_CMD             500                             // Max number of commands
-#define NUM_PARAMS          (NUM_SCALVALS + NUM_CMD)        // Max number of paramters
+#define NUM_PARAMS          (NUM_SCALVALS + NUM_CMD)        // Max number of parameters
 #define STREAM_MAX_SIZE     200UL*1024ULL*1024ULL           // Size of the stream buffers
 
 class YCPSWASYNRAIIFile;
@@ -251,7 +251,7 @@ class YCPSWASYN : public asynPortDriver
         virtual void        report              (FILE *fp, int details);
 
         // New Methods for this class
-        // Streamn hanlding function
+        // Stream handling function
         virtual void streamTask(Stream stm, int param16index, int param32index);
 
         // Initialization routine
@@ -262,8 +262,8 @@ class YCPSWASYN : public asynPortDriver
 
         // Default parameters, which can be changed from the IOC shell
         static double       defaultScan;      // Default SCAN value for PVs
-        static unsigned int recordNameLenMax; // Max lenght of the record name
-        static std::string  mapFilePath;      // Path to map file used in autogeneration mode
+        static unsigned int recordNameLenMax; // Max length of the record name
+        static std::string  mapFilePath;      // Path to map file used in auto-generation mode
         static std::string  debugFilePath;    // Path to dump debug information files
 
     private:
@@ -271,7 +271,7 @@ class YCPSWASYN : public asynPortDriver
         Path                                p_;                         // Path on root
         const char                          *portName_;                 // Name of the port (passed from st.cmd)
         std::string                         recordPrefix_;              // Record name prefix defined by the user (passed from st.cmd)
-        long                                nRO, nRW, nCMD, nSTM;       // Counter for RO/RW register, command and Stremas found on the YAML file
+        long                                nRO, nRW, nCMD, nSTM;       // Counter for RO/RW register, command and Streams found on the YAML file
         long                                nFO, nFW;                   // Counter for Floating point RO/RW registers
         long                                recordCount;                // Counter for the total number of register loaded
         ScalVal                             rw[NUM_SCALVALS];           // Array of ScalVals (RW)
@@ -279,7 +279,7 @@ class YCPSWASYN : public asynPortDriver
         DoubleVal                           fw[NUM_DOUBLEVALS];         // Array of DoubleVals (RW)
         DoubleVal_RO                        fo[NUM_DOUBLEVALS];         // Array of DoubleVals (RO)
         Command                             cmd[NUM_CMD];               // Array of Commands
-        YCPSWASYNRAIIFile                   *pvDumpFile;                // File with the list of Pvs
+        YCPSWASYNRAIIFile                   *pvDumpFile;                // File with the list of PVs
         YCPSWKeysNotFound                   *keysNotFound;              // Set of name of elements not found on the substitution map
         std::map<std::string, std::string>  mapTop, map;                // Substitution maps
         int                                 loadConfigValue_;           // Load configuration parameter index
@@ -294,7 +294,7 @@ class YCPSWASYN : public asynPortDriver
         std::string                         saveConfigFileName;         // Save configuration file name
         std::string                         loadConfigRootPath;         // Load configuration cpsw root
         std::string                         saveConfigRootPath;         // Save configuration cpsw root
-        int                                 autogenerationMode_;        // DB autogeneration mode
+        int                                 autogenerationMode_;        // DB auto-generation mode
 
         // Automatic generation of database from YAML definition  routine
         int autogenerateDatabase(void);
@@ -318,7 +318,7 @@ class YCPSWASYN : public asynPortDriver
         template <typename T>
         int CreateRecordFloat(const T& reg);
 
-        // Load a EPICS record with the provided infomation
+        // Load a EPICS record with the provided information
         int LoadRecord(int regType, const recordParams& rp, const std::string& dbParams, Path p);
 
         // Get the register type
@@ -345,11 +345,11 @@ class YCPSWASYN : public asynPortDriver
         template <typename T>
         void addParameter(const T& reg, const std::string& paramName, const asynParamType& paramType);
 
-        // Creates a asyn paramter for the given register
+        // Creates a asyn parameter for the given register
         template <typename T>
         void createRegisterParameter(const T& reg, const std::string& paramName);
 
-        // Creates a asyn paramter for the given float register
+        // Creates a asyn parameter for the given float register
         template <typename T>
         void createRegisterParameterFloat(const T& reg, const std::string& paramName);
 
