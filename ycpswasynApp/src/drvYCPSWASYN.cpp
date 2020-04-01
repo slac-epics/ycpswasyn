@@ -2207,7 +2207,7 @@ asynStatus YCPSWASYN::writeUInt32Digital(asynUser *pasynUser, epicsUInt32 value,
                 val |= value;
                 rw[function]->setVal((uint32_t*)&val, 1);
             }
-            if(addr == DEV_CMD)
+            else if(addr == DEV_CMD)
             {
                 cmd[function]->execute();
             }
