@@ -2031,21 +2031,25 @@ asynStatus YCPSWASYN::writeOctet (asynUser *pasynUser, const char *value, size_t
                 {
                     saveConfigFileName = std::string(value);
                     *nActual = maxChars;
+                    status = (asynStatus)setStringParam(DEV_CONFIG, saveConfigFileValue_, value);
                 }
                 else if (function == loadConfigFileValue_)
                 {
                     loadConfigFileName = std::string(value);
                     *nActual = maxChars;
+                    status = (asynStatus)setStringParam(DEV_CONFIG, loadConfigFileValue_, value);
                 }
                 else if (function == loadConfigRootValue_)
                 {
                     loadConfigRootPath = std::string(value);
                     *nActual = maxChars;
+                    status = (asynStatus)setStringParam(DEV_CONFIG, loadConfigRootValue_, value);
                 }
                 else if (function == saveConfigRootValue_)
                 {
                     saveConfigRootPath = std::string(value);
                     *nActual = maxChars;
+                    status = (asynStatus)setStringParam(DEV_CONFIG, saveConfigRootValue_, value);
                 }
                 else
                     status = writeOctet (pasynUser, value, maxChars, nActual);
