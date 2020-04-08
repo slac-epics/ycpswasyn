@@ -124,6 +124,16 @@ YCPSWASYN::YCPSWASYN(const char *portName, Path p, const char *recordPrefix, int
     createParam(DEV_CONFIG, saveConfigStatusString, asynParamUInt32Digital, &saveConfigStatusValue_);
     createParam(DEV_CONFIG, loadConfigRootString,   asynParamOctet,         &loadConfigRootValue_);
     createParam(DEV_CONFIG, saveConfigRootString,   asynParamOctet,         &saveConfigRootValue_);
+
+    // Set initial values for these parameters in the parameter library
+    setIntegerParam(DEV_CONFIG,     loadConfigValue_,     0);
+    setIntegerParam(DEV_CONFIG,     saveConfigValue_,     0);
+    setStringParam(DEV_CONFIG,      loadConfigFileValue_, "");
+    setStringParam(DEV_CONFIG,      saveConfigFileValue_, "");
+    setStringParam(DEV_CONFIG,      loadConfigRootValue_, "");
+    setStringParam(DEV_CONFIG,      saveConfigRootValue_, "");
+    setUIntDigitalParam(DEV_CONFIG, saveConfigStatusValue_, CONFIG_STAT_IDLE, PROCESS_CONFIG_MASK);
+    setUIntDigitalParam(DEV_CONFIG, loadConfigStatusValue_, CONFIG_STAT_IDLE, PROCESS_CONFIG_MASK);
 }
 
 
