@@ -3,6 +3,12 @@
 Release note fot the YPCSWASYN EPICS module.
 
 ## Releases:
+* __R3.3.3__: 2020-04-08 J. Vasquez
+  * Bug fix: Set initial values for the parameters related to save and load
+    configurations.
+  * Bug fix: Write the values passed to the `writeOctet` method into the
+    parameter library.
+
 * __R3.3.2__: 2020-04-01 J. Vasquez
   * Bug fix: `writeUInt32Digital` method writes to `ScaVal` registers twice.
     Fixed by adding a missing `else` statement.
