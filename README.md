@@ -18,3 +18,4 @@ File                          									| Description
 [README.manualPVGeneration.md](README.manualPVGeneration.md)  	| How to manually create PV for your registers.
 [README.monitorFPGAReboots.md](README.monitorFPGAReboots.md)  	| How to monitor FPGA reboots and reload configuration values.
 [README.saveLoadConfig.md](README.saveLoadConfig.md)      		| How to save and load YAML configuration files.
+[README.launchTreeGUI.md](README.launchTreeGUI.md)              | How to launch the cpswTreeGUI for the FPGA associated with an IOC.
