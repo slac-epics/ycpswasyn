@@ -4,7 +4,7 @@ Release note fot the YPCSWASYN EPICS module.
 
 ## Releases:
 * __R3.3.4__: 2021-05-10  M. Dunning
-  * Upgrade asyn: R4.32-1.0.0 -> R4.39-0.0.1
+  * Upgrade asyn: R4.32-1.0.0 -> R4.39-0.0.1, yamlLoader to R2.2.0
 
 * __R3.3.3__: 2020-04-08 J. Vasquez
   * Bug fix: Set initial values for the parameters related to save and load
