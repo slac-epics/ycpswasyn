@@ -3,7 +3,7 @@
 Release note fot the YPCSWASYN EPICS module.
 
 ## Releases:
-* __R3.3.4-br-0-1_: 2021-11-15  S. Hoobler
+* __R3.3.4-br-0-1__: 2021-11-15  S. Hoobler
   * Use R4.32-1.0.0 (to support temporary use of tprTrigger R2.5.0
     and associated modules)
 
