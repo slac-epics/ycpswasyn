@@ -3,6 +3,10 @@
 Release note fot the YPCSWASYN EPICS module.
 
 ## Releases:
+
+* __R3.3.5__: 2021-05-10  E. Williams
+  * Upgrade asyn: R4.39-0.0.1 -> R4.39-1.0.1, yamlLoader to R2.2.0
+
 * __R3.3.4__: 2021-05-10  M. Dunning
   * Upgrade asyn: R4.32-1.0.0 -> R4.39-0.0.1, yamlLoader to R2.2.0
 
