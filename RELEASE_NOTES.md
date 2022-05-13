@@ -3,6 +3,9 @@
 Release note fot the YPCSWASYN EPICS module.
 
 ## Releases:
+* __R3.3.3-1.0__: 2022-05-12 M. Skoufis
+  * Update CONFIG_SITE and add support for RHEL7
+
 * __R3.3.3__: 2020-04-08 J. Vasquez
   * Bug fix: Set initial values for the parameters related to save and load
     configurations.

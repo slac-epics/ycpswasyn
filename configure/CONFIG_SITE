@@ -21,7 +21,6 @@ CHECK_RELEASE = YES
 #   that Base is built for.
 CROSS_COMPILER_TARGET_ARCHS = linuxRT-x86_64
 
-
 # To install files into a location other than $(TOP) define
 #   INSTALL_LOCATION here.
 #INSTALL_LOCATION=</path/name/to/install/top>
@@ -54,8 +53,6 @@ STATIC_BUILD=YES
 # =============================
 # Define the archiecture versions
 # =============================
-LINUXRT_BUILDROOT_VERSION=buildroot-2019.08
-LINUX_VERSION=rhel6
 
 # ===================================
 # Support for external packages
