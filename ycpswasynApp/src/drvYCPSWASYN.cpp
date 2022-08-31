@@ -1535,6 +1535,13 @@ int YCPSWASYN::loadDBFromFile(const char* dictionary)
                     {
                         printf("ScalVal interface created for %s\n", regPath.c_str());
                         createRegisterParameter(rw_aux, paramName);
+
+                         // Temporary: This was added to ensure arrays of RW registers can be read back
+                         if (rw_aux -> getNelms() > 1 && ro_aux)
+                         {
+                             printf("ScalVal_RO interface created for %s\n", regPath.c_str());
+                             createRegisterParameter(ro_aux, paramName);
+                         }
                     }
                     else if (ro_aux)
                     {
