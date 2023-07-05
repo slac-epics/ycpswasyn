@@ -15,19 +15,10 @@
 #            For IntField, RO, without encoding is 0.
 #==================================================================
 
-record(mbbi,    "$(P):$(R)") {
-    field(DTYP, "asynUInt32Digital")
-    field(DESC, "$(DESC)")
-    field(PINI, "$(PINI)")
-    field(SCAN, "$(SCAN)")
-    field(INP,  "@asynMask($(PORT),0,$(MASK))$(PARAM)")
-    field(NOBT, "$(NOBT)")
-    field(ZRVL, "$(ZRVL)")
-    field(ONVL, "$(ONVL)")
-    field(TWVL, "$(TWVL)")
-    field(THVL, "$(THVL)")
-    field(ZRST, "$(ZRST)")
-    field(ONST, "$(ONST)")
-    field(TWST, "$(TWST)")
-    field(THST, "$(THST)")
+record(mbbiDirect, "$(P):$(R)") {
+    field(DTYP,    "asynUInt32Digital")
+    field(DESC,    "$(DESC)")
+    field(PINI,    "$(PINI)")
+    field(SCAN,    "$(SCAN)")
+    field(INP,     "@asynMask($(PORT),0,$(MASK))$(PARAM)")
 }

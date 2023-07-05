@@ -1,7 +1,7 @@
 #==================================================================
-# Record example for an IntField, RO, 1 element, no encoding,
+# Record example for reading back an IntField, RW, 1 element, no encoding,
 # enum (n-bits) register.
-#It is a mbbi record with type asynUInt32Digital.
+# It is a mbbi record with type asynUInt32Digital.
 # NOTE: This example uses just 2-bits, but you can extended to
 # use more bits, just add more xxVL and xxST filed accordingly.
 # You must set a correct number of bits on the field NOBT
@@ -12,22 +12,13 @@
 #            dictionary file and assigned to a register.
 #  - MASK  : It is (1<<NOBT)
 #  - ADDR  : Address based on the type of register.
-#            For IntField, RO, without encoding is 0.
+#            For IntField, RW, without encoding is 1.
 #==================================================================
 
-record(mbbi,    "$(P):$(R)") {
-    field(DTYP, "asynUInt32Digital")
-    field(DESC, "$(DESC)")
-    field(PINI, "$(PINI)")
-    field(SCAN, "$(SCAN)")
-    field(INP,  "@asynMask($(PORT),0,$(MASK))$(PARAM)")
-    field(NOBT, "$(NOBT)")
-    field(ZRVL, "$(ZRVL)")
-    field(ONVL, "$(ONVL)")
-    field(TWVL, "$(TWVL)")
-    field(THVL, "$(THVL)")
-    field(ZRST, "$(ZRST)")
-    field(ONST, "$(ONST)")
-    field(TWST, "$(TWST)")
-    field(THST, "$(THST)")
+record(mbbiDirect, "$(P):$(R)") {
+    field(DTYP,    "asynUInt32Digital")
+    field(DESC,    "$(DESC)")
+    field(PINI,    "$(PINI)")
+    field(SCAN,    "$(SCAN)")
+    field(INP,     "@asynMask($(PORT),1,$(MASK))$(PARAM)")
 }
