@@ -29,7 +29,7 @@ YAMLLOADER_VERSION=R2.2.0
 # FOO = /Full/Path/To/Development/Version
 # ==========================================================
 ASYN=$(EPICS_MODULES)/asyn/$(ASYN_MODULE_VERSION)
-YAMLLOADER=$(EPICS_MODULES)/yamlLoader/$(YAMLLOADER_VERSION)
+YAMLLOADER=$(EPICS_MODULES)/yamlLoader/R2.3.5
 
 # ============================================================
 #  Module Location
