@@ -51,6 +51,9 @@ YAML_LIB=$(addsuffix /lib,$(YAML_CPP))
 SHARED_LIBRARIES=YES
 STATIC_BUILD=YES
 
+# Note using PACKAGE_SITE_TOP from LCLS for PCDS as well
+PACKAGE_SITE_TOP=/afs/slac/g/lcls/package
+
 # =============================
 # Define the archiecture versions
 # =============================
