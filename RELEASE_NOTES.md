@@ -3,6 +3,11 @@
 Release note fot the YPCSWASYN EPICS module.
 
 ## Releases:
+* __R3.3.6__: 2023-08-08  M. Donadio
+  * Now building for RHEL7 and any other RHEL in the future.
+  * Using yamlLoader/R2.3.5.
+  * Macro path tests need to be in CONFIG after includes.
+  * Build both LCLS and PCDS using LCLS PACKAGE_SITE_TOP.
 
 * __R3.3.5__: 2021-05-10  E. Williams
   * Upgrade asyn: R4.39-0.0.1 -> R4.39-1.0.1, yamlLoader to R2.2.0
