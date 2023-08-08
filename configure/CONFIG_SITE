@@ -58,7 +58,10 @@ PACKAGE_SITE_TOP=/afs/slac/g/lcls/package
 # Define the archiecture versions
 # =============================
 LINUXRT_BUILDROOT_VERSION=buildroot-2019.08
-LINUX_VERSION=rhel6
+
+ifdef T_A
+PKG_ARCH=$(T_A)
+endif
 
 # ===================================
 # Support for external packages
