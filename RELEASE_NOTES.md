@@ -3,6 +3,9 @@
 Release note fot the YPCSWASYN EPICS module.
 
 ## Releases:
+* __R3.3.3-1.0-linac_lock__: 2023-08-24 M. Skoufis
+  * Add read interface for RW array registers
+
 * __R3.3.3-1.0__: 2022-05-12 M. Skoufis
   * Update CONFIG_SITE and add support for RHEL7
 
