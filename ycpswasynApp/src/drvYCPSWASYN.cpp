@@ -302,7 +302,7 @@ int YCPSWASYN::YCPSWASYNInit(const char* rootPath, Path *p, const char* namedRoo
 
     if (rootPath[0] == '\0')
     {
-        printf("Stating at root\n");
+        printf("Starting at root\n");
     }
     else
     {
@@ -849,7 +849,7 @@ int YCPSWASYN::CreateRecord(Path p2)
     Stream          stm_aux;
     int             rval = -1;
     bool            interfaceAttached = false;
-
+    
     // Try to attach a ScalVal_RO and ScalVal interface
     try
     {
@@ -1536,7 +1536,7 @@ int YCPSWASYN::loadDBFromFile(const char* dictionary)
                         printf("ScalVal interface created for %s\n", regPath.c_str());
                         createRegisterParameter(rw_aux, paramName);
 
-                        // This was added to ensure arrays of RW registers can be read back                                        
+                        // This was added to ensure RW array registers can be read back                                        
                         if (rw_aux -> getNelms() > 1 && ro_aux)
                         {
                             printf("ScalVal_RO interface created for %s\n", regPath.c_str());
@@ -1613,12 +1613,10 @@ asynStatus YCPSWASYN::writeInt32(asynUser *pasynUser, epicsInt32 value)
     int status=0;
     const char *name;
 
-    this->getAddress(pasynUser, &addr);
-
     static const char *functionName = "writeInt32";
 
     this->getAddress(pasynUser, &addr);
-
+    
     lock();
     if (!getParamName(addr, function, &name))
     {
@@ -1852,7 +1850,6 @@ asynStatus YCPSWASYN::writeInt32Array(asynUser *pasynUser, epicsInt32 *value, si
     size_t n = 0;
     const char *name;
     static const char *functionName = "writeInt32Array";
-    IndexRange range(0, nElements-1);
 
     this->getAddress(pasynUser, &addr);
 
@@ -1861,6 +1858,11 @@ asynStatus YCPSWASYN::writeInt32Array(asynUser *pasynUser, epicsInt32 *value, si
     {
         try
         {
+            // It was observed that for RW array registers, nElements = 0
+            // Reassign by accessing the CPSW interface and re-compute range
+            nElements = rw[function]->getNelms();
+            IndexRange range(0, nElements-1);
+            
             if (addr == DEV_REG_RW)
                 n = rw[function]->setVal((uint32_t*)value, nElements, &range);
             else
