@@ -1535,6 +1535,13 @@ int YCPSWASYN::loadDBFromFile(const char* dictionary)
                     {
                         printf("ScalVal interface created for %s\n", regPath.c_str());
                         createRegisterParameter(rw_aux, paramName);
+
+                        // This was added to ensure RW array registers can be read back                                        
+                        if (rw_aux -> getNelms() > 1 && ro_aux)
+                        {
+                            printf("ScalVal_RO interface created for %s\n", regPath.c_str());
+                            createRegisterParameter(ro_aux, paramName);
+                        }
                     }
                     else if (ro_aux)
                     {
@@ -1854,6 +1861,11 @@ asynStatus YCPSWASYN::writeInt32Array(asynUser *pasynUser, epicsInt32 *value, si
     {
         try
         {
+            // It was observed that for RW array registers, nElements = 0
+            // Reassign by accessing the CPSW interface and re-compute range
+            nElements = rw[function]->getNelms();
+            IndexRange range(0, nElements-1);
+            
             if (addr == DEV_REG_RW)
                 n = rw[function]->setVal((uint32_t*)value, nElements, &range);
             else
