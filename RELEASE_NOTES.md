@@ -3,6 +3,10 @@
 Release note fot the YPCSWASYN EPICS module.
 
 ## Releases:
+* __R3.3.6-1.0__: 2023-10-16  M. Skoufis
+  * Bug fix: Fixes for R/W array registers for a read-back interface
+    and to recompute the number of elements.
+
 * __R3.3.6__: 2023-08-08  M. Donadio
   * Now building for RHEL7 and any other RHEL in the future.
   * Using yamlLoader/R2.3.5.
