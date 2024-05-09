@@ -3,6 +3,9 @@
 Release note fot the YPCSWASYN EPICS module.
 
 ## Releases:
+* __R3.4.0__: 2024-05-09  M. Skoufis
+  * Integrate R3.3.6-1.0 updates into master 
+
 * __R3.3.6-1.0__: 2023-10-16  M. Skoufis
   * Bug fix: Fixes for R/W array registers for a read-back interface
     and to recompute the number of elements.
