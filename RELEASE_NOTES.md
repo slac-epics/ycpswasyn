@@ -3,6 +3,9 @@
 Release note fot the YPCSWASYN EPICS module.
 
 ## Releases:
+* __R3.4.1__: 2024-07-17  J. Lorelli
+  * Update asyn R4.39-1.0.1 -> R4.39-1.0.2
+
 * __R3.4.0__: 2024-05-09  M. Skoufis
   * Integrate R3.3.6-1.0 updates into master 
 
